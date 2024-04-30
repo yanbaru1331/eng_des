@@ -21,6 +21,6 @@ pnpm dev
 
 ```sh
 cd ./back
-
-
+pnpm i
+pnpm dev
 ```
