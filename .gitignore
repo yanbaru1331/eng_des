@@ -1,3 +1,4 @@
+#front
 # Logs
 logs
 *.log
@@ -23,4 +24,14 @@ dist-ssr
 *.sln
 *.sw?
 
-# pushしたくない拡張子をここに追記しておく
+# back
+.wrangler
+.dev.vars
+
+# Change them to your taste:
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+#ここにpushしたくない拡張子を追記していく
