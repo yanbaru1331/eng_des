@@ -1,14 +1,15 @@
 {
-  "scripts": {
-    "dev": "tsx watch src/index.ts"
-  },
-  "dependencies": {
-    "@hono/node-server": "^1.11.1",
-    "hono": "^4.2.9"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.17",
-    "tsx": "^4.7.1"
-  },
-  "packageManager": "pnpm@9.0.6+sha1.648f6014eb363abb36618f2ba59282a9eeb3e879"
+	"scripts": {
+		"dev": "tsx watch src/index.ts"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.11.1",
+		"hono": "^4.2.9"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.7.3",
+		"@types/node": "^20.11.17",
+		"tsx": "^4.7.1"
+	},
+	"packageManager": "pnpm@9.0.6+sha1.648f6014eb363abb36618f2ba59282a9eeb3e879"
 }

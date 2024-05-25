@@ -1,12 +1,47 @@
-version: "3"
+# version: "3"
+# services:
+#   web:
+#     build: .
+#     environment:
+#       - NODE_ENV=development
+#     volumes:
+#       - ./:/usr/src/app
+#     ports:
+#       - 8000:3001
+#     # platform: linux/amd64
+#     tty: true
+
+
+version: '3'
+
 services:
-  web:
-    build: .
+  backend:
+    build:
+      context: ./back
     environment:
       - NODE_ENV=development
-    volumes:
-      - ./:/usr/src/app
     ports:
-      - 8000:3000
-    platform: linux/amd64
+      - "3000:3000"
+    volumes:
+      - ./back:/usr/src/back
+    networks:
+      - app-network
     tty: true
+
+  frontend:
+    build:
+      context: ./front
+    ports:
+      - "8000:3001"
+    volumes:
+      - ./front:/usr/src/front
+    networks:
+      - app-network
+    environment:
+      - REACT_API_URL=http://backend:3000
+      - NODE_ENV=development
+    tty: true
+
+networks:
+  app-network:
+    driver: bridge
