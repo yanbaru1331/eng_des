@@ -1,7 +1,14 @@
 FROM node:22-alpine3.18
 WORKDIR /usr/src/back
 
+# Corepackを有効化
 RUN corepack enable
-# RUN pnpm install
+COPY package*.json ./
+RUN npm install
+RUN npm install express
 
-ADD . /usr/src/back/
+COPY . .
+
+RUN npx prisma generate
+
+EXPOSE 3000
