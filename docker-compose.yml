@@ -15,20 +15,22 @@
 version: '3'
 
 services:
-  backend:
+  back:
     build:
       context: ./back
     environment:
       - NODE_ENV=development
     ports:
       - "3000:3000"
+      - "5555:5555" #prisma studio用
     volumes:
       - ./back:/usr/src/back
+      - node_modules:/usr/src/back/node_modules
     networks:
       - app-network
     tty: true
 
-  frontend:
+  front:
     build:
       context: ./front
     ports:
@@ -38,10 +40,27 @@ services:
     networks:
       - app-network
     environment:
-      - REACT_API_URL=http://backend:3000
+      - REACT_API_URL=http://back:3000
       - NODE_ENV=development
     tty: true
+
+  postgres:
+    image: postgres:14.5
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    ports:
+      - "5432:5432"
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  postgres-data:
+  node_modules:

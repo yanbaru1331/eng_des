@@ -4,12 +4,17 @@
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.11.1",
-		"hono": "^4.2.9"
+		"@prisma/client": "^5.14.0",
+		"hono": "^4.2.9",
+		"pg": "^8.11.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.7.3",
 		"@types/node": "^20.11.17",
+		"express": "^4.17.1",
+		"prisma": "^5.14.0",
 		"tsx": "^4.7.1"
 	},
+	"type": "module",
 	"packageManager": "pnpm@9.0.6+sha1.648f6014eb363abb36618f2ba59282a9eeb3e879"
 }
