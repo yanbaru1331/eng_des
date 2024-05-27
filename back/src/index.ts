@@ -59,7 +59,7 @@
 // app.get("/test-cors", (c) => {
 // 	return c.json({ message: "CORS is working!" });
 //   });
-  
+
 // // //honoでcrosをlocalhost:3001に許可するようなコード
 // // app.use(cors({
 // // 	origin: ['http://localhost:3001'],
@@ -99,9 +99,11 @@ import { cors } from 'hono/cors';
 const app = new Hono();
 
 // CORSミドルウェアの設定
-app.use('*', cors({
-  origin: ["http://localhost:3001"],
-//   allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type'],
+app.use('/*', cors({
+  // origin: "http://frontend:3001",
+  //オリジンの設定がうまく言ってないのでとりあえず*で動かす
+  origin: "*",
+  //   allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type'],
   allowHeaders: ['*'],
   allowMethods: ['POST', 'GET', 'OPTIONS'],
   exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],

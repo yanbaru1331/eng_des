@@ -7,7 +7,7 @@ import UserPage from './UserPage';
 function App() {
   const message = 'こんにちは React!!';
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/test-cors`)
+    fetch(`http://localhost:3000/test-cors`)
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(error => console.error("CORS test failed:", error));
