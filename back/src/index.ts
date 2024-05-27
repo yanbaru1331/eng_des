@@ -11,9 +11,9 @@ const app = new Hono();
 
 // CORSミドルウェアの設定
 app.use('/*', cors({
-  origin: "http://front:3001",
+  // origin: "http://front:3001",
   //オリジンの設定がうまく言ってないのでとりあえず*で動かす
-  // origin: "*",
+  origin: "*",
   //   allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type'],
   allowHeaders: ['*'],
   allowMethods: ['POST', 'GET', 'OPTIONS'],

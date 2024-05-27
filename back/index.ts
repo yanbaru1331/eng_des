@@ -6,6 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ルートパスにGETリクエストがあった場合の処理
+//　any消せるなら消す
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
