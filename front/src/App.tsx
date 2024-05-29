@@ -23,7 +23,7 @@ function App() {
         <Route path="/login" element={
           <Login onSubmit={(user, password) => console.log('ログインユーザ', user, 'とパスワード', password)} />
         } />
-        <Route path="/:userid" element={
+        <Route path="/userpage/:userid" element={
           <UserPage />
         } />
       </Routes>

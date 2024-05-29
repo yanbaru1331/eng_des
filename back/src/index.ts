@@ -1,6 +1,8 @@
 
 // // async->非同期の通信 dbとかを触れる可能性があるならいれる
 // 型定義はちゃん書いておく
+// 要相談だけど、/api/~みたいにかいたほうがいいかも
+// 今は/でおいてるけど割と構築がしにくくなってきた
 
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
@@ -11,9 +13,9 @@ const app = new Hono();
 
 // CORSミドルウェアの設定
 app.use('/*', cors({
-  // origin: "http://front:3001",
+  origin: "http://localhost:8000",
   //オリジンの設定がうまく言ってないのでとりあえず*で動かす
-  origin: "*",
+  // origin: "*",
   //   allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type'],
   allowHeaders: ['*'],
   allowMethods: ['POST', 'GET', 'OPTIONS'],
