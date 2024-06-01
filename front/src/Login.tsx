@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface LoginProps {
   onSubmit: (user: string, password: string) => void;
@@ -7,16 +8,11 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const isValidUser = async (user: string, password: string) => {
     try {
-      // const response = await fetch("http://localhost:3000/login", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ user, password }),
-      // });
+
       
       const response = await fetch("http://localhost:3000/login", {
       method: "POST",
@@ -54,6 +50,11 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
     const isValid = await isValidUser(user, password);
     if (isValid){
       console.log("ログイン成功");
+      navigate(`/userpage/${user}`);
+      ///userpage/$(user)に遷移するページを作成
+      
+
+      // Navigate({to: "/userpage/$(user)"});
     }
     onSubmit(user, password);
   };
