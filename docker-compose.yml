@@ -25,7 +25,7 @@ services:
       - "5555:5555" #prisma studio用
     volumes:
       - ./back:/usr/src/back
-      - node_modules:/usr/src/back/node_modules
+      # - node_modules:/usr/src/back/node_modules
     networks:
       - app-network
     tty: true
@@ -63,4 +63,4 @@ networks:
 
 volumes:
   postgres-data:
-  node_modules:
+  # node_modules:
