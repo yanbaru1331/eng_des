@@ -14,7 +14,63 @@ generator client {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String  @unique
+  id         Int      @id @default(autoincrement())
+  username   String
+  password   String
+  email      String
+  last_login DateTime @default(now())
+
+  PortfolioTabs PortfolioTab[]
+  PortfolioPage PortfolioPage?
+
+  @@map(name: "users")
+}
+
+model PortfolioPage {
+  user            User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id         Int       @id
+  contact_address String?
+  date_of_birth   DateTime?
+  published       Boolean
+
+  @@map(name: "portfolio_pages")
+}
+
+model PortfolioTab {
+  id       Int         @id @default(autoincrement())
+  user     User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id  Int
+  tab_name String
+  tab_type contenttype
+
+  PortfolioContent PortfolioContent[]
+
+  @@map(name: "portfolio_tabs")
+}
+
+enum contenttype {
+  TEXT
+  PICTURE
+  LIST
+}
+
+model PortfolioContent {
+  tab    PortfolioTab @relation(fields: [tab_id], references: [id], onDelete: Cascade)
+  tab_id Int
+  id     Int          @id @default(autoincrement())
+  text   String?
+  image  String?
+
+  ContentTag ContentTag[]
+
+  @@map(name: "portfolio_contents")
+}
+
+model ContentTag {
+  content    PortfolioContent @relation(fields: [content_id], references: [id], onDelete: Cascade)
+  content_id Int
+  id         Int              @id
+  name       String
+
+  @@map(name: "content_tag")
 }
