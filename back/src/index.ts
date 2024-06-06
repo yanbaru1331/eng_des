@@ -9,13 +9,13 @@ import { Hono } from "hono";
 import { cors } from 'hono/cors';
 import { validator } from "hono/validator";
 
-import { PrismaClient } from "@prisma/client";
-import { createUser, deleteUser, getUser, updateUser } from "./db_operations/user";
+// /api/のルーティング 
+import { apiApp } from "./endpoint/api_route";
+const app = new Hono()
+  .route('/api', apiApp)
 
-const prisma = new PrismaClient();
-
-const app = new Hono();
-
+// front に型情報を送る（hono
+export type AppType = typeof app
 // CORSミドルウェアの設定
 app.use('/*', cors({
   origin: "http://localhost:8000",
@@ -28,12 +28,6 @@ app.use('/*', cors({
   maxAge: 600,
   credentials: true,
 }));
-
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
-
-  //db操作するコード
-});
 
 app.get("/hoge/huga", async (c) => {
   return c.text("poyp~");
@@ -62,49 +56,6 @@ app.post(
     }
   }
 );
-
-app.get('/test', async (c) => {
-  try {
-    console.log('--- Running Test ---');
-    await test();
-    return c.text('Test executed successfully');
-  } catch (error) {
-    console.error('Error executing test:', error);
-    return c.text('Error executing test');
-  }
-});
-
-async function test() {
-  try {
-    console.log('--- Creating User ---');
-    const newUser = await createUser({
-      username: 'testuser',
-      password: 'password123',
-      email: 'testuser@example.com',
-      last_login: new Date(),
-    });
-    console.log('Created User:', newUser);
-
-    console.log('--- Getting User ---');
-    const fetchedUser = await getUser(newUser.id);
-    console.log('Fetched User:', fetchedUser);
-
-    console.log('--- Updating User ---');
-    const updatedUser = await updateUser(newUser.id, {
-      email: 'newemail@example.com',
-    });
-    console.log('Updated User:', updatedUser);
-
-    console.log('--- Deleting User ---');
-    const deletedUser = await deleteUser(newUser.id);
-    console.log('Deleted User:', deletedUser);
-
-  } catch (error) {
-    console.error('Test Error:', error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
 
 const port = 3000;
 console.log(`Server is running on port ${port}`);
