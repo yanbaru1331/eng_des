@@ -24,7 +24,7 @@ userApp.post(
     zValidator('json', createSchema),
     async (c) => {
         // バリデーションが通ったJSONデータを取得
-        const { username, email, password } = await c.req.json();
+        const { username, email, password } = await c.req.valid ("json");
 
         // パスワードをハッシュ化（ここではbcryptを使用してsaltRoundsを10に設定）
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -60,7 +60,7 @@ userApp.post(
     'login',
     zValidator('json', loginSchema),
     async (c) => {
-        const { email, password } = await c.req.json();
+        const { email, password } = await c.req.valid ("json");
 
         try {
             // データベースからユーザー情報を取得
@@ -98,7 +98,7 @@ userApp.post(
     'delete',
     zValidator('json', deleteSchema),
     async (c) => {
-        const { email } = await c.req.json();  // リクエストからIDを取得
+        const { email } = await c.req.valid ("json");  // リクエストからIDを取得
 
         try {
             const deletedUser = await deleteUser(email);  // deleteUser関数を呼び出してユーザーを削除
