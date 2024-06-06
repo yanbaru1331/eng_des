@@ -1,7 +1,6 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import prisma from '../prisma_client';
 
-
-const prisma = new PrismaClient();
 
 export async function createUser(data: Prisma.UserCreateInput) {
     try {
@@ -15,10 +14,10 @@ export async function createUser(data: Prisma.UserCreateInput) {
     }
 }
 
-export async function getUser(id: number) {
+export async function getUser(email: string) {
     try {
         const user = await prisma.user.findUnique({
-            where: { id },
+            where: { email },
             include: {
                 PortfolioTabs: true,
                 PortfolioPage: true,
@@ -34,10 +33,10 @@ export async function getUser(id: number) {
     }
 }
 
-export async function deleteUser(id: number) {
+export async function deleteUser(email: string) {
     try {
         const deletedUser = await prisma.user.delete({
-            where: { id },
+            where: { email },
         });
         return deletedUser;
     } catch (error) {
