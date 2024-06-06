@@ -98,6 +98,7 @@ userApp.post(
     'delete',
     zValidator('json', deleteSchema),
     async (c) => {
+         //c.req.json()　はc.req.vaild ("json"); が好ましいらしいby cff
         const { email } = await c.req.json();  // リクエストからIDを取得
 
         try {
