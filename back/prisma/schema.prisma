@@ -14,63 +14,67 @@ generator client {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  username   String
-  password   String
-  email      String   @unique
-  last_login DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  username      String   @unique
+  password      String
+  email         String   @unique
+  last_login    DateTime @updatedAt
+  date_of_birth String?
 
-  PortfolioTabs PortfolioTab[]
-  PortfolioPage PortfolioPage?
+  portfolioPages PortfolioPage[]
 
   @@map(name: "users")
 }
 
 model PortfolioPage {
-  user            User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id         Int       @id
-  contact_address String?
-  date_of_birth   DateTime?
-  published       Boolean
+  id              Int     @id @default(autoincrement())
+  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int     @unique
+  published       Boolean @default(false)
+  contact_address String  @default("Not set")
+  max_item        Int     @default(3)
+  max_depth       Int     @default(1)
+  max_score       Int     @default(1)
+
+  radercharts PortfolioRaderChart[]
+  raderleafs  PortfolioRaderChartLeaf[]
 
   @@map(name: "portfolio_pages")
 }
 
-enum contenttype {
-  TEXT
-  PICTURE
-  LIST
+model PortfolioRaderChartLeaf {
+  id      Int                 @id @default(autoincrement())
+  name    String
+  score   Int                 @default(0)
+  raderId Int
+  pageId  Int
+  rader   PortfolioRaderChart @relation(fields: [raderId], references: [id], onDelete: Cascade)
+  page    PortfolioPage       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@map(name: "portfolio_rader_chart_leaf")
 }
 
-model PortfolioTab {
-  id       Int         @id @default(autoincrement())
-  user     User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id  Int
-  tab_name String
-  tab_type contenttype
+model PortfolioRaderChart {
+  id        Int                           @id @default(autoincrement())
+  name      String
+  pageId    Int
+  max_score Int                           @default(1)
+  page      PortfolioPage                 @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  leafs     PortfolioRaderChartLeaf[]
+  parents   PortfolioRaderChartRelation[] @relation("Parent")
+  children  PortfolioRaderChartRelation[] @relation("Child")
 
-  PortfolioContent PortfolioContent[]
-
-  @@map(name: "portfolio_tabs")
+  @@map(name: "portfolio_rader_chart")
 }
 
-model PortfolioContent {
-  tab    PortfolioTab @relation(fields: [tab_id], references: [id], onDelete: Cascade)
-  tab_id Int
-  id     Int          @id @default(autoincrement())
-  text   String?
-  image  String?
+model PortfolioRaderChartRelation {
+  parentId Int
+  childId  Int
+  depth    Int
 
-  ContentTag ContentTag[]
+  parent PortfolioRaderChart @relation("Parent", fields: [parentId], references: [id], onDelete: Cascade)
+  child  PortfolioRaderChart @relation("Child", fields: [childId], references: [id])
 
-  @@map(name: "portfolio_contents")
-}
-
-model ContentTag {
-  content    PortfolioContent @relation(fields: [content_id], references: [id], onDelete: Cascade)
-  content_id Int
-  id         Int              @id
-  name       String
-
-  @@map(name: "content_tag")
+  @@id([parentId, childId])
+  @@map(name: "portfolio_radar_chart_relation")
 }

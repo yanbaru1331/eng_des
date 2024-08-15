@@ -4,12 +4,13 @@
 // 要相談だけど、/api/~みたいにかいたほうがいいかも
 // 今は/でおいてるけど割と構築がしにくくなってきた
 
+// ↑解決したよ/api/user/createみたいな感じのURLだよ
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from 'hono/cors';
 import { validator } from "hono/validator";
 
-// /api/のルーティング 
+// /api/のルーティング
 import { apiApp } from "./endpoint/api_route";
 const app = new Hono()
   .route('/api', apiApp)

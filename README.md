@@ -24,5 +24,3 @@ cd ./back
 pnpm i
 pnpm dev
 ```
-
-a

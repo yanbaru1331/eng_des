@@ -1,8 +1,9 @@
+backの起動、コンテナの中で
 ```
-npm install
-npm run dev
+pnpm i
+pnpm dev
 ```
-
+結果
 ```
 open http://localhost:3000
 ```
@@ -18,3 +19,7 @@ prisma studio
 ```
 pnpm dlx prisma studio
 ```
+
+API一覧はback_api_test.http
+REST CLientという拡張機能を入れて開く
+Send Requestを押すと楽にテストできる
