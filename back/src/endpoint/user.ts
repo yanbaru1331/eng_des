@@ -4,10 +4,10 @@
 import { Hono } from "hono";
 
 import { zValidator } from '@hono/zod-validator';
-import { z } from 'zod';
 import bcrypt from 'bcrypt';
+import { z } from 'zod';
 
-import { createUser, getUser, deleteUser} from '../db_operations/user';
+import { createUser, deleteUser, getUserByEmail, getUserByUsername, updateUser } from '../db_operations/user';
 
 export const userApp = new Hono();
 
@@ -15,25 +15,52 @@ export const userApp = new Hono();
 const createSchema = z.object({
     username: z.string(),
     email: z.string().email(),
-    password: z.string()
+    password: z.string(),
+    date_of_birth: z.string().date().optional(),// "YYYY-MM-DD"のstring
 });
 
-// /api/user/create
+// POSET /api/user
+// user 作成
 userApp.post(
-    'create',
+    '/',
     zValidator('json', createSchema),
     async (c) => {
         // バリデーションが通ったJSONデータを取得
-        const { username, email, password } = await c.req.valid ("json");
+        const { username, email, password, date_of_birth } = await c.req.valid("json");
+
 
         // パスワードをハッシュ化（ここではbcryptを使用してsaltRoundsを10に設定）
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // email, usernameが既存か確認
+        const exsisting_email = await getUserByEmail(email);
+        const exsisting_username = await getUserByUsername(username);
+
+
+        if (exsisting_email && exsisting_username) {
+            console.error('error: This email and username is already existed');
+            return c.json({ error: 'This email and username is already existed' }, 500);
+        }
+        else if (exsisting_email) {
+            console.error('error: This email is already existed');
+            return c.json({ error: 'This email is already existed' }, 500);
+        }
+        else if (exsisting_username) {
+            console.error('error: This username is already existed');
+            return c.json({ error: 'This username is already existed' }, 500);
+        }
+
+        // 誕生日をISO YYYY-MN-DDのstringに変換
+        if (date_of_birth) {
+            new Date(date_of_birth).toISOString();
+        }
 
         // Prisma UserCreateInput型に合わせる
         const userData = {
             username: username,
             email: email,
-            password: hashedPassword // ハッシュ化されたパスワードを使用
+            password: hashedPassword, // ハッシュ化されたパスワードを使用
+            date_of_birth: date_of_birth
         };
 
         try {
@@ -44,10 +71,14 @@ userApp.post(
         } catch (error) {
             console.error('Error creating user:', error);
             // エラーレスポンス
-            return c.json({ error: 'Failed to create USer' }, 500);
+            return c.json({ error: 'Failed to create User' }, 500);
         }
     }
 );
+
+async function checkUserExisting(email: string, username: string) {
+
+}
 
 // login用の型チェック
 const loginSchema = z.object({
@@ -55,16 +86,16 @@ const loginSchema = z.object({
     password: z.string()
 });
 
-// /api/user/login
+// POST /api/user/login
 userApp.post(
     'login',
     zValidator('json', loginSchema),
     async (c) => {
-        const { email, password } = await c.req.valid ("json");
+        const { email, password } = await c.req.valid("json");
 
         try {
             // データベースからユーザー情報を取得
-            const user = await getUser(email);
+            const user = await getUserByEmail(email);
 
             if (!user) {
                 // ユーザーが見つからない場合
@@ -76,6 +107,7 @@ userApp.post(
 
             if (isValid) {
                 // パスワードが一致した場合
+                await updateUser(user.id, user.email, user.username);
                 return c.json({ message: 'Login successful', userId: user.id, email: user.email }, 200);
             } else {
                 // パスワードが一致しない場合
@@ -86,19 +118,20 @@ userApp.post(
             // 例外が発生した場合のエラーレスポンス
             return c.json({ error: 'Login failed' }, 500);
         }
-})
+    }
+);
 
 // delete用の型チェック
 const deleteSchema = z.object({
     email: z.string().email()
 });
 
-// /api/user/delete
-userApp.post(
-    'delete',
+// DELETE /api/user
+userApp.delete(
+    '/',
     zValidator('json', deleteSchema),
     async (c) => {
-        const { email } = await c.req.valid ("json");  // リクエストからIDを取得
+        const { email } = await c.req.valid("json");  // リクエストからIDを取得
 
         try {
             const deletedUser = await deleteUser(email);  // deleteUser関数を呼び出してユーザーを削除

@@ -1,0 +1,41 @@
+POST http://localhost:3000/api/user 
+Content-Type: application/json
+
+{
+    "username": "exampleUser",
+    "email": "example@example.com",
+    "password": "y",
+    "date_of_birth": "2024-08-09"
+} 
+###
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "email": "example@example.com",
+    "password": "y"
+} 
+###
+
+POST http://localhost:3000/api/portfolio/page
+Content-Type: application/json
+
+{
+    "user_id": 5,
+    "contact_address": "test",
+    "published": true,
+    "max_item": 3,
+    "max_depth": 2,
+    "max_score": 3
+}
+###
+
+DELETE http://localhost:3000/api/portfolio/page
+Content-Type: application/json
+
+{
+    "user_id": 5
+}
+
+###
+GET http://localhost:3000/api/portfolio/page?user_id=5
