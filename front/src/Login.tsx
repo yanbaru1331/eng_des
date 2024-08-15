@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/Button";
+
 
 interface LoginProps {
   onSubmit: (user: string, password: string) => void;
@@ -12,8 +14,6 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
 
   const isValidUser = async (user: string, password: string) => {
     try {
-
-      
       const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {
@@ -50,13 +50,14 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
     const isValid = await isValidUser(user, password);
     if (isValid){
       console.log("ログイン成功");
+      sessionStorage.setItem('AUTHORITY', user)
       navigate(`/userpage/${user}`);
       ///userpage/$(user)に遷移するページを作成
-      
-
       // Navigate({to: "/userpage/$(user)"});
     }
     onSubmit(user, password);
+
+
   };
 
   return (
@@ -65,7 +66,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       <label>
         ユーザ
         <input
-          type="user"
+          type="text"
           value={user}
           onChange={(e) => setUser(e.target.value)}
         />
@@ -78,7 +79,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </label>
-      <button type="submit">ログイン</button>
+      <Button type="submit" size="large">ログイン</Button>
     </form>
   );
 };

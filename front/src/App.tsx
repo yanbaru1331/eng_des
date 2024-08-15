@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Login from './Login';
 import UserPage from './UserPage';
+import Top from './Top';
+import Weight from './Chart';
 
 function App() {
   const message = 'こんにちは React!!';
@@ -12,13 +14,12 @@ function App() {
       .then(data => console.log(data))
       .catch(error => console.error("CORS test failed:", error));
   }, []);
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={
-          <div className='App'>
-            <p>{message}</p>
-          </div>
+          <Top />
         } />
         <Route path="/login" element={
           <Login onSubmit={(user, password) => console.log('ログインユーザ', user, 'とパスワード', password)} />
@@ -26,6 +27,12 @@ function App() {
         <Route path="/userpage/:userid" element={
           <UserPage />
         } />
+        <Route path="/userpage/:userid/chart" element={
+          <Weight />
+        } />
+        {/* <Route path="/userpage/:userid/chart/settings" element={
+          <Weight />
+        } /> */}
       </Routes>
     </Router>
   )
