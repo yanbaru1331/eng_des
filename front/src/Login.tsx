@@ -14,8 +14,6 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
 
   const isValidUser = async (user: string, password: string) => {
     try {
-
-      
       const response = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: {

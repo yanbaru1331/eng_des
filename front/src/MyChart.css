@@ -1,0 +1,13 @@
+.chart-container {
+    width: 33.33%;
+    /* ページの幅の1/3 */
+    margin: 0 auto;
+    /* 中央に配置 */
+}
+
+canvas {
+    width: 100% !important;
+    /* コンテナの幅に合わせる */
+    height: auto !important;
+    /* 高さを自動調整 */
+}
