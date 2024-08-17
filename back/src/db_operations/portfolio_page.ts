@@ -1,21 +1,9 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../prisma_client';
 
-export async function getPortfolioPage(userId: number) {
+export async function createPortfolioPage(data: Prisma.portfolio_pagesCreateInput) {
     try {
-        const portfolioPage = await prisma.portfolioPage.findUnique({
-            where: { userId: userId },
-        });
-        return portfolioPage;
-    } catch (error) {
-        console.error('Error fetching portfolio page:', error);
-        throw error;
-    }
-}
-
-export async function createPortfolioPage(data: Prisma.PortfolioPageCreateInput) {
-    try {
-        const portfolioPage = await prisma.portfolioPage.create({
+        const portfolioPage = await prisma.portfolio_pages.create({
             data: data,
         });
         return portfolioPage;
@@ -25,10 +13,22 @@ export async function createPortfolioPage(data: Prisma.PortfolioPageCreateInput)
     }
 }
 
-export async function updatePortfolioPage(userId: number, updateData: Prisma.PortfolioPageCreateInput) {
+export async function getPortfolioPage(userId: number) {
     try {
-        const updatedPortfolioPage = await prisma.portfolioPage.update({
-            where: { userId: userId },
+        const portfolioPage = await prisma.portfolio_pages.findUnique({
+            where: { user_id: userId },
+        });
+        return portfolioPage;
+    } catch (error) {
+        console.error('Error fetching portfolio page:', error);
+        throw error;
+    }
+}
+
+export async function updatePortfolioPage(userId: number, updateData: Prisma.portfolio_pagesCreateInput) {
+    try {
+        const updatedPortfolioPage = await prisma.portfolio_pages.update({
+            where: { user_id: userId },
             data: updateData,
         });
         return updatedPortfolioPage;
@@ -40,8 +40,8 @@ export async function updatePortfolioPage(userId: number, updateData: Prisma.Por
 
 export async function deletePortfolioPage(userId: number) {
     try {
-        const deletedPortfolioPage = await prisma.portfolioPage.delete({
-            where: { userId: userId },
+        const deletedPortfolioPage = await prisma.portfolio_pages.delete({
+            where: { user_id: userId },
         });
         return deletedPortfolioPage;
     } catch (error) {

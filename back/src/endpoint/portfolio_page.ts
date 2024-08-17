@@ -10,7 +10,7 @@ import { createPortfolioPage, deletePortfolioPage, getPortfolioPage } from '../d
 
 export const PortfolioPageApp = new Hono();
 
-const createPortfolioSchema = z.object({
+const createPortfolioPageSchema = z.object({
     user_id: z.number(),
     contact_address: z.string().optional(),
     published: z.boolean().optional(),
@@ -21,7 +21,7 @@ const createPortfolioSchema = z.object({
 
 PortfolioPageApp.post(
     '/',
-    zValidator('json', createPortfolioSchema),
+    zValidator('json', createPortfolioPageSchema),
     async (c) => {
         // バリデーションが通ったデータを取得
         const { user_id, contact_address, published, max_item, max_depth, max_score } = await c.req.valid("json");
@@ -52,7 +52,7 @@ PortfolioPageApp.post(
     }
 );
 
-const deleteSchema = z.object(
+const deletePortfolioPageSchema = z.object(
     {
         user_id: z.number()
     }
@@ -60,7 +60,7 @@ const deleteSchema = z.object(
 
 PortfolioPageApp.delete(
     '/',
-    zValidator('json', deleteSchema),
+    zValidator('json', deletePortfolioPageSchema),
     async (c) => {
         const { user_id } = await c.req.valid("json");  // リクエストからIDを取得
 
@@ -74,13 +74,13 @@ PortfolioPageApp.delete(
     }
 );
 
-const getSchema = z.object({
+const getPortfolioPageSchema = z.object({
     user_id: z.string().regex(/^\d+$/),  // クエリパラメータは文字列として受け取る
 });
 
 PortfolioPageApp.get(
     '/',
-    zValidator('query', getSchema),  // クエリパラメータをバリデート
+    zValidator('query', getPortfolioPageSchema),  // クエリパラメータをバリデート
     async (c) => {
         try {
             const { user_id } = c.req.valid('query');

@@ -2,91 +2,82 @@ import { Prisma } from '@prisma/client';
 import prisma from '../prisma_client';
 
 
-export async function createUser(data: Prisma.UserCreateInput) {
+export async function createUser(data: Prisma.usersCreateInput) {
     try {
-        const user = await prisma.user.create({
+        const user = await prisma.users.create({
             data,
         });
         return user;
     } catch (error) {
         console.error('Error creating user:', error);
         throw error;
-    }
-}
+    };
+};
 
 export async function getUserByEmail(email: string) {
     try {
-        const user = await prisma.user.findUnique({
-            where: { email },
-            include: {
-                portfolioPages: true,
-            },
+        const user = await prisma.users.findUnique({
+            where: { email }
         });
         return user || null;
     } catch (error) {
         console.error('Error fetching user:', error);
         throw error;
-    }
-}
+    };
+};
 
 export async function getUserByUsername(username: string) {
     try {
-        const user = await prisma.user.findUnique({
-            where: { username },
-            include: {
-                portfolioPages: true,
-            },
+        const user = await prisma.users.findUnique({
+            where: { username }
         });
         return user || null;
     } catch (error) {
         console.error('Error fetching user:', error);
         throw error;
-    }
-}
+    };
+};
 
 export async function getUserById(id: number) {
     try {
-        const user = await prisma.user.findUnique({
-            where: { id },
-            include: {
-                portfolioPages: true,
-            },
+        const user = await prisma.users.findUnique({
+            where: { id }
         });
         if (!user) {
             throw new Error('User not found');
-        }
+        };
         return user;
     } catch (error) {
         console.error('Error fetching user:', error);
         throw error;
-    }
-}
+    };
+};
 
 export async function deleteUser(email: string) {
     try {
-        const deletedUser = await prisma.user.delete({
-            where: { email },
+        const deletedUser = await prisma.users.delete({
+            where: { email }
         });
         return deletedUser;
     } catch (error) {
         console.error('Error fetching user:', error);
         throw error;
-    }
-}
+    };
+};
 
 // 必要そうなら書く
 export async function updateUser(id: number, email: string, username: string) {
     try {
-        const updatedUser = await prisma.user.update({
+        const updatedUser = await prisma.users.update({
             where: { id },
             data: {
                 email: email,
-                username: username,
+                username: username
             }
         });
         return updatedUser;
     } catch (error) {
         console.error('Error updating user:', error);
         throw error;
-    }
-}
+    };
+};

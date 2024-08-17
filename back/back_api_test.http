@@ -1,4 +1,37 @@
-POST http://localhost:3000/api/user 
+
+# ユーザー作成
+
+# 受け付けるjson
+# const createSchema = z.object({
+#     username: z.string(),
+#     email: z.string().email(),
+#     password: z.string(),
+#     date_of_birth: z.string().date().optional(),// "YYYY-MM-DD"のstring
+# });
+
+# 失敗時
+
+# emailとユーザー名がどちらも既に存在している
+# 500
+# {
+#   "error": "This email and username is already existed"
+# }
+# emailが既に存在している
+# {
+#   "error": "This email is already existed"
+# }
+# ユーザー名が既に存在している
+# {
+#   "error": "This username is already existed"
+# }
+
+# その他
+# {
+#     "error": "Failed to create User"
+# }
+# 例
+
+POST http://localhost:3000/api/user
 Content-Type: application/json
 
 {
@@ -6,7 +39,10 @@ Content-Type: application/json
     "email": "example@example.com",
     "password": "y",
     "date_of_birth": "2024-08-09"
-} 
+}
+
+# { message: 'User created successfully', userId: newUser.id }, 201
+
 ###
 POST http://localhost:3000/api/user/login
 Content-Type: application/json
@@ -14,7 +50,7 @@ Content-Type: application/json
 {
     "email": "example@example.com",
     "password": "y"
-} 
+}
 ###
 
 POST http://localhost:3000/api/portfolio/page
