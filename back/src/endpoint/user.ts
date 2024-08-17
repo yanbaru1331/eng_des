@@ -48,12 +48,12 @@ userApp.post(
         else if (exsisting_username) {
             console.error('error: This username is already existed');
             return c.json({ error: 'This username is already existed' }, 500);
-        }
+        };
 
         // 誕生日をISO YYYY-MN-DDのstringに変換
         if (date_of_birth) {
             new Date(date_of_birth).toISOString();
-        }
+        };
 
         // Prisma UserCreateInput型に合わせる
         const userData = {

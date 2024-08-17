@@ -13,7 +13,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
+model users {
   id            Int      @id @default(autoincrement())
   username      String   @unique
   password      String
@@ -21,60 +21,63 @@ model User {
   last_login    DateTime @updatedAt
   date_of_birth String?
 
-  portfolioPages PortfolioPage[]
+  portfolio_pages portfolio_pages[]
 
   @@map(name: "users")
 }
 
-model PortfolioPage {
+model portfolio_pages {
   id              Int     @id @default(autoincrement())
-  user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          Int     @unique
+  user            users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id         Int     @unique
   published       Boolean @default(false)
   contact_address String  @default("Not set")
   max_item        Int     @default(3)
   max_depth       Int     @default(1)
   max_score       Int     @default(1)
 
-  radercharts PortfolioRaderChart[]
-  raderleafs  PortfolioRaderChartLeaf[]
+  rader_charts portfolio_rader_charts[]
+  rader_chart_leafs  portfolio_rader_chart_leaves[]
+  portfolio_rader_chart_relations portfolio_rader_chart_relations[] @relation("Page")
 
   @@map(name: "portfolio_pages")
+
 }
 
-model PortfolioRaderChartLeaf {
-  id      Int                 @id @default(autoincrement())
-  name    String
-  score   Int                 @default(0)
-  raderId Int
-  pageId  Int
-  rader   PortfolioRaderChart @relation(fields: [raderId], references: [id], onDelete: Cascade)
-  page    PortfolioPage       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+model portfolio_rader_chart_leaves {
+  id       Int                 @id @default(autoincrement())
+  name     String
+  score    Int                 @default(0)
+  chart_id Int
+  page_id  Int
+  chart   portfolio_rader_charts @relation(fields: [chart_id], references: [id], onDelete: Cascade)
+  page    portfolio_pages      @relation(fields: [page_id], references: [id], onDelete: Cascade)
 
-  @@map(name: "portfolio_rader_chart_leaf")
+  @@map(name: "portfolio_rader_chart_leaves")
 }
 
-model PortfolioRaderChart {
+model portfolio_rader_charts {
   id        Int                           @id @default(autoincrement())
   name      String
-  pageId    Int
-  max_score Int                           @default(1)
-  page      PortfolioPage                 @relation(fields: [pageId], references: [id], onDelete: Cascade)
-  leafs     PortfolioRaderChartLeaf[]
-  parents   PortfolioRaderChartRelation[] @relation("Parent")
-  children  PortfolioRaderChartRelation[] @relation("Child")
+  page_id   Int
+  page      portfolio_pages                 @relation(fields: [page_id], references: [id], onDelete: Cascade)
+  leafs     portfolio_rader_chart_leaves[]
+  parents   portfolio_rader_chart_relations[] @relation("Parent")
+  children  portfolio_rader_chart_relations[] @relation("Child")
 
   @@map(name: "portfolio_rader_chart")
 }
 
-model PortfolioRaderChartRelation {
-  parentId Int
-  childId  Int
-  depth    Int
+model portfolio_rader_chart_relations {
+  id        Int                           @id @default(autoincrement())
+  page_id   Int
+  parent_id Int
+  child_id  Int
+  depth     Int
 
-  parent PortfolioRaderChart @relation("Parent", fields: [parentId], references: [id], onDelete: Cascade)
-  child  PortfolioRaderChart @relation("Child", fields: [childId], references: [id])
+  page   portfolio_pages        @relation("Page", fields: [page_id], references: [id], onDelete: Cascade)
+  parent portfolio_rader_charts? @relation("Parent", fields: [parent_id], references: [id], onDelete: Cascade)
+  child  portfolio_rader_charts? @relation("Child", fields: [child_id], references: [id])
 
-  @@id([parentId, childId])
   @@map(name: "portfolio_radar_chart_relation")
 }

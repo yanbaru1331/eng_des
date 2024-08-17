@@ -1,37 +1,71 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../prisma_client';
 
-export const createPortfolioRaderChartRelation = async (relationData: { parentId: number, childId: number, depth?: number }) => {
-    return prisma.portfolioRaderChartRelation.create({
-        data: relationData,
-    });
+export async function createPortfolioRaderChartRelation(relationData: Prisma.portfolio_rader_chart_relationsCreateManyInput[]) {
+    try {
+        const portfolioRaderChartRelation = await prisma.portfolio_rader_chart_relations.createMany({
+            data: relationData
+        });
+        return portfolioRaderChartRelation;
+    } catch (error) {
+        console.error('Error fetching portfolio page:', error);
+        throw error;
+    }
 };
 
-export async function getPortfolioPage(userId: number) {
+export async function getAllPortfolioRaderChartRelations(pageId: number) {
     try {
-        const portfolioPage = await prisma.portfolioPage.findUnique({
-            where: { user_id: userId },
+        const portfolioRaderChartRelations = await prisma.portfolio_rader_chart_relations.findMany({
+            where: { page_id: pageId }
         });
-        return portfolioPage;
+        return portfolioRaderChartRelations;
     } catch (error) {
         console.error('Error fetching portfolio page:', error);
         throw error;
     }
 }
 
+export async function getPortfolioRaderChartRelationsByParent(parentId: number) {
+    try {
+        const portfolioRaderChartRelations = await prisma.portfolio_rader_chart_relations.findMany({
+            where: { parent_id: parentId },
+        });
+        return portfolioRaderChartRelations;
+    } catch (error) {
+        console.error('Error fetching portfolio page:', error);
+        throw error;
+    }
+}
 
+export async function getPortfolioRaderChartRelationsByChild(childId: number) {
+    try {
+        const portfolioRaderChartRelation = await prisma.portfolio_rader_chart_relations.findMany({
+            where: { child_id: childId },
+        });
+        return portfolioRaderChartRelation;
+    } catch (error) {
+        console.error('Error fetching portfolio page:', error);
+        throw error;
+    }
+}
 
-export const getPortfolioRaderChartRelations = async () => {
-    return prisma.portfolioRaderChartRelation.findMany();
-};
-
-export const deletePortfolioRaderChartRelation = async (parentId: number, childId: number) => {
-    return prisma.portfolioRaderChartRelation.delete({
-        where: {
-            parentId_childId: {
-                parentId: parentId,
-                childId: childId,
-            },
-        },
-    });
-};
+export async function getPortfolioRaderChartRelationsByChartId(chartId: number) {
+    try {
+        const portfolioRaderChartRelation = await prisma.portfolio_rader_chart_relations.findMany({
+            where: {
+                OR: [
+                    {
+                        parent_id: chartId
+                    },
+                    {
+                        child_id: chartId
+                    }
+                ]
+            }
+        });
+        return portfolioRaderChartRelation;
+    } catch (error) {
+        console.error('Error fetching portfolio page:', error);
+        throw error;
+    }
+}
