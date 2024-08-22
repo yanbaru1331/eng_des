@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Button from "../Button";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
+//url =  http://localhost:3000/api/user
 const Modal= (props) => {
   const closeModal = () => {
     props.setShowFlag(false);
@@ -16,18 +18,34 @@ const Modal= (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checkpass, setCheckpass] = useState("");
+  const [birth, setBirth] = useState("");
   const [disabled, setDisabled] = useState(true);
+  
   //登録関数
   const submit = () => {
-    console.log("submit")
+    axios.post("http://localhost:3000/api/user", {
+      user: user,
+      email: email,
+      password: password,
+      birth: birth,
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+      console.log(res);
+      closeModal();
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   const accountCheck = () => {
-    if (user !== "" && email !== "" && password !== "" && checkpass !== "" && password === checkpass){
-        setDisabled(false);
+    if (user !== "" && email !== "" && password !== "" && checkpass !== "" && birth !=="" && password === checkpass){
+        setDisabled(true);
       }
       else{
-        setDisabled(true);
+        setDisabled(false);
     }
   }
   return (
@@ -52,6 +70,12 @@ const Modal= (props) => {
         }
         } />
 
+        <p>生年月日</p>
+        <input type="date" value={birth}
+        onChange={(e) => {setBirth(e.target.value);
+        accountCheck();
+        }
+      } />
         <p>パスワード</p>
         <input type="password" value={password} 
         onChange={(e) => {setPassword(e.target.value);

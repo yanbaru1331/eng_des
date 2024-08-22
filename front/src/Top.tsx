@@ -10,7 +10,6 @@ const UserPage: React.FC = ()=> {
     const navigate = useNavigate();
 
     const [search, setSearch] = useState("");
-    const [username, setUsername] = useState("");
     const [showModal, setShowModal] = useState(false);
     const Login = () => {
         sessionStorage.getItem('AUTHORITY') ? navigate(`/userpage/${sessionStorage.getItem('AUTHORITY')}`) : navigate(`/login`);
@@ -29,7 +28,6 @@ const UserPage: React.FC = ()=> {
         <h1>トップページ</h1>
 
         <p>ユーザ登録</p>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
         <Button type="submit" onClick={account}>ユーザ登録</Button>
         <Account showFlag={showModal} setShowFlag={setShowModal}/>
         <Button onClick={Login}>ログイン</Button>
