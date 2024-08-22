@@ -24,10 +24,10 @@ const Modal= (props) => {
   //登録関数
   const submit = () => {
     axios.post("http://localhost:3000/api/user", {
-      user: user,
+      username: user,
       email: email,
       password: password,
-      birth: birth,
+      date_of_birth: birth,
     }, {
       headers: {
         'Content-Type': 'application/json'
