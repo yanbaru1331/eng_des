@@ -17,7 +17,8 @@ const app = new Hono()
 
 // front に型情報を送る（hono
 export type AppType = typeof app
-// CORSミドルウェアの設定
+
+// CORSミドルウェアの設定nn
 app.use('/*', cors({
   origin: "http://localhost:8000",
   //オリジンの設定がうまく言ってないのでとりあえず*で動かす

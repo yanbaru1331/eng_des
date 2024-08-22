@@ -2,7 +2,7 @@
 // 型チェックの object を参照して json を渡す
 
 import { Hono } from 'hono';
-
+import { cors } from 'hono/cors';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 
@@ -10,6 +10,18 @@ import { createPortfolioPage, deletePortfolioPage, getPortfolioPage } from '../d
 
 export const PortfolioPageApp = new Hono();
 
+// CORSミドルウェアの設定nn
+PortfolioPageApp.use('/*', cors({
+    origin: "http://localhost:8000",
+    //オリジンの設定がうまく言ってないのでとりあえず*で動かす
+    // origin: "*",
+    //   allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type'],
+    allowHeaders: ['*'],
+    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
+    maxAge: 600,
+    credentials: true,
+}));
 const createPortfolioPageSchema = z.object({
     user_id: z.number(),
     contact_address: z.string().optional(),
