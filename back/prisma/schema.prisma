@@ -36,48 +36,59 @@ model portfolio_pages {
   max_depth       Int     @default(1)
   max_score       Int     @default(1)
 
-  rader_charts portfolio_rader_charts[]
-  rader_chart_leafs  portfolio_rader_chart_leaves[]
+  rader_charts                    portfolio_rader_charts[]
+  rader_chart_leafs               portfolio_rader_chart_leaves[]
   portfolio_rader_chart_relations portfolio_rader_chart_relations[] @relation("Page")
 
-  @@map(name: "portfolio_pages")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
+  @@map(name: "portfolio_pages")
 }
 
 model portfolio_rader_chart_leaves {
-  id       Int                 @id @default(autoincrement())
+  id       Int                    @id @default(autoincrement())
   name     String
-  score    Int                 @default(0)
+  score    Int                    @default(0)
   chart_id Int
   page_id  Int
-  chart   portfolio_rader_charts @relation(fields: [chart_id], references: [id], onDelete: Cascade)
-  page    portfolio_pages      @relation(fields: [page_id], references: [id], onDelete: Cascade)
+  chart    portfolio_rader_charts @relation(fields: [chart_id], references: [id], onDelete: Cascade)
+  page     portfolio_pages        @relation(fields: [page_id], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map(name: "portfolio_rader_chart_leaves")
 }
 
 model portfolio_rader_charts {
-  id        Int                           @id @default(autoincrement())
-  name      String
-  page_id   Int
-  page      portfolio_pages                 @relation(fields: [page_id], references: [id], onDelete: Cascade)
-  leafs     portfolio_rader_chart_leaves[]
-  parents   portfolio_rader_chart_relations[] @relation("Parent")
-  children  portfolio_rader_chart_relations[] @relation("Child")
+  id       Int                               @id @default(autoincrement())
+  name     String
+  page_id  Int
+  page     portfolio_pages                   @relation(fields: [page_id], references: [id], onDelete: Cascade)
+  leafs    portfolio_rader_chart_leaves[]
+  parents  portfolio_rader_chart_relations[] @relation("Parent")
+  children portfolio_rader_chart_relations[] @relation("Child")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map(name: "portfolio_rader_chart")
 }
 
 model portfolio_rader_chart_relations {
-  id        Int                           @id @default(autoincrement())
+  id        Int @id @default(autoincrement())
   page_id   Int
   parent_id Int
   child_id  Int
   depth     Int
 
-  page   portfolio_pages        @relation("Page", fields: [page_id], references: [id], onDelete: Cascade)
+  page   portfolio_pages         @relation("Page", fields: [page_id], references: [id], onDelete: Cascade)
   parent portfolio_rader_charts? @relation("Parent", fields: [parent_id], references: [id], onDelete: Cascade)
   child  portfolio_rader_charts? @relation("Child", fields: [child_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map(name: "portfolio_radar_chart_relation")
 }

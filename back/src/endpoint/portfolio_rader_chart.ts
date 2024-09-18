@@ -124,7 +124,7 @@ PortfolioChartApp.get(
                 pages: portfolioPageData,
                 charts: portfolioRaderCharts,
                 relations: portfolioRaderChartsRelations,
-                leaves: portfolioRaderChartsLeaves
+                leaves: portfolioRaderChartsLeaves,
             }
 
             return c.json({ data: data }, 200);
