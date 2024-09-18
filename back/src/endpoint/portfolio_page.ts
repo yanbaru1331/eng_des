@@ -1,12 +1,13 @@
 // /api/portfilio/page 以下のapi
 // 型チェックの object を参照して json を渡す
 
+import { zValidator } from '@hono/zod-validator';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 
 import { createPortfolioPage, deletePortfolioPage, getPortfolioPage } from '../db_operations/portfolio_page';
+import { getUserByUsername } from '../db_operations/user';
 
 export const PortfolioPageApp = new Hono();
 
@@ -87,7 +88,8 @@ PortfolioPageApp.delete(
 );
 
 const getPortfolioPageSchema = z.object({
-    user_id: z.string().regex(/^\d+$/),  // クエリパラメータは文字列として受け取る
+    user_id: z.string().regex(/^\d+$/).optional(),  // クエリパラメータは文字列として受け取る or
+    user_name: z.string().optional()  // クエリパラメータは文字列として受け取る
 });
 
 PortfolioPageApp.get(
@@ -95,13 +97,27 @@ PortfolioPageApp.get(
     zValidator('query', getPortfolioPageSchema),  // クエリパラメータをバリデート
     async (c) => {
         try {
-            const { user_id } = c.req.valid('query');
-            const portfolioPage = await getPortfolioPage(parseInt(user_id, 10));  // user_idを数値に変換
+            const { user_name, user_id } = c.req.valid('query');
 
-            if (portfolioPage) {
-                return c.json(portfolioPage);
+            let userId: number | undefined;
+
+            if (user_name) {
+                const userData = await getUserByUsername(user_name);
+                userId = userData?.id;
+            } else if (user_id) {
+                userId = parseInt(user_id, 10);
+            }
+
+            if (userId) {
+                const portfolioPage = await getPortfolioPage(userId);  // user_idを数値に変換
+
+                if (portfolioPage) {
+                    return c.json(portfolioPage);
+                } else {
+                    return c.json({ error: 'Portfolio page not found' }, 404);
+                }
             } else {
-                return c.json({ message: 'Portfolio page not found' }, 404);
+                return c.json({ error: "User is not found" }, 404);
             }
         } catch (error) {
             console.error('Error get portfoliopage:', error);
