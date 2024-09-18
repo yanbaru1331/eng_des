@@ -19,6 +19,8 @@ CREATE TABLE "portfolio_pages" (
     "max_item" INTEGER NOT NULL DEFAULT 3,
     "max_depth" INTEGER NOT NULL DEFAULT 1,
     "max_score" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "portfolio_pages_pkey" PRIMARY KEY ("id")
 );
@@ -39,6 +41,8 @@ CREATE TABLE "portfolio_rader_chart" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "page_id" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "portfolio_rader_chart_pkey" PRIMARY KEY ("id")
 );
