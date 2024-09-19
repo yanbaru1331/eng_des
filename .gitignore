@@ -26,3 +26,4 @@ dist-ssr
 
 #ここにpushしたくない拡張子を追記していく
 .pnpm-store
+.env

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 
 
 interface LoginProps {
@@ -8,67 +9,48 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = ({ onSubmit }) => {
-  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const isValidUser = async (user: string, password: string) => {
-    try {
-      const response = await fetch("http://localhost:3000/login", {
-      method: "POST",
+
+  const handleLogin = () => {
+    axios.post("http://localhost:3000/api/user/login", {
+      email: email,
+      password: password,
+    }, {
       headers: {
-      "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ user, password }),
-      }).catch((error) => {
-      console.error(error);
-      throw new Error("ネットワークエラーが発生しました");
-      });
-
-      if (!response.ok) {
-        throw new Error(`サーバーエラー: ${response.status}`);
+        'Content-Type': 'application/json'
       }
-
-      const data = await response.json();
-      console.log(data);
-
-      if (data.result === "ok") {
-        return true;
-      } else if (data.result === "passNg") {
-        return false;
-      } else {
-        throw new Error("ログインに失敗しました");
+    }).then((res) => {
+      console.log(res);
+      if (res.data.userId) {
+        sessionStorage.setItem('userId', res.data.userId);
+        navigate(`/userpage/${res.data.userId}`);
+        }else{
+        navigate(`/login`);
       }
-    }catch (error) {
-      console.error(error);
-      return false;
-    }
-  };
+    }).catch((error) => {
+      console.log(error);
+    });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const isValid = await isValidUser(user, password);
-    if (isValid){
-      console.log("ログイン成功");
-      sessionStorage.setItem('AUTHORITY', user)
-      navigate(`/userpage/${user}`);
+
+    // navigate(`/userpage/${user}`);
       ///userpage/$(user)に遷移するページを作成
       // Navigate({to: "/userpage/$(user)"});
-    }
-    onSubmit(user, password);
 
 
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <h1>ログイン</h1>
       <label>
-        ユーザ
+        eメール
         <input
-          type="text"
-          value={user}
-          onChange={(e) => setUser(e.target.value)}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </label>
       <label>
@@ -79,7 +61,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
           onChange={(e) => setPassword(e.target.value)}
         />
       </label>
-      <Button type="submit" size="large">ログイン</Button>
+      <Button type="button" size="large" onClick={handleLogin}>ログイン</Button>
     </form>
   );
 };
