@@ -74,7 +74,17 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:3000/api/portfolio/page?user_id=1
+GET http://localhost:3000/api/portfolio/page?user_id=3
+
+# {
+#     "user_id": 1,
+#     "contact_address": "test",
+#     "published": true,
+#     "max_item": 3,
+#     "max_depth": 2,
+#     "max_score": 3
+# }
+# これが返ってくる
 ###
 GET http://localhost:3000/api/portfolio/page?user_name=exampleUser
 ###
@@ -160,5 +170,28 @@ Content-Type: application/json
 ###
 GET http://localhost:3000/api/portfolio/chart/all?user_id=1
 
+# {
+#     "userId": 2,
+#     "charts": [
+#         {"id": 40, "name": "IT Updated"},
+#         {"id": 41, "name": "プログラミング Updated"},
+#         {"id": 42, "name": "ネットワーク Updated"}
+#     ],
+#     "relations": [
+#         {"parentId":0,"childId":0,"depth":0},
+#         {"parentId":0,"childId":1,"depth":1},
+#         {"parentId":0,"childId":2,"depth":1},
+#         {"parentId":1,"childId":1,"depth":1},
+#         {"parentId":2,"childId":2,"depth":1}
+#         ],
+#     "leaves": [
+#         {"id": 22, "name": "アルゴリズム Updated", "score": 4, "chartId": 1},
+#         {"id": 23, "name": "基礎文法 Updated", "score": 2, "chartId": 1},
+#         {"id": 24, "name": "データ構造 Updated", "score": 5, "chartId": 1},
+#         {"id": 25, "name": "設計 Updated", "score": 4, "chartId": 2},
+#         {"id": 26, "name": "DNS Updated", "score": 2, "chartId": 2},
+#         {"id": 27, "name": "DHCP Updated", "score": 3, "chartId": 2}
+#     ]
+# }
 ###
 GET http://localhost:3000/api/portfolio/chart/children?chart_id=2

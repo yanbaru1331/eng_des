@@ -11,7 +11,7 @@ const UserPage: React.FC = ()=> {
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
     const Logout = () => {
-        sessionStorage.removeItem('AUTHORITY');
+        sessionStorage.removeItem('userId');
         navigate(`/`);
     };
 
@@ -31,11 +31,11 @@ const UserPage: React.FC = ()=> {
         {
             //ここでログインしているユーザーが自分自身のページの時だけ管理モードを表示
             //バックとネゴシエーションできたら個々の処理を書き直しておく
-            sessionStorage.getItem('AUTHORITY') === userid &&
+            sessionStorage.getItem('AUTHORITY') !== "" &&
             <div>
-            <Button type="submit" onClick={ShowModal}>登録</Button>
+            <Button type="submit" onClick={ShowModal}>チャート登録</Button>
             <Button onClick={Logout}>ログアウト</Button>
-            <Modal showFlag={showModal} setShowFlag={setShowModal} type="edit" content="親から渡された値です。"/>
+            <Modal showFlag={showModal} setShowFlag={setShowModal} type="edit"/>
             </div>
         }
         </div>
