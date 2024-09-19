@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 
-
 interface LoginProps {
   onSubmit: (user: string, password: string) => void;
 }
@@ -48,39 +47,41 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const isValid = await isValidUser(user, password);
-    if (isValid){
+    if (isValid) {
       console.log("ログイン成功");
-      sessionStorage.setItem('AUTHORITY', user)
+      sessionStorage.setItem('AUTHORITY', user);
       navigate(`/userpage/${user}`);
-      ///userpage/$(user)に遷移するページを作成
-      // Navigate({to: "/userpage/$(user)"});
     }
     onSubmit(user, password);
-
-
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>ログイン</h1>
-      <label>
-        ユーザ
-        <input
-          type="text"
-          value={user}
-          onChange={(e) => setUser(e.target.value)}
-        />
-      </label>
-      <label>
-        パスワード
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      <Button type="submit" size="large">ログイン</Button>
-    </form>
+    <div className="container mx-auto px-4 py-8"> {/* Tailwind classes for layout */}
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+        <h1 className="text-xl font-bold mb-4">ログイン</h1>
+        <label className="flex items-center mb-2">
+          <span className="w-1/3 text-sm font-medium">ユーザ</span>
+          <input
+            type="text"
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
+            className="w-full rounded px-2 py-1 focus:outline-none focus:ring focus:ring-blue-500 border"
+          />
+        </label>
+        <label className="flex items-center mb-4">
+          <span className="w-1/3 text-sm font-medium">パスワード</span>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded px-2 py-1 focus:outline-none focus:ring focus:ring-blue-500 border"
+          />
+        </label>
+        <Button type="submit" size="large" className="w-full">
+          ログイン
+        </Button>
+      </form>
+    </div>
   );
 };
 
