@@ -23,3 +23,4 @@ pnpm dlx prisma studio
 API一覧はback_api_test.http
 REST CLientという拡張機能を入れて開く
 Send Requestを押すと楽にテストできる
+コマンドだとxhコマンド良い

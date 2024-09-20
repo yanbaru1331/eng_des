@@ -181,3 +181,131 @@ PortfolioChartApp.get(
         }
     }
 )
+
+
+var sum = function (arr: number[]) {
+    return arr.reduce(function (prev, current, i, arr) {
+        return prev + current;
+    });
+};
+
+PortfolioChartApp.get(
+    '/all/test',
+    zValidator('query', getAllPortfolioRaderChartsSchema),
+    async (c) => {
+        try {
+            const { user_id } = c.req.valid('query');
+
+            const portfolioPageData = await getPortfolioPage(parseInt(user_id, 10));
+
+            if (portfolioPageData == null) {
+                return c.json({ message: 'Portfolio page is not existed' }, 400);
+            }
+
+
+            const portfolioRaderCharts = await getPortfolioRaderChart(portfolioPageData.id);
+            const portfolioRaderChartsRelations = await getAllPortfolioRaderChartRelations(portfolioPageData.id);
+            const portfolioRaderChartsLeaves = await getAllPortfolioRaderChartLeaves(portfolioPageData.id);
+
+
+            const returnChartsData: { id: number; title: string; label: string[]; childrenId: number[]; depth: number; createdAt: Date; updateAt: Date; childrenScores: (number | undefined)[]; childrenScoreAverage: number | undefined; }[] = [];
+
+            const bottomChartId: number[] = [];
+            portfolioRaderChartsLeaves.forEach(leaves => {
+                const bottomChart = portfolioRaderCharts.filter((chart) =>
+                    chart.id == leaves.chart_id
+                )[0]
+                bottomChartId.push(bottomChart.id);
+            })
+
+            portfolioRaderCharts.forEach(portfolioRaderChart => {
+
+                const targetRelation = portfolioRaderChartsRelations.filter((relation) =>
+                    relation.parent_id == portfolioRaderChart.id &&
+                    relation.parent_id == relation.child_id
+                )[0]
+
+                let targetDepth = targetRelation.depth + 1;
+
+                // id のdepthを取得してそれに1足したものでchildを探す
+                const childrenChartRelations = portfolioRaderChartsRelations.filter((relation) =>
+                    relation.parent_id == portfolioRaderChart.id &&
+                    relation.depth == targetDepth
+                )
+                const childrenId = childrenChartRelations.map(relation => relation.child_id)
+
+                let childrenLabels: string[] = [];
+                let childrenScores: number[] = [];
+                let childrenScoreAverage: number | undefined;
+
+                if (bottomChartId.includes(portfolioRaderChart.id)) {
+                    const targetLeaves = portfolioRaderChartsLeaves.filter((leave) =>
+                        leave.chart_id === portfolioRaderChart.id
+                    );
+                    childrenLabels = targetLeaves.map(leave => leave.name);
+                    childrenScores = targetLeaves.map(leave => leave.score);
+                    childrenScoreAverage = sum(childrenScores) / childrenScores.length;
+
+                } else {
+                    childrenId.forEach(childId => {
+                        const childrenChart = portfolioRaderCharts.find((chart) =>
+                            chart.id == childId
+                        );
+                        if (childrenChart) {
+                            childrenLabels.push(childrenChart.name);
+                        }
+                    });
+                }
+
+                const returnChartData = {
+                    id: portfolioRaderChart.id,
+                    title: portfolioRaderChart.name,
+                    label: childrenLabels,
+                    childrenId: childrenId,
+                    depth: targetDepth - 1,
+                    childrenScores: childrenScores,
+                    childrenScoreAverage: childrenScoreAverage,
+                    createdAt: portfolioRaderChart.createdAt,
+                    updateAt: portfolioRaderChart.updatedAt
+                };
+                returnChartsData.push(returnChartData);
+            });
+            returnChartsData
+                .sort((a, b) => {
+                    if (b.depth !== a.depth) {
+                        return b.depth - a.depth; // depth の降順
+                    } else {
+                        return b.id - a.id; // depth が同じ場合は id の昇順
+                    }
+                }) // 降順にソート
+                .forEach(returnchart => {
+                    if (!bottomChartId.includes(returnchart.id)) {
+                        returnchart.childrenId.forEach(childId => {
+                            const childChart = returnChartsData.filter((chart) =>
+                                chart.id == childId
+                            );
+                            const childchildrenScoreAverages = childChart.map(chart => chart.childrenScoreAverage)
+                            childchildrenScoreAverages.forEach(average => {
+                                returnchart.childrenScores.push(average);
+                            })
+                        });
+                        if (returnchart.childrenScores !== undefined && returnchart.childrenScores.length > 0) {
+                            const validScores = returnchart.childrenScores.filter((score): score is number => score !== undefined);
+                            const total = sum(validScores);
+                            returnchart.childrenScoreAverage = total / validScores.length;
+                        } else {
+                            returnchart.childrenScoreAverage = 0;
+                        }
+                    }
+                });
+            const data = {
+                pages: portfolioPageData,
+                charts: returnChartsData.reverse()
+            }
+            return c.json({ data: data }, 200);
+        } catch (error) {
+            console.error('Error processing request', error);
+            return c.json({ message: 'Internal server error' });
+        }
+    }
+);
