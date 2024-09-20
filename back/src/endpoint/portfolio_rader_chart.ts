@@ -16,7 +16,7 @@ PortfolioChartApp.use('/*', cors({
     // origin: "*",
     //   allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type'],
     allowHeaders: ['*'],
-    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    allowMethods: ['POST', 'GET', 'HEAD', 'PUT', 'POST', 'DELETE', 'PATCH', 'OPTIONS'],
     exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
     maxAge: 600,
     credentials: true,
@@ -56,10 +56,16 @@ PortfolioChartApp.put(
         const { userId, charts, relations, leaves } = await c.req.valid('json');
 
         try {
-            const portfolioPageData = await getPortfolioPage(userId);
 
+            const portfolioPageData = await getPortfolioPage(userId);
+            console.log(portfolioPageData);
             if (portfolioPageData == null) {
                 return c.json({ message: 'Portfolio page is not existed' }, 400);
+            }
+            const portfolioChartData = await getPortfolioRaderChart(portfolioPageData.id);
+            // idが含まれていない作成 && すでに page に紐づく chart が存在している場合は拒否
+            if (!(charts.length > 0 && charts[0].id) && portfolioChartData.length) {
+                return c.json({ message: 'Charts data is existed' }, 400);
             }
 
             // 1. チャートのデータを整形
