@@ -416,12 +416,9 @@ class Relations {
   depth: number;
 }
 
+
 const PulldownForm: React.FC = () => {
-  //送信する際の型
-  const [chartDatas, setChartDatas] = useState<ChartData[]>([]);
-  const [leafs, setLeafs] = useState<Leaf[]>([]);
-  const [chartNum, setChartNum] = useState(0);
-  const [leafNum, setLeafNum] = useState(0);
+
 
   //resの状態だと都合が悪いので変数に格納
   const [maxDepth, setMaxDepth] = useState(0);
@@ -433,9 +430,118 @@ const PulldownForm: React.FC = () => {
   const searchParams = new URLSearchParams(location.search);
   const searchTitle = searchParams.get('title');
 
+  //ベースイメージ
+  let postData
+  const leaves = (leafNum:number, chartNum:number) => {
+    const leafItems:tmpLeaf[] = [];
+    for (let index = leafNum; index < chartNum; index++) {
+    for (let i = 0; i < maxItem; i++) {
+      leafItems.push({
+        name: `leaf${index}-${i}`,
+        score: 1,
+        chartId: index,
+      });
+    }
+  }
+    return leafItems;
+}
+  //depth返すだけなら別に範囲計算でいいからここcaseで条件分岐すればいいのでは？
+  const reverseChartId = (chartId: number) => {
+    if (chartId === 0) return 0;
+    else if (chartId <= maxItem) return 1;
+    else if (chartId <= (1/6)*maxItem*(maxItem+1)*(2*maxItem+1)) return 2;
+    else return 3;
+  }
+  //リレーションを作成する関数
+  const createClosureTable = () => {
+    let  branchFactor = maxItem; // 子ノードの数
+    const closureTable: Relations[] = [];
+    let currentId = 0; // ノードに振られる番号
+  
+    const createChildren = (parentId: number, currentDepth: number) => {
+
+  
+      const startChildId = currentId + 1; // 次の子ノードのID
+      const endChildId = startChildId + branchFactor-1; // 最後の子ノードのID
+  
+      // 自分自身のエントリーを追加
+      closureTable.push({
+        parentId: parentId,
+        childId: parentId,
+        depth: reverseChartId(parentId), 
+      });
+      if (currentDepth >= maxDepth-1) return;  
+      // 子ノードを作成し、親子関係をテーブルに追加
+      for (let childId = startChildId; childId <= endChildId; childId++) {
+        if(reverseChartId(childId) < maxDepth){
+        closureTable.push({
+          parentId: parentId,
+          childId: childId,
+          depth: reverseChartId(childId),
+        })
+      }
+  
+        currentId = childId; // 子ノードのIDを更新
+      }
+  
+      // 子ノードごとに再帰的に処理
+      for (let childId = startChildId; childId <= endChildId; childId++) {
+        createChildren(childId, currentDepth + 1);
+      }
+    };
+  
+    // ルートノードを作成し、子ノードを生成する
+    // closureTable.push({
+    //   parentId: 0,
+    //   childId: 0,
+    //   depth: 0,
+    // });
+  
+    createChildren(0, 0); // ルートノードから再帰的に子ノードを生成
+  
+    return closureTable;
+  };
+
+  const leafAndChart = (maxItem:number, maxDepth:number) => {
+    if (maxDepth === 1){
+      const chartNum = 1;
+      const leafNum = 0
+      return [chartNum, leafNum];
+    }
+    else if(maxDepth === 2){
+      const chartNum = 1+maxItem;
+      const leafNum = 1;
+      return [chartNum, leafNum];
+    }
+    else if (maxDepth === 3){
+      const chartNum = 1 + maxItem+maxItem*maxItem;
+      const leafNum = 1+maxItem;
+      return [chartNum, leafNum];
+    }
+    else return [1 + maxItem+maxItem*maxItem, 1+maxItem]
+    
+  }
+  //ダミーデータを作成する関数
+  const dummyData = () => {
+
+    const [chartNum, leafNum] = leafAndChart(maxItem, maxDepth);
+    const charts  = Array.from({length: chartNum}, (_, index) => ({name: "test"+index}))
+
+    console.log("charts = "+charts);
+    const postData = {
+      userId: 8,
+      charts: charts,
+      relations: createClosureTable(),
+      leaves: leaves(leafNum, chartNum),
+    };
+
+    return postData;
+  }
+
+
   // データを取得するためのAPIコール
-  useEffect(() => {
-    axios.get("http://localhost:3000/api/portfolio/page?user_id=8")
+  useEffect( () => {
+     axios.get("http://localhost:3000/api/portfolio/page?user_id=8")
       .then((res) => {
         setMaxDepth(res.data.max_depth);
         setMaxItem(res.data.max_item);
@@ -448,8 +554,11 @@ const PulldownForm: React.FC = () => {
   }, []);
 
   // 親や子、スコアの選択肢
+  //グラフ
   const choiceParent: number[] = Array.from({ length: maxDepth }, (_, i) => i + 1);
+  //頂点数
   const choiceItem: number[] = Array.from({ length: maxItem }, (_, i) => i + 1);
+  //スコア
   const choiseScore: number[] = Array.from({ length: maxScore }, (_, i) => i + 1);
 
   // データ保持用のstate
@@ -494,69 +603,10 @@ const PulldownForm: React.FC = () => {
 
   // 渡されたIdからdepthとitemIdを計算する
 
-  //depth返すだけなら別に範囲計算でいいからここcaseで条件分岐すればいいのでは？
-  const reverseChartId = (chartId: number) => {
-    if (chartId === 0) return 0;
-    else if (chartId <= maxItem) return 1;
-    else if (chartId <= (1/6)*maxItem*(maxItem+1)*(2*maxItem+1)) return 2;
-    else return 3;
-  }
 
-  interface Relations {
-    parentId: number;
-    childId: number;
-    depth: number;
-  }
-  
-  //リレーションを作成する関数
-  const createClosureTable = () => {
-    let  branchFactor = maxItem; // 子ノードの数
-    const closureTable: Relations[] = [];
-    let currentId = 0; // ノードに振られる番号
-  
-    const createChildren = (parentId: number, currentDepth: number) => {
 
-  
-      const startChildId = currentId + 1; // 次の子ノードのID
-      const endChildId = startChildId + branchFactor-1; // 最後の子ノードのID
-  
-      // 自分自身のエントリーを追加
-      closureTable.push({
-        parentId: parentId,
-        childId: parentId,
-        depth: reverseChartId(parentId), 
-      });
-      if (currentDepth >= maxDepth-1) return;  
-      // 子ノードを作成し、親子関係をテーブルに追加
-      for (let childId = startChildId; childId <= endChildId; childId++) {
-        if(reverseChartId(childId) < maxDepth){
-        closureTable.push({
-          parentId: parentId,
-          childId: childId,
-          depth: reverseChartId(childId),
-        })
-      };
-  
-        currentId = childId; // 子ノードのIDを更新
-      }
-  
-      // 子ノードごとに再帰的に処理
-      for (let childId = startChildId; childId <= endChildId; childId++) {
-        createChildren(childId, currentDepth + 1);
-      }
-    };
-  
-    // ルートノードを作成し、子ノードを生成する
-    // closureTable.push({
-    //   parentId: 0,
-    //   childId: 0,
-    //   depth: 0,
-    // });
-  
-    createChildren(0, 0); // ルートノードから再帰的に子ノードを生成
-  
-    return closureTable;
-  };
+
+
 
   
   // 例: maxItem = 3, maxDepth = 4
@@ -565,6 +615,9 @@ const PulldownForm: React.FC = () => {
   
   // フォームの追加または更新を行う関数
   const addOrUpdateEntry = () => {
+    //これを参考にしてデータが登録されたらフォームに追加する処理をする
+//     const result3 = array3.findIndex((val, key) => val.a === 1 );
+// array3[result3] = {a:100, b:200};
     if (formState.name.trim() !== '' && formState.parentId !== 0 && formState.childId !== 0) {
       const newEntry: ChartData = { ...formState, depth: formState.parentId };
       setEntries(prev => [...prev, newEntry]);
@@ -590,48 +643,9 @@ const PulldownForm: React.FC = () => {
     }
   };
 
-  const dumyData = () => {
 
-    if (maxDepth === 1){
-      setChartNum(1);
-      setLeafNum(0)
-    }
-    else if(maxDepth === 2){
-      setChartNum(1+maxItem);
-      setLeafNum(1);
-    }
-    else if (maxDepth === 3){
-      setChartNum(1 + maxItem+maxItem*maxItem);
-      setLeafNum(1+maxItem);
-    }
-    const charts  = Array.from({length: chartNum}, (_, index) => ({name: "test"+index}))
-    const leaves = () => {
-      const leafItems:tmpLeaf[] = [];
-      for (let index = leafNum; index < chartNum; index++) {
-      for (let i = 0; i < maxItem; i++) {
-        leafItems.push({
-          name: `leaf${index}-${i}`,
-          score: 1,
-          chartId: index,
-        });
-      }
-    }
-      return leafItems;
-  }
-
-    console.log(leaves);
-    console.log("charts = "+charts);
-    const postData = {
-      userId: 8,
-      charts: charts,
-      relations: createClosureTable(),
-      leaves: leaves(),
-    };
-
-    return postData;
-  }
   // 送信処理
-  const onSubmit = () => {
+    const onSubmit = async () => {
     // const rootChart: ChartData = {
     //   name: searchTitle as string,
     //   parentId: 0,
@@ -653,10 +667,10 @@ const PulldownForm: React.FC = () => {
     //     chartId: entry.parentId * maxItem + entry.childId
     //   }))
     // };
-    const postData  = dumyData();
+    postData = await dummyData();
     console.log('Sending Data:', postData);
 
-    axios.put("http://localhost:3000/api/portfolio/chart", postData, {
+    await axios.put("http://localhost:3000/api/portfolio/chart", postData, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -674,7 +688,7 @@ const PulldownForm: React.FC = () => {
     <form>
       <div>
         <label>
-          親のグラフを選択してください:
+          グラフの深さを選択してください:
           <select value={formState.parentId} onChange={handleParentChartChange}>
             <option value="">選択してください</option>
             {choiceParent.map(choice => (
