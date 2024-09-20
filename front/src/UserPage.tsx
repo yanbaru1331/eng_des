@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 
 const UserPage: React.FC = () => {
     const { userid } = useParams();
+    // modelの表示非表示を管理するstate
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
     const Logout = () => {
@@ -19,9 +20,8 @@ const UserPage: React.FC = () => {
 
       return (
         <div className="container mx-auto py-8">
-            <h1 className="text-3xl font-bold mb-4">Hello {userid}！</h1>
-
-            <h2 className="text-2xl mb-4">ポートフォリオ一覧</h2>
+            <h1>Hello {userid}！</h1>
+            <h2>ポートフォリオ一覧</h2>
             <ul className="space-y-4">
                 <li className="flex justify-between">
                     <span>アセンブラカレンダー作成</span>
@@ -30,7 +30,10 @@ const UserPage: React.FC = () => {
                 {/* 他のポートフォリオも同様に追加 */}
             </ul>
 
-            {sessionStorage.getItem('AUTHORITY') === userid && (
+            {
+                // ここでログインしているユーザーが自部自身のページの時だけ管理モードを表示
+                // バックとネゴシエーションできたら個々の処理を書き直しておく
+                sessionStorage.getItem('AUTHORITY') === userid && (
                 <div className="flex justify-end">
                     <Button onClick={ShowModal} className="mr-2">登録</Button>
                     <Button onClick={Logout}>ログアウト</Button>

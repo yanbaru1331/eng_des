@@ -51,6 +51,8 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       console.log("ログイン成功");
       sessionStorage.setItem('AUTHORITY', user);
       navigate(`/userpage/${user}`);
+      // /userpage/${user} に遷移するページを作成
+      // Navigate({to: "/userpage/$(user)"});
     }
     onSubmit(user, password);
   };
@@ -58,23 +60,21 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   return (
     <div className="container mx-auto px-4 py-8"> {/* Tailwind classes for layout */}
       <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <h1 className="text-xl font-bold mb-4">ログイン</h1>
-        <label className="flex items-center mb-2">
+        <h1>ログイン</h1>
+        <label>
           <span className="w-1/3 text-sm font-medium">ユーザ</span>
           <input
             type="text"
             value={user}
             onChange={(e) => setUser(e.target.value)}
-            className="w-full rounded px-2 py-1 focus:outline-none focus:ring focus:ring-blue-500 border"
           />
         </label>
-        <label className="flex items-center mb-4">
+        <label>
           <span className="w-1/3 text-sm font-medium">パスワード</span>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded px-2 py-1 focus:outline-none focus:ring focus:ring-blue-500 border"
           />
         </label>
         <Button type="submit" size="large" className="w-full">

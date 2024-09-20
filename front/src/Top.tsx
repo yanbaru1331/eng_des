@@ -23,8 +23,8 @@ const Top: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">  {/* Tailwind classes for layout */}
-      <h1 className="text-3xl font-bold mb-8">トップページ</h1>
+    <div>  {/* Tailwind classes for layout */}
+      <h1>トップページ</h1>
 
       <div className="flex flex-col space-y-4">
         <p className="text-lg">ユーザ登録</p>
@@ -37,14 +37,13 @@ const Top: React.FC = () => {
         </Button>
       </div>
 
-      <div className="flex flex-col mt-8">
+      <div>
         <p className="text-lg">検索</p>
         <div className="flex items-center">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="border rounded px-2 py-1 mr-2 focus:outline-none focus:ring focus:ring-blue-500"
           />
           <Button onClick={Search} className="w-auto">
             検索

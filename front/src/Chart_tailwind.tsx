@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from "../components/Button";
 
 import { Chart, RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend } from 'chart.js';
-// import './MyChart.css'; // CSSファイルをインポート (不要になりました)
+// import './MyChart.css'; // CSSファイルをインポート
 
 // Chart.jsで必要なコンポーネントを登録
 Chart.register(RadarController, RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
@@ -12,17 +12,19 @@ const MyChart: React.FC = () => {
   const chartInstanceRef = useRef<Chart | null>(null);
 
   const [piece, setPiece] = useState("");
+  // const [password, setPassword] = useState("");
 
+  // type Array1<T> = [T, ...T[]];
+
+  //それがうまく行ったら親子関係を作ってみる
+  //rootは一旦NULL？
+  // let label = Array.from({ length: 3 }, () => "");;
+  // let data = Array.from({ length: 3 }, () => 0);;
   const [label, setLabel] = useState<string[]>([]);
   const [data, setData] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (chartRef.current) {
-      // 初回レンダリング時のみチャートを生成
-      chart();
-    }
-  }, []);
-
+//  for (let i = 0; i < label.length; i++) {
+//     data[i] = Math.floor(Math.random() * 6);
+//   }
   const chart = () => {
     if (chartRef.current) {
       // 既存のチャートがある場合は破棄
@@ -38,17 +40,17 @@ const MyChart: React.FC = () => {
           datasets: [{
             label: "前期試験成績",
             data: data,
-            backgroundColor: "rgba(67, 133, 215, 0.5)",
-            borderColor: "rgba(67, 133, 215, 1)",
+            backgroundColor: "rgba(67, 133, 215, 0.5)", // グラフ背景色
+            borderColor: "rgba(67, 133, 215, 1)",       // グラフボーダー色
           }]
         },
         options: {
           scales: {
             r: {
-              max: 5,
-              min: 0,
+              max: 5,         // グラフの最大値
+              min: 0,         // グラフの最小値
               ticks: {
-                stepSize: 0
+                stepSize: 0   // 目盛間隔
               }
             }
           }
@@ -75,15 +77,13 @@ const MyChart: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8"> {/* Tailwind CSS  */}
-      <form className='chart-form' onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <h1>個数</h1>
-        <label className="flex items-center mb-2">
-          <span className="w-1/3 text-sm font-medium">要素数</span>
+        <label>
           <input
             type="number"
             value={piece}
             onChange={(e) => setPiece(e.target.value)}
-            className="w-full rounded px-2 py-1 focus:outline-none focus:ring focus:ring-blue-500 border"
           />
         </label>
         <Button type="button" size="large" className="w-full">

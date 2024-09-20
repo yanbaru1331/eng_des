@@ -3,11 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './Login';
 import UserPage from './UserPage';
 import Top from './Top';
-import Weight from './Chart';
+import Weight from './Chart_tailwind';
 
 function App() {
   const message = 'こんにちは React!!';
-
   useEffect(() => {
     fetch(`http://localhost:3000/test-cors`)
       .then(response => response.json())
@@ -31,6 +30,9 @@ function App() {
           <Route path="/userpage/:userid/chart" element={
             <Weight />
           } />
+          {/* <Route path="/userpage/:userid/chart/settings" element={
+            <Weight />
+          } /> */}
         </Routes>
       </div>
     </Router>
