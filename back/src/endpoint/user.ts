@@ -29,7 +29,9 @@ const createSchema = z.object({
     username: z.string(),
     email: z.string().email(),
     password: z.string(),
-    date_of_birth: z.string().date().optional(),// "YYYY-MM-DD"のstring
+    date_of_birth: z.string().date().optional().refine(val => val === "" || !!val, {
+        message: "Invalid date_of_birth format"
+    })// "YYYY-MM-DD"のstring
 });
 
 // POSET /api/user
@@ -121,7 +123,7 @@ userApp.post(
             if (isValid) {
                 // パスワードが一致した場合
                 await updateUser(user.id, user.email, user.username);
-                return c.json({ message: 'Login successful', userId: user.id, email: user.email, userName: user.username}, 200);
+                return c.json({ message: 'Login successful', userId: user.id, email: user.email, userName: user.username }, 200);
             } else {
                 // パスワードが一致しない場合
                 return c.json({ error: 'Invalid password' }, 401);
