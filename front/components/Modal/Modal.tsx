@@ -119,14 +119,14 @@ const Modal= (props) => {
     
   }
   //ダミーデータを作成する関数
-  const dummyData = (maxDepth:number, maxItem:number) => {
+  const dummyData = (maxDepth:number, maxItem:number, userId:number) => {
 
     const [chartNum, leafNum] = leafAndChart(maxItem, maxDepth);
     const charts  = Array.from({length: chartNum}, (_, index) => ({name: "test"+index}))
 
     console.log("charts = "+charts);
     const postData = {
-      userId: 8,
+      userId: Number(userid),
       charts: charts,
       relations: createClosureTable(maxDepth, maxItem),
       leaves: leaves(leafNum, chartNum,maxItem),
@@ -157,24 +157,23 @@ const Modal= (props) => {
       //ここに登録
       console.log("edit");
       
-      // await axios.post("http://localhost:3000/api/portfolio/page", {
-      //   user_id: Number(userid),
-      //   contact_address: email,
-      //   published: notPublished,
-      //   max_item: itemNum,
-      //   max_depth: depth,
-      //   max_score: maxScore
-      // },  {
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // }).then((res) => {
-      //   console.log(res);
-      //   navigate(`/userpage/${userid}/chart?${queryParams.toString()}`);
-      // })
+      await axios.post("http://localhost:3000/api/portfolio/page", {
+        user_id: Number(userid),
+        contact_address: email,
+        published: notPublished,
+        max_item: itemNum,
+        max_depth: depth,
+        max_score: maxScore
+      },  {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log(res);
+      })
 
-      
-      const postData = await dummyData(d,i);
+      console.log("dummyData");
+      const postData = await dummyData(d,i, Number(userid));
       console.log('Sending Data:', postData);
   
       await axios.put("http://localhost:3000/api/portfolio/chart", postData, {
@@ -184,6 +183,7 @@ const Modal= (props) => {
       })
         .then((res) => {
           console.log(res);
+          navigate(`/userpage/${userid}/chart?${queryParams.toString()}`);
         })
         .catch((error) => {
           console.log(error);
