@@ -126,11 +126,36 @@ PortfolioChartApp.get(
             const portfolioRaderChartsRelations = await getAllPortfolioRaderChartRelations(portfolioPageData.id);
             const portfolioRaderChartsLeaves = await getAllPortfolioRaderChartLeaves(portfolioPageData.id);
 
+            type LeaveWithItemNum = {
+                id: number;
+                name: string;
+                score: number;
+                chart_id: number;
+                page_id: number;
+                createdAt: Date;
+                updatedAt: Date;
+                itemNum: number;
+            };
+
+            let updatedLeaves: LeaveWithItemNum[] = [];
+            portfolioRaderCharts.forEach(chart => {
+                const sameTargetChartLeave = portfolioRaderChartsLeaves.filter((leave) =>
+                    leave.chart_id == chart.id
+                );
+
+                let j = 0;
+                sameTargetChartLeave.forEach(leave => {
+                    const updatedLeave: LeaveWithItemNum = { ...leave, itemNum: j };
+                    updatedLeaves.push(updatedLeave)
+                    j++;
+                });
+            });
+            console.log(portfolioRaderChartsLeaves);
             const data = {
                 pages: portfolioPageData,
                 charts: portfolioRaderCharts,
                 relations: portfolioRaderChartsRelations,
-                leaves: portfolioRaderChartsLeaves,
+                leaves: updatedLeaves,
             }
 
             return c.json({ data: data }, 200);
