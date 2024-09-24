@@ -23,11 +23,12 @@ PortfolioChartApp.use('/*', cors({
 }));
 
 const updatePortfolioRaderChartsSchema = z.object({
-    userId: z.number(),
+    user_id: z.number(),
     charts: z.array(
         z.object({
             id: z.number().optional(),
             name: z.string(),
+            page_id: z.number().optional(),
             createdAt: z.string().optional(),
             updatedAt: z.string().optional()
         })
@@ -35,8 +36,9 @@ const updatePortfolioRaderChartsSchema = z.object({
     relations: z.array(
         z.object({
             id: z.number().optional(),
-            parentId: z.number(),
-            childId: z.number(),
+            parent_id: z.number(),
+            child_id: z.number(),
+            page_id: z.number().optional(),
             depth: z.number(),
             createdAt: z.string().optional(),
             updatedAt: z.string().optional()
@@ -47,9 +49,11 @@ const updatePortfolioRaderChartsSchema = z.object({
             id: z.number().optional(),
             name: z.string(),
             score: z.number(),
-            chartId: z.number(),
+            page_id: z.number().optional(),
+            chart_id: z.number(),
             createdAt: z.string().optional(),
-            updatedAt: z.string().optional()
+            updatedAt: z.string().optional(),
+            itemNum: z.number().optional()
         })
     )
 });
@@ -59,11 +63,11 @@ PortfolioChartApp.put(
     '/',
     zValidator('json', updatePortfolioRaderChartsSchema),
     async (c) => {
-        const { userId, charts, relations, leaves } = await c.req.valid('json');
+        const { user_id, charts, relations, leaves } = await c.req.valid('json');
 
         try {
 
-            const portfolioPageData = await getPortfolioPage(userId);
+            const portfolioPageData = await getPortfolioPage(user_id);
             console.log(portfolioPageData);
             if (portfolioPageData == null) {
                 return c.json({ message: 'Portfolio page is not existed' }, 400);
@@ -85,8 +89,8 @@ PortfolioChartApp.put(
             const portfolioRelationsData = relations.map(relation => ({
                 id: relation.id || null, // 更新のためにIDを含める
                 page_id: portfolioPageData.id,
-                parentId: relation.parentId,
-                childId: relation.childId,
+                parentId: relation.parent_id,
+                childId: relation.child_id,
                 depth: relation.depth
             }));
 
@@ -96,7 +100,7 @@ PortfolioChartApp.put(
                 pageId: portfolioPageData.id,
                 name: leave.name,
                 score: leave.score,
-                chartIndex: leave.chartId
+                chartIndex: leave.chart_id
             }));
 
             // 4. トランザクション内でデータを更新
