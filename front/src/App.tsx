@@ -42,10 +42,10 @@
 
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Login from './Login_tailwind';
-import UserPage from './UserPage_tailwind';
-import Top from './Top_tailwind';
-import Weight from './Chart_tailwind';
+import Login from './Login';
+import UserPage from './UserPage';
+import Top from './Top';
+import Weight from './Chart';
 
 function App() {
   const message = 'こんにちは React!!';

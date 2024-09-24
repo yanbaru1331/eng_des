@@ -16,7 +16,7 @@ version: '3'
 
 services:
   back:
-    build:
+    build: 
       context: ./back
     environment:
       - NODE_ENV=development
