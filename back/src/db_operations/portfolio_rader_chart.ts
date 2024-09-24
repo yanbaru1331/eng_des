@@ -18,67 +18,128 @@ export async function createPortfolioRaderCharts(data: Prisma.portfolio_rader_ch
         throw error;
     }
 }
+export async function createPortfolioRaderChartsData(
+    portfolioChartsData: { name: string, pageId: number }[],
+    portfolioRelationsData: { parentId: number, childId: number, depth: number }[],
+    portfolioLeavesData: { name: string, score: number, chartIndex: number }[]
+) {
+    try {
+        console.log(portfolioChartsData);
+        console.log(portfolioRelationsData);
+        console.log(portfolioLeavesData);
+        const result = await prisma.$transaction(async (prisma) => {
+            // 1. チャートの更新または作成
+            const createdCharts = [];
+            for (const chartData of portfolioChartsData) {
 
+                const createdChart = await prisma.portfolio_rader_charts.create({
+                    data: {
+                        name: chartData.name,
+                        page_id: chartData.pageId
+                    }
+                });
+                createdCharts.push(createdChart);
+            }
+
+            // 2. リレーションの更新または作成
+            const createdRelations = [];
+            for (const relation of portfolioRelationsData) {
+
+                const parentChartId = createdCharts[relation.parentId].id;
+                const childChartId = createdCharts[relation.childId].id;
+
+
+                const createdRelation = await prisma.portfolio_rader_chart_relations.create({
+                    data: {
+                        page_id: portfolioChartsData[0].pageId, // 一つのページに関連付ける
+                        parent_id: parentChartId,
+                        child_id: childChartId,
+                        depth: relation.depth,
+                    },
+                });
+                createdRelations.push(createdRelation);
+
+            }
+
+            // 3. リーフの更新または作成
+            const createdLeaves = [];
+            for (const leave of portfolioLeavesData) {
+                const chartId = createdCharts[leave.chartIndex].id;
+
+                const createdLeave = await prisma.portfolio_rader_chart_leaves.create({
+                    data: {
+                        page_id: portfolioChartsData[0].pageId, // 一つのページに関連付ける
+                        name: leave.name,
+                        score: leave.score,
+                        chart_id: chartId,
+                    },
+                });
+                createdLeaves.push(createdLeave);
+
+            }
+
+
+            return { createdCharts, createdRelations, createdLeaves };
+        });
+
+        return result;
+
+    } catch (error) {
+        console.error('Error updating portfolio data:', error);
+        throw error; // トランザクション全体がロールバックされます
+    }
+}
 
 export async function updatePortfolioRaderChartsData(
-    portfolioChartsData: { id: number | null, name: string, pageId: number }[],
-    portfolioRelationsData: { id: number | null, parentId: number, childId: number, depth: number }[],
-    portfolioLeavesData: { id: number | null, name: string, score: number, chartIndex: number }[]
+    portfolioChartsData: { id: number, pageId: number, name: string }[],
+    portfolioRelationsData: { id: number, pageId: number, parentId: number, childId: number, depth: number }[],
+    portfolioLeavesData: { id: number, pageId: number, name: string, score: number, chartId: number }[]
 ) {
     try {
         const result = await prisma.$transaction(async (prisma) => {
             // 1. チャートの更新または作成
-            const updatedCharts = [];
+            const updatedCharts: { id: number; }[] = [];
             for (const chartData of portfolioChartsData) {
-                if (chartData.id) {
-                    const updatedChart = await prisma.portfolio_rader_charts.update({
-                        where: { id: chartData.id },
-                        data: {
-                            id: chartData.id,
-                            name: chartData.name,
-                            page_id: chartData.pageId
-                        }
-                    });
-                    updatedCharts.push(updatedChart);
-                } else {
-                    const createdChart = await prisma.portfolio_rader_charts.create({
-                        data: {
-                            name: chartData.name,
-                            page_id: chartData.pageId
-                        }
-                    });
-                    updatedCharts.push(createdChart);
-                }
+                console.log(chartData.id);
+                const updatedChart = await prisma.portfolio_rader_charts.update({
+                    where: { id: chartData.id },
+                    data: {
+                        id: chartData.id,
+                        name: chartData.name
+                    }
+                });
+                updatedCharts.push(updatedChart);
             }
-
-            console.log(updatedCharts);
 
             // 2. リレーションの更新または作成
             const updatedRelations = [];
+            console.log(portfolioRelationsData);
             for (const relation of portfolioRelationsData) {
-                const parentChartId = updatedCharts[relation.parentId].id;
-                const childChartId = updatedCharts[relation.childId].id;
 
-                if (relation.id) {
-                    const updatedRelation = await prisma.portfolio_rader_chart_relations.update({
-                        where: { id: relation.id },
-                        data: {
-                            parent_id: parentChartId,
-                            child_id: childChartId,
-                            depth: relation.depth,
-                        },
-                    });
-                    updatedRelations.push(updatedRelation);
-                } else {
-                    const createdRelation = await prisma.portfolio_rader_chart_relations.create({
-                        data: {
-                            page_id: portfolioChartsData[0].pageId, // 一つのページに関連付ける
-                            parent_id: parentChartId,
-                            child_id: childChartId,
-                            depth: relation.depth,
-                        },
-                    });
-                    updatedRelations.push(createdRelation);
+                const parentChart = updatedCharts.find(chart => chart.id === relation.parentId);
+                const childChart = updatedCharts.find(chart => chart.id === relation.childId);
+                if (parentChart && childChart) {
+                    if (relation.id) {
+                        const updatedRelation = await prisma.portfolio_rader_chart_relations.update({
+                            where: { id: relation.id },
+                            data: {
+                                parent_id: parentChart.id,
+                                child_id: childChart.id,
+                                depth: relation.depth,
+                            },
+                        });
+                        updatedRelations.push(updatedRelation);
+                    } else {
+                        const createdRelation = await prisma.portfolio_rader_chart_relations.create({
+                            data: {
+                                page_id: portfolioChartsData[0].pageId, // 一つのページに関連付ける
+                                parent_id: parentChart.id,
+                                child_id: childChart.id,
+                                depth: relation.depth,
+                            },
+                        });
+                        updatedRelations.push(createdRelation);
+                    }
                 }
             }
 
@@ -87,29 +148,15 @@ export async function updatePortfolioRaderChartsData(
             // 3. リーフの更新または作成
             const updatedLeaves = [];
             for (const leave of portfolioLeavesData) {
-                const chartId = updatedCharts[leave.chartIndex].id;
-
-                if (leave.id) {
-                    const updatedLeave = await prisma.portfolio_rader_chart_leaves.update({
-                        where: { id: leave.id },
-                        data: {
-                            name: leave.name,
-                            score: leave.score,
-                            chart_id: chartId,
-                        },
-                    });
-                    updatedLeaves.push(updatedLeave);
-                } else {
-                    const createdLeave = await prisma.portfolio_rader_chart_leaves.create({
-                        data: {
-                            page_id: portfolioChartsData[0].pageId, // 一つのページに関連付ける
-                            name: leave.name,
-                            score: leave.score,
-                            chart_id: chartId,
-                        },
-                    });
-                    updatedLeaves.push(createdLeave);
-                }
+                const updatedLeave = await prisma.portfolio_rader_chart_leaves.update({
+                    where: { id: leave.id },
+                    data: {
+                        name: leave.name,
+                        score: leave.score,
+                        chart_id: leave.chartId
+                    },
+                });
+                updatedLeaves.push(updatedLeave);
             }
 
             console.log(updatedLeaves);
