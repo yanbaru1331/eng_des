@@ -93,7 +93,7 @@ POST http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
 
 {
-    "userId":2,
+    "userId":1,
     "charts":
     [
         {"name":"Marketing Strategy"},
@@ -169,7 +169,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3000/api/portfolio/chart/all?user_id=1
+GET http://localhost:3000/api/portfolio/chart/all?user_id=9
 
 # {
 #     "userId": 2,

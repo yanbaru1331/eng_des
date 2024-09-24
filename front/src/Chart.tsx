@@ -15,7 +15,7 @@ class ChartData {
 class Leaf {
   title: string;
   parentId: number;
-  childId: number;
+  chartId: number;
   itemNum: number;
   score: number;
   depth:number;
@@ -46,6 +46,8 @@ class leaf {
   score:number;
   chart_id:number;
   page_id:number;
+  itemNum:number;
+
 }
 
 const PulldownForm: React.FC = () => {
@@ -71,7 +73,7 @@ const PulldownForm: React.FC = () => {
   useEffect( () => {
 
     const fetchUserData  = async () => {
-     await axios.get("http://localhost:3000/api/portfolio/chart/all?user_id=9")
+     await axios.get("http://localhost:3000/api/portfolio/chart/all?user_id=1")
       .then((res) => {
         const maxDepth = res.data.data.pages.max_depth;
         const maxItem  = res.data.data.pages.max_item;
@@ -83,7 +85,7 @@ const PulldownForm: React.FC = () => {
         console.log("charts=",charts);
         console.log("leaves=",leaves);
         setCharts(charts);
-        setMaxDepth(maxDepth);
+        setMaxDepth(maxDepth-1);
         setMaxItem(maxItem);
         setMaxScore(maxScore);
         setLeaves(leaves);
@@ -103,7 +105,8 @@ const PulldownForm: React.FC = () => {
   const choiceParent: number[] = Array.from({ length: maxDepth }, (_, i) => i + 1);
   
   //グラフの頂点番号
-  const choiceItem: number[] = Array.from({ length: maxItem }, (_, i) => i + 1);
+  const choiceItem: string[] = Array.from({ length: maxItem }, (_, i) => (i + 1).toString()).concat("自身を修正");
+
 
   const [choiceChart, setChoiceChart] = useState<string[]>(charts.map((chart) => chart.name));
   //スコア
@@ -121,7 +124,7 @@ const PulldownForm: React.FC = () => {
   const [leafFormState, setLeafFormState] = useState<Leaf>({
     title: "",
     parentId: 0,
-    childId: 0,
+    chartId: 0,
     itemNum: 0,
     score: 0,
     depth: 0,
@@ -132,26 +135,36 @@ const PulldownForm: React.FC = () => {
 
   // フォームの入力を監視するハンドラ関数
   const handleParentChartChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const parentId = Number(e.target.value);
-    setFormState(prev => ({ ...prev, parentId }));
-    setLeafFormState(prev => ({ ...prev, parentId }));
+    const depth = Number(e.target.value);
+    setFormState(prev => ({ ...prev, depth:depth }));
+    setLeafFormState(prev => ({ ...prev, depth:depth }));
   };
 
   const handleChartItemChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const childId = Number(e.target.value);
-    setFormState(prev => ({ ...prev, childId }));
-    setLeafFormState(prev => ({ ...prev, childId }));
+    if (e.target.value === "自身を修正") {
+      setFormState(prev => ({ ...prev, itemNum: 100 }));
+      setLeafFormState(prev => ({ ...prev, itemNum: 100 }));
+      return;
+    }
+    const itemNum = Number(e.target.value);
+    setFormState(prev => ({ ...prev, itemNum: itemNum }));
+    setLeafFormState(prev => ({ ...prev, itemNum: itemNum }));
   };
 
   const handleChartChartIdChange = (e: ChangeEvent<HTMLSelectElement>) => {
     console.log(e.target.value);
     const chartId = Number(e.target.value);
     setFormState(prev => ({...prev, chartId}))
-    if(formState.depth === -1){
+    setLeafFormState(prev => ({ ...prev, chartId: chartId }));
+    //depthが初期値のときは適切な値を頑張って取得
       let tmp = charts[charts.findIndex((val) => val.id === chartId)].id;
-      setFormState(prev => ({...prev, depth:relations[relations.findIndex((val) => (val.parent_id === tmp && tmp === val.child_id))].depth })); 
+      let checkDepth = relations[relations.findIndex((val) => (val.parent_id === tmp && tmp === val.child_id))].depth;
+    //depthが異なっているか初期値のときは正しい値に再設定
+      if (checkDepth !== formState.depth){
+        setFormState(prev => ({...prev, depth: checkDepth})); 
+        setLeafFormState(prev => ({ ...prev, depth: checkDepth }));
+      }
     }
-  }
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormState(prev => ({ ...prev, name: e.target.value }));
     setLeafFormState(prev => ({ ...prev, title: e.target.value }));
@@ -168,15 +181,32 @@ const PulldownForm: React.FC = () => {
 // array3[result3] = {a:100, b:200};
     //ここがフォームステートがからじゃないときに配列に追記してる部分だからこのあたりをいじくり回して修正してみる
     
-    if (formState.name.trim() !== '' && formState.parentId !== 0 && formState.chartId !== 0) {
-      const newEntry: ChartData = { ...formState, depth: formState.parentId };
+    if (formState.name.trim() !== '' && formState.parentId !== -1 && formState.chartId !== -1) {
+      const newEntry: ChartData = { ...formState};
       
       //子要素の編集
-      if (leafFormState.parentId === maxDepth) {
+      if (leafFormState.depth === maxDepth) {
         const newLeafEntry: Leaf = { ...leafFormState };
-        setLeafEntries(prev => [...prev, newLeafEntry]);
-      }
+        console.log("newLeafEntry=",newLeafEntry);
+        let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.itemNum === newLeafEntry.itemNum-1);
+        console.log("checkLeaf=",checkLeaf);
+        if (checkLeaf !== -1){
+          const updateLeaf ={
+            ...leaves[checkLeaf],
+            name: newLeafEntry.title,
+            score: newLeafEntry.score,
+          }
+          leaves[checkLeaf] = updateLeaf;
+        }
 
+        setLeafEntries(prev => [...prev, newLeafEntry]);
+
+      }
+      else if (formState.itemNum === 100){
+        //既存のデータの選択されたチャートIDの名前を変更する処理
+        charts[charts.findIndex((val) => val.id === formState.chartId)].name = formState.name;
+        setEntries(prev => [...prev, newEntry]);
+      }
       //それ以外の修正
       else{
         //既存のデータの選択されたチャートIDの名前を変更する処理
@@ -195,7 +225,7 @@ const PulldownForm: React.FC = () => {
       setLeafFormState({
         title: "",
         parentId: 0,
-        childId: 0,
+        chartId: 0,
         itemNum: 0,
         score: 0,
         depth: 0,
@@ -214,41 +244,38 @@ const PulldownForm: React.FC = () => {
     // };
 
     // const allEntries = [rootChart, ...entries];
-    // const postData = {
-    //   userId: 1,
-    //   charts: allEntries.map(entry => ({
-    //     name: entry.name
-    //   })),
-    //   //ここ自動生成
-    //   relations: createClosureTable(),
-    //   leaves: leafEntries.map(entry => ({
-    //     name: entry.title,
-    //     score: entry.score,
-    //     chartId: entry.parentId * maxItem + entry.childId
-    //   }))
-    // };
-    console.log('Sending Data:', charts);
+    const postData = {
+      userId: 1,
+      charts: charts,
+      //ここ自動生成
+      relations: relations,
+      leaves: leaves,
+    };
 
-    // await axios.put("http://localhost:3000/api/portfolio/chart", postData, {
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+    console.log('Sending Data:', charts);
+    console.log('Sending Data:', leaves);
+    console.log('Sending Data:', relations);
+
+    await axios.put("http://localhost:3000/api/portfolio/chart", postData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   // JSXのレンダリング
   return (
     <form>
-      <div>
+      {/* <div>
         <label>
           グラフの深さを選択してください:
-          <select value={formState.parentId} onChange={handleParentChartChange}>
+          <select value={formState.depth} onChange={handleParentChartChange}>
             <option value="">選択してください</option>
             {choiceParent.map(choice => (
               <option key={choice} value={choice}>
@@ -257,7 +284,7 @@ const PulldownForm: React.FC = () => {
             ))}
           </select>
         </label>
-      </div>
+      </div> */}
       <div>
         <label>
           グラフ番号を選択してください:
@@ -273,8 +300,28 @@ const PulldownForm: React.FC = () => {
       </div>
       <div>
         <label>
+          タイトルを入力:
+          <input
+            type="text"
+            value={formState.name}
+            onChange={handleTitleChange}
+            placeholder="テキストを入力"
+            // disabled={formState.parentId === 0 || formState.chartId === 0}
+          />
+        </label>
+      </div>
+
+      {formState.depth === maxDepth && (
+
+      <div>
+        <label>
           頂点の位置を決定してください:
-          <select value={formState.itemNum} onChange={handleChartItemChange}>
+          <select value={
+            formState.itemNum === 100
+              ? "自身を修正"
+              :
+            formState.itemNum
+            } onChange={handleChartItemChange}>
             <option value="">選択してください</option>
             {choiceItem.map(choice2 => (
               <option key={choice2} value={choice2}>
@@ -284,21 +331,10 @@ const PulldownForm: React.FC = () => {
           </select>
         </label>
       </div>
+    )}
 
-      <div>
-        <label>
-          頂点タイトルを入力:
-          <input
-            type="text"
-            value={formState.name}
-            onChange={handleTitleChange}
-            placeholder="テキストを入力"
-            disabled={formState.parentId === 0 || formState.chartId === 0}
-          />
-        </label>
-      </div>
+      {formState.depth === maxDepth && (
 
-      {formState.parentId === maxDepth && (
         <div>
           <label>
             点数を決定してください:
