@@ -21,7 +21,7 @@ export async function createPortfolioRaderCharts(data: Prisma.portfolio_rader_ch
 
 
 export async function updatePortfolioRaderChartsData(
-    portfolioChartsData: { id: number | null, name: string, pageId: number}[],
+    portfolioChartsData: { id: number | null, name: string, pageId: number }[],
     portfolioRelationsData: { id: number | null, parentId: number, childId: number, depth: number }[],
     portfolioLeavesData: { id: number | null, name: string, score: number, chartIndex: number }[]
 ) {
@@ -56,8 +56,8 @@ export async function updatePortfolioRaderChartsData(
             // 2. リレーションの更新または作成
             const updatedRelations = [];
             for (const relation of portfolioRelationsData) {
-                const parentChartId = updatedCharts[relation.parentId].id ;
-                const childChartId = updatedCharts[relation.childId].id ;
+                const parentChartId = updatedCharts[relation.parentId].id;
+                const childChartId = updatedCharts[relation.childId].id;
 
                 if (relation.id) {
                     const updatedRelation = await prisma.portfolio_rader_chart_relations.update({

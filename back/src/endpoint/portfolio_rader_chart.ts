@@ -27,7 +27,9 @@ const updatePortfolioRaderChartsSchema = z.object({
     charts: z.array(
         z.object({
             id: z.number().optional(),
-            name: z.string()
+            name: z.string(),
+            createdAt: z.string().optional(),
+            updatedAt: z.string().optional()
         })
     ),
     relations: z.array(
@@ -35,7 +37,9 @@ const updatePortfolioRaderChartsSchema = z.object({
             id: z.number().optional(),
             parentId: z.number(),
             childId: z.number(),
-            depth: z.number()
+            depth: z.number(),
+            createdAt: z.string().optional(),
+            updatedAt: z.string().optional()
         })
     ),
     leaves: z.array(
@@ -43,7 +47,9 @@ const updatePortfolioRaderChartsSchema = z.object({
             id: z.number().optional(),
             name: z.string(),
             score: z.number(),
-            chartId: z.number()
+            chartId: z.number(),
+            createdAt: z.string().optional(),
+            updatedAt: z.string().optional()
         })
     )
 });
@@ -81,7 +87,7 @@ PortfolioChartApp.put(
                 page_id: portfolioPageData.id,
                 parentId: relation.parentId,
                 childId: relation.childId,
-                depth: relation.depth,
+                depth: relation.depth
             }));
 
             // 3. リーフのデータを整形
@@ -90,7 +96,7 @@ PortfolioChartApp.put(
                 pageId: portfolioPageData.id,
                 name: leave.name,
                 score: leave.score,
-                chartIndex: leave.chartId,
+                chartIndex: leave.chartId
             }));
 
             // 4. トランザクション内でデータを更新
