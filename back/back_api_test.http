@@ -87,36 +87,14 @@ GET http://localhost:3000/api/portfolio/page?user_id=3
 # これが返ってくる
 ###
 GET http://localhost:3000/api/portfolio/page?user_name=exampleUser
+
 ###
 
 POST http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
 
 {
-    "userId":1,
-    "charts":
-    [
-        {"name":"Marketing Strategy"},
-        {"name":"Product Development"},
-        {"name":"Sales Performance"}
-    ],
-    "relations":[
-        {"parentId":null,"childId":1,"depth":1},
-        {"parentId":1,"childId":2,"depth":2}],
-    "leaves":[
-        {"name":"Customer Acquisition","score":85,"chartId":2},
-        {"name":"Revenue Growth","score":90,"chartId":2},
-        {"name":"New Product Launch","score":75,"chartId":2}
-    ]
-}
-
-###
-
-PUT http://localhost:3000/api/portfolio/chart
-Content-Type: application/json
-
-{
-    "userId":2,
+    "user_id":1,
     "charts":
     [
         {"name":"IT"},
@@ -124,46 +102,75 @@ Content-Type: application/json
         {"name":"ネットワーク"}
     ],
     "relations":[
-        {"parentId":0,"childId":0,"depth":0},
-        {"parentId":0,"childId":1,"depth":1},
-        {"parentId":0,"childId":2,"depth":1},
-        {"parentId":1,"childId":1,"depth":1},
-        {"parentId":2,"childId":2,"depth":1}],
+        {"parent_id":0,"child_id":0,"depth":0},
+        {"parent_id":0,"child_id":1,"depth":1},
+        {"parent_id":0,"child_id":2,"depth":1},
+        {"parent_id":1,"child_id":1,"depth":1},
+        {"parent_id":2,"child_id":2,"depth":1}],
     "leaves":[
-        {"name":"アルゴリズム","score":5,"chartId":1},
-        {"name":"基礎文法","score":3,"chartId":1},
-        {"name":"データ構造","score":4,"chartId":1},
-        {"name":"設計","score":3,"chartId":2},
-        {"name":"DNS","score":1,"chartId":2},
-        {"name":"DHP","score":2,"chartId":2}
+        {"name":"アルゴリズム","score":5,"chart_id":1},
+        {"name":"基礎文法","score":3,"chart_id":1},
+        {"name":"データ構造","score":4,"chart_id":1},
+        {"name":"設計","score":3,"chart_id":2},
+        {"name":"DNS","score":1,"chart_id":2},
+        {"name":"DHP","score":2,"chart_id":2}
     ]
 }
 ###
+###
 
+POST http://localhost:3000/api/portfolio/chart
+Content-Type: application/json
+
+{
+    "user_id":1,
+    "charts":
+    [
+        {"name":"IT"},
+        {"name":"プログラミング"},
+        {"name":"ネットワーク"}
+    ],
+    "relations":[
+        {"parent_index":0,"child_index":0,"depth":0},
+        {"parent_index":0,"child_index":1,"depth":1},
+        {"parent_index":0,"child_index":2,"depth":1},
+        {"parent_index":1,"child_index":1,"depth":1},
+        {"parent_index":2,"child_index":2,"depth":1}],
+    "leaves":[
+        {"name":"アルゴリズム","score":5,"chart_index":1},
+        {"name":"基礎文法","score":3,"chart_index":1},
+        {"name":"データ構造","score":4,"chart_index":1},
+        {"name":"設計","score":3,"chart_index":2},
+        {"name":"DNS","score":1,"chart_index":2},
+        {"name":"DHP","score":2,"chart_index":2}
+    ]
+}
+###
 PUT http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
 
 {
-    "userId": 1,
+    "user_id": 1,
     "charts": [
-        {"id": 4, "name": "IT Updated"},
-        {"id": 5, "name": "プログラミング Updated"},
-        {"id": 6, "name": "ネットワーク Updated"}
+
+        {"id": 46, "name": "IT Updated", "createdAt": "dsadsa", "updateAt": "asdad"},
+        {"id": 47, "name": "プログラミング Updated", "createdAt": "dsadsa", "updateAt": "asdad"},
+        {"id": 48, "name": "ネットワーク Updated", "createdAt": "dsadsa", "updateAt": "asdad"}
     ],
     "relations": [
-        {"id":41,"parentId":0,"childId":0,"depth":0},
-        {"id":42,"parentId":0,"childId":1,"depth":1},
-        {"id":43,"parentId":0,"childId":2,"depth":1},
-        {"id":44,"parentId":1,"childId":1,"depth":1},
-        {"id":45,"parentId":2,"childId":2,"depth":1}
+        {"id": 151, "parent_id":0,"child_id":1,"depth":1},
+        {"id": 152, "parent_id":0,"child_id":0,"depth":0},
+        {"id": 153, "parent_id":0,"child_id":2,"depth":1},
+        {"id": 154, "parent_id":1,"child_id":1,"depth":1},
+        {"id": 155, "parent_id":2,"child_id":2,"depth":1}
         ],
     "leaves": [
-        {"id": 7, "name": "アルゴリズム Updated", "score": 4, "chartId": 1},
-        {"id": 8, "name": "基礎文法 Updated", "score": 2, "chartId": 1},
-        {"id": 9, "name": "データ構造 Updated", "score": 5, "chartId": 1},
-        {"id": 10, "name": "設計 Updated", "score": 4, "chartId": 2},
-        {"id": 11, "name": "DNS Updated", "score": 2, "chartId": 2},
-        {"id": 12, "name": "DHCP Updated", "score": 3, "chartId": 2}
+        {"id": 91, "name": "アルゴリズム Updated", "score": 4, "chart_id": 1},
+        {"id": 92, "name": "基礎文法 Updated", "score": 2, "chart_id": 1},
+        {"id": 93, "name": "データ構造 Updated", "score": 5, "chart_id": 1},
+        {"id": 94, "name": "設計 Updated", "score": 4, "chart_id": 2},
+        {"id": 95, "name": "DNS Updated", "score": 2, "chart_id": 2},
+        {"id": 96, "name": "DHCP Updated", "score": 3, "chart_id": 2}
     ]
 }
 

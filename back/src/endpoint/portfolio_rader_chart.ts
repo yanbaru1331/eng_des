@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import { getAllPortfolioRaderChartLeaves, getPortfolioRaderChartLeaveByChartId } from "../db_operations/portfolio_leaves";
 import { getPortfolioPage } from '../db_operations/portfolio_page';
-import { getPortfolioRaderChart, getPortfolioRaderChartByChartId, updatePortfolioRaderChartsData } from '../db_operations/portfolio_rader_chart';
+import { createPortfolioRaderChartsData, getPortfolioRaderChart, getPortfolioRaderChartByChartId, updatePortfolioRaderChartsData } from '../db_operations/portfolio_rader_chart';
 import { getAllPortfolioRaderChartRelations, getPortfolioRaderChartRelationsByChartId, getPortfolioRaderChartRelationsByParent } from "../db_operations/portfolio_rader_chart_relation";
 export const PortfolioChartApp = new Hono();
 
@@ -22,23 +22,97 @@ PortfolioChartApp.use('/*', cors({
     credentials: true,
 }));
 
+
+const createPortfolioRaderChartsSchema = z.object({
+    user_id: z.number(),
+    charts: z.array(
+        z.object({
+            name: z.string()
+        })
+    ),
+    relations: z.array(
+        z.object({
+            parent_index: z.number(),
+            child_index: z.number(),
+            depth: z.number()
+        })
+    ),
+    leaves: z.array(
+        z.object({
+            name: z.string(),
+            score: z.number(),
+            chart_index: z.number()
+        })
+    )
+});
+
+PortfolioChartApp.post(
+    '/',
+    zValidator('json', createPortfolioRaderChartsSchema),
+    async (c) => {
+        const { user_id, charts, relations, leaves } = await c.req.valid('json');
+
+        try {
+            const portfolioPageData = await getPortfolioPage(user_id);
+            if (portfolioPageData == null) {
+                return c.json({ message: 'Portfolio page is not existed' }, 400);
+            }
+            const portfolioChartData = await getPortfolioRaderChart(portfolioPageData.id);
+            // idが含まれていない作成 && すでに page に紐づく chart が存在している場合は拒否
+            if (portfolioChartData.length) {
+                return c.json({ message: 'Charts data is existed' }, 400);
+            }
+
+            // 1. チャートのデータを整形
+            const portfolioChartsData = charts.map(chart => ({
+                name: chart.name,
+                pageId: portfolioPageData.id, // 既存のポートフォリオページのIDを使用
+            }));
+
+            // 2. リレーションのデータを整形
+            const portfolioRelationsData = relations.map(relation => ({
+                pageId: portfolioPageData.id,
+                parentId: relation.parent_index,
+                childId: relation.child_index,
+                depth: relation.depth
+            }));
+
+            // 3. リーフのデータを整形
+            const portfolioLeavesData = leaves.map(leave => ({
+                pageId: portfolioPageData.id,
+                name: leave.name,
+                score: leave.score,
+                chartIndex: leave.chart_index
+            }));
+
+            // 4. トランザクション内でデータを更新
+            const result = await createPortfolioRaderChartsData(portfolioChartsData, portfolioRelationsData, portfolioLeavesData);
+
+            return c.json({ message: 'Portfolio data updated successfully', data: result }, 200);
+
+        } catch (error) {
+            console.error('Error processing request:', error);
+            return c.json({ message: 'Internal server error' }, 500);
+        }
+    }
+);
 const updatePortfolioRaderChartsSchema = z.object({
     user_id: z.number(),
     charts: z.array(
         z.object({
-            id: z.number().optional(),
+            id: z.number(),
             name: z.string(),
-            page_id: z.number().optional(),
+            page_id: z.number(),
             createdAt: z.string().optional(),
             updatedAt: z.string().optional()
         })
     ),
     relations: z.array(
         z.object({
-            id: z.number().optional(),
+            id: z.number(),
+            page_id: z.number(),
             parent_id: z.number(),
             child_id: z.number(),
-            page_id: z.number().optional(),
             depth: z.number(),
             createdAt: z.string().optional(),
             updatedAt: z.string().optional()
@@ -46,19 +120,16 @@ const updatePortfolioRaderChartsSchema = z.object({
     ),
     leaves: z.array(
         z.object({
-            id: z.number().optional(),
+            id: z.number(),
             name: z.string(),
             score: z.number(),
-            page_id: z.number().optional(),
             chart_id: z.number(),
+            page_id: z.number(),
             createdAt: z.string().optional(),
-            updatedAt: z.string().optional(),
-            itemNum: z.number().optional()
+            updatedAt: z.string().optional()
         })
     )
 });
-
-
 PortfolioChartApp.put(
     '/',
     zValidator('json', updatePortfolioRaderChartsSchema),
@@ -67,28 +138,18 @@ PortfolioChartApp.put(
 
         try {
 
-            const portfolioPageData = await getPortfolioPage(user_id);
-            console.log(portfolioPageData);
-            if (portfolioPageData == null) {
-                return c.json({ message: 'Portfolio page is not existed' }, 400);
-            }
-            const portfolioChartData = await getPortfolioRaderChart(portfolioPageData.id);
-            // idが含まれていない作成 && すでに page に紐づく chart が存在している場合は拒否
-            if (!(charts.length > 0 && charts[0].id) && portfolioChartData.length) {
-                return c.json({ message: 'Charts data is existed' }, 400);
-            }
-
             // 1. チャートのデータを整形
             const portfolioChartsData = charts.map(chart => ({
-                id: chart.id || null, // 更新のためにIDを含める
-                name: chart.name,
-                pageId: portfolioPageData.id, // 既存のポートフォリオページのIDを使用
+                id: chart.id, // 更新のためにIDを含める
+                pageId: chart.id,
+                name: chart.name
+
             }));
 
             // 2. リレーションのデータを整形
             const portfolioRelationsData = relations.map(relation => ({
-                id: relation.id || null, // 更新のためにIDを含める
-                page_id: portfolioPageData.id,
+                id: relation.id, // 更新のためにIDを含める
+                pageId: relation.id,
                 parentId: relation.parent_id,
                 childId: relation.child_id,
                 depth: relation.depth
@@ -96,12 +157,16 @@ PortfolioChartApp.put(
 
             // 3. リーフのデータを整形
             const portfolioLeavesData = leaves.map(leave => ({
-                id: leave.id || null, // 更新のためにIDを含める
-                pageId: portfolioPageData.id,
+                id: leave.id, // 更新のためにIDを含める
+                pageId: leave.id,
                 name: leave.name,
                 score: leave.score,
-                chartIndex: leave.chart_id
+                chartId: leave.chart_id
             }));
+
+            console.log(portfolioChartsData);
+            console.log(portfolioRelationsData);
+            console.log(portfolioLeavesData);
 
             // 4. トランザクション内でデータを更新
             const result = await updatePortfolioRaderChartsData(portfolioChartsData, portfolioRelationsData, portfolioLeavesData);
