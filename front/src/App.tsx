@@ -5,6 +5,7 @@ import Login from './Login';
 import UserPage from './UserPage';
 import Top from './Top';
 import Weight from './Chart';
+import ViewChart from './viewChart';
 
 function App() {
   const message = 'こんにちは React!!';
@@ -29,6 +30,9 @@ function App() {
         } />
         <Route path="/userpage/:userid/chart" element={
           <Weight />
+        } />
+        <Route path="/userpage/:userid/chart/view" element={
+          <ViewChart />
         } />
         {/* <Route path="/userpage/:userid/chart/settings" element={
           <Weight />

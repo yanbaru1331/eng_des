@@ -35,8 +35,8 @@ POST http://localhost:3000/api/user
 Content-Type: application/json
 
 {
-    "username": "exampleUser",
-    "email": "example@example.com",
+    "username": "test",
+    "email": "example@test.com",
     "password": "y",
     "date_of_birth": "2024-08-09"
 }
@@ -57,7 +57,7 @@ POST http://localhost:3000/api/portfolio/page
 Content-Type: application/json
 
 {
-    "user_id": 1,
+    "user_id": 2,
     "contact_address": "test",
     "published": true,
     "max_item": 3,
@@ -152,6 +152,7 @@ Content-Type: application/json
 {
     "user_id": 1,
     "charts": [
+
         {"id": 46, "name": "IT Updated", "createdAt": "dsadsa", "updateAt": "asdad"},
         {"id": 47, "name": "プログラミング Updated", "createdAt": "dsadsa", "updateAt": "asdad"},
         {"id": 48, "name": "ネットワーク Updated", "createdAt": "dsadsa", "updateAt": "asdad"}
@@ -174,8 +175,391 @@ Content-Type: application/json
 }
 
 ###
+# {
+#   "userId": 1,
+#   "charts": [
+#     {
+#       "id": 1,
+#       "name": "IT",
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 2,
+#       "name": "プログラミング",
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 3,
+#       "name": "ネットワーク",
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 4,
+#       "name": "IT Updated",
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:26:52.536Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     },
+#     {
+#       "id": 5,
+#       "name": "プログラミング Updated",
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:26:52.536Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     },
+#     {
+#       "id": 6,
+#       "name": "ネットワーク Updated",
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:26:52.536Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     }
+#   ],
+#   "relations": [
+#     {
+#       "id": 1,
+#       "page_id": 1,
+#       "parent_id": 1,
+#       "child_id": 1,
+#       "depth": 0,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 2,
+#       "page_id": 1,
+#       "parent_id": 1,
+#       "child_id": 2,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 3,
+#       "page_id": 1,
+#       "parent_id": 1,
+#       "child_id": 3,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 4,
+#       "page_id": 1,
+#       "parent_id": 2,
+#       "child_id": 2,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 5,
+#       "page_id": 1,
+#       "parent_id": 3,
+#       "child_id": 3,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z"
+#     },
+#     {
+#       "id": 11,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 4,
+#       "depth": 0,
+#       "createdAt": "2024-09-23T12:46:53.403Z",
+#       "updatedAt": "2024-09-23T12:46:53.403Z"
+#     },
+#     {
+#       "id": 12,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:53.403Z",
+#       "updatedAt": "2024-09-23T12:46:53.403Z"
+#     },
+#     {
+#       "id": 13,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:53.403Z",
+#       "updatedAt": "2024-09-23T12:46:53.403Z"
+#     },
+#     {
+#       "id": 14,
+#       "page_id": 1,
+#       "parent_id": 5,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:53.403Z",
+#       "updatedAt": "2024-09-23T12:46:53.403Z"
+#     },
+#     {
+#       "id": 15,
+#       "page_id": 1,
+#       "parent_id": 6,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:53.403Z",
+#       "updatedAt": "2024-09-23T12:46:53.403Z"
+#     },
+#     {
+#       "id": 16,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 4,
+#       "depth": 0,
+#       "createdAt": "2024-09-23T12:46:58.335Z",
+#       "updatedAt": "2024-09-23T12:46:58.335Z"
+#     },
+#     {
+#       "id": 17,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:58.335Z",
+#       "updatedAt": "2024-09-23T12:46:58.335Z"
+#     },
+#     {
+#       "id": 18,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:58.335Z",
+#       "updatedAt": "2024-09-23T12:46:58.335Z"
+#     },
+#     {
+#       "id": 19,
+#       "page_id": 1,
+#       "parent_id": 5,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:58.335Z",
+#       "updatedAt": "2024-09-23T12:46:58.335Z"
+#     },
+#     {
+#       "id": 20,
+#       "page_id": 1,
+#       "parent_id": 6,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-23T12:46:58.335Z",
+#       "updatedAt": "2024-09-23T12:46:58.335Z"
+#     },
+#     {
+#       "id": 21,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 4,
+#       "depth": 0,
+#       "createdAt": "2024-09-24T03:43:07.310Z",
+#       "updatedAt": "2024-09-24T03:43:07.310Z"
+#     },
+#     {
+#       "id": 22,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:43:07.310Z",
+#       "updatedAt": "2024-09-24T03:43:07.310Z"
+#     },
+#     {
+#       "id": 23,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:43:07.310Z",
+#       "updatedAt": "2024-09-24T03:43:07.310Z"
+#     },
+#     {
+#       "id": 24,
+#       "page_id": 1,
+#       "parent_id": 5,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:43:07.310Z",
+#       "updatedAt": "2024-09-24T03:43:07.310Z"
+#     },
+#     {
+#       "id": 25,
+#       "page_id": 1,
+#       "parent_id": 6,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:43:07.310Z",
+#       "updatedAt": "2024-09-24T03:43:07.310Z"
+#     },
+#     {
+#       "id": 31,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 4,
+#       "depth": 0,
+#       "createdAt": "2024-09-24T03:48:56.021Z",
+#       "updatedAt": "2024-09-24T03:48:56.021Z"
+#     },
+#     {
+#       "id": 32,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.021Z",
+#       "updatedAt": "2024-09-24T03:48:56.021Z"
+#     },
+#     {
+#       "id": 33,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.021Z",
+#       "updatedAt": "2024-09-24T03:48:56.021Z"
+#     },
+#     {
+#       "id": 34,
+#       "page_id": 1,
+#       "parent_id": 5,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.021Z",
+#       "updatedAt": "2024-09-24T03:48:56.021Z"
+#     },
+#     {
+#       "id": 35,
+#       "page_id": 1,
+#       "parent_id": 6,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.021Z",
+#       "updatedAt": "2024-09-24T03:48:56.021Z"
+#     },
+#     {
+#       "id": 36,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 4,
+#       "depth": 0,
+#       "createdAt": "2024-09-24T03:48:56.900Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     },
+#     {
+#       "id": 37,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.900Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     },
+#     {
+#       "id": 38,
+#       "page_id": 1,
+#       "parent_id": 4,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.900Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     },
+#     {
+#       "id": 39,
+#       "page_id": 1,
+#       "parent_id": 5,
+#       "child_id": 5,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.900Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     },
+#     {
+#       "id": 40,
+#       "page_id": 1,
+#       "parent_id": 6,
+#       "child_id": 6,
+#       "depth": 1,
+#       "createdAt": "2024-09-24T03:48:56.900Z",
+#       "updatedAt": "2024-09-24T03:48:56.900Z"
+#     }
+#   ],
+#   "leaves": [
+#     {
+#       "id": 1,
+#       "name": "アルゴリズム",
+#       "score": 5,
+#       "chart_id": 2,
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z",
+#       "itemNum": 0
+#     },
+#     {
+#       "id": 2,
+#       "name": "基礎文法",
+#       "score": 3,
+#       "chart_id": 2,
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z",
+#       "itemNum": 1
+#     },
+#     {
+#       "id": 3,
+#       "name": "データ構造",
+#       "score": 4,
+#       "chart_id": 2,
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z",
+#       "itemNum": 2
+#     },
+#     {
+#       "id": 4,
+#       "name": "設計",
+#       "score": 3,
+#       "chart_id": 3,
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z",
+#       "itemNum": 0
+#     },
+#     {
+#       "id": 5,
+#       "name": "dfa",
+#       "score": 2,
+#       "chart_id": 3,
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z",
+#       "itemNum": 1
+#     },
+#     {
+#       "id": 6,
+#       "name": "DHP",
+#       "score": 2,
+#       "chart_id": 3,
+#       "page_id": 1,
+#       "createdAt": "2024-09-23T12:19:03.892Z",
+#       "updatedAt": "2024-09-23T12:19:03.892Z",
+#       "itemNum": 2
+#     }
+#   ]
+# }
+###
+###
 
-GET http://localhost:3000/api/portfolio/chart/all?user_id=9
+GET http://localhost:3000/api/portfolio/chart/all?user_id=1
 
 # {
 #     "userId": 2,
