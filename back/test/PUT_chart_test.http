@@ -1,0 +1,132 @@
+PUT http://localhost:3000/api/portfolio/chart
+Content-Type: application/json
+
+{
+  "user_id": 1,
+    "charts": [
+      {
+        "id": 67,
+        "name": "IT",
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 68,
+        "name": "プログラミング",
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 69,
+        "name": "ネットワーク",
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      }
+    ],
+    "relations": [
+      {
+        "id": 166,
+        "page_id": 27,
+        "parent_id": 67,
+        "child_id": 67,
+        "depth": 0,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 167,
+        "page_id": 27,
+        "parent_id": 67,
+        "child_id": 68,
+        "depth": 1,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 168,
+        "page_id": 27,
+        "parent_id": 67,
+        "child_id": 69,
+        "depth": 1,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 169,
+        "page_id": 27,
+        "parent_id": 68,
+        "child_id": 68,
+        "depth": 1,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 170,
+        "page_id": 27,
+        "parent_id": 69,
+        "child_id": 69,
+        "depth": 1,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      }
+    ],
+    "leaves": [
+      {
+        "id": 109,
+        "name": "アルゴリズム",
+        "score": 5,
+        "chart_id": 68,
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 110,
+        "name": "基礎文法",
+        "score": 3,
+        "chart_id": 68,
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 111,
+        "name": "データ構造",
+        "score": 4,
+        "chart_id": 68,
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 112,
+        "name": "設計",
+        "score": 3,
+        "chart_id": 69,
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 113,
+        "name": "DNS",
+        "score": 1,
+        "chart_id": 69,
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      },
+      {
+        "id": 114,
+        "name": "DHP",
+        "score": 2,
+        "chart_id": 69,
+        "page_id": 27,
+        "createdAt": "2024-09-24T10:54:57.330Z",
+        "updatedAt": "2024-09-24T10:54:57.330Z"
+      }
+    ]
+}
