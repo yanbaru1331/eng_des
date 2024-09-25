@@ -21,23 +21,22 @@ class Leaf {
   depth:number;
 }
 
-class tmpLeaf {
-  name: string;
-  chartId: number;
-  score: number;
-}
 class Relations {
   id:number;
   page_id:number;
   parent_id:number;
   child_id:number;
   depth:number;
+  createdAt:Date;
+  updatedAt:Date;
 }
 
 class chart  {
   id:number;
   name:string;
   page_id:number;
+  createdAt:Date;
+  updatedAt:Date;
 }
 
 class leaf {
@@ -47,6 +46,8 @@ class leaf {
   chart_id:number;
   page_id:number;
   itemNum:number;
+  createdAt:Date;
+  updatedAt:Date;
 
 }
 
@@ -245,7 +246,7 @@ const PulldownForm: React.FC = () => {
 
     // const allEntries = [rootChart, ...entries];
     const postData = {
-      userId: 1,
+      user_id: 1,
       charts: charts,
       //ここ自動生成
       relations: relations,

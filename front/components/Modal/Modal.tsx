@@ -6,13 +6,13 @@ import { FormEventHandler } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 class Relations {
-  parentId: number;
-  childId: number;
+  parent_index: number;
+  child_index: number;
   depth: number;
 }
 class tmpLeaf {
   name: string;
-  chartId: number;
+  chart_index: number;
   score: number;
 }
 
@@ -41,7 +41,7 @@ const Modal= (props) => {
       leafItems.push({
         name: `leaf${index}-${i}`,
         score: 1,
-        chartId: index,
+        chart_index: index,
       });
     }
   }
@@ -62,8 +62,8 @@ const Modal= (props) => {
   
       // 自分自身のエントリーを追加
       closureTable.push({
-        parentId: parentId,
-        childId: parentId,
+        parent_index: parentId,
+        child_index: parentId,
         depth: reverseChartId(parentId, maxItem), 
       });
       if (currentDepth >= maxDepth-1) return;  
@@ -71,8 +71,8 @@ const Modal= (props) => {
       for (let childId = startChildId; childId <= endChildId; childId++) {
         if(reverseChartId(childId, maxItem) < maxDepth){
         closureTable.push({
-          parentId: parentId,
-          childId: childId,
+          parent_index: parentId,
+          child_index: childId,
           depth: reverseChartId(childId,maxItem),
         })
       }
@@ -126,7 +126,7 @@ const Modal= (props) => {
 
     console.log("charts = "+charts);
     const postData = {
-      userId: Number(userid),
+      user_id: Number(userid),
       charts: charts,
       relations: createClosureTable(maxDepth, maxItem),
       leaves: leaves(leafNum, chartNum,maxItem),
@@ -155,28 +155,28 @@ const Modal= (props) => {
     const i = Number(form.get("itemNum") as string);
     if (props.type === "edit"){ 
       //ここに登録
-      console.log("edit");
-      
-      await axios.post("http://localhost:3000/api/portfolio/page", {
-        user_id: Number(userid),
-        contact_address: email,
-        published: notPublished,
-        max_item: itemNum,
-        max_depth: depth,
-        max_score: maxScore
-      },  {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((res) => {
-        console.log(res);
-      })
+  
+      // await axios.post("http://localhost:3000/api/portfolio/page", {
+      //   user_id: Number(userid),
+      //   contact_address: email,
+      //   published: notPublished,
+      //   max_item: itemNum,
+      //   max_depth: depth,
+      //   max_score: maxScore
+      // },  {
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   }
+      // }).then((res) => {
+      //   console.log(res);
+      // })
 
       console.log("dummyData");
       const postData = await dummyData(d,i, Number(userid));
       console.log('Sending Data:', postData);
   
-      await axios.put("http://localhost:3000/api/portfolio/chart", postData, {
+      await axios.post("http://localhost:3000/api/portfolio/chart", postData, {
+        
         headers: {
           'Content-Type': 'application/json'
         }
@@ -186,7 +186,7 @@ const Modal= (props) => {
           navigate(`/userpage/${userid}/chart?${queryParams.toString()}`);
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error.response.data.error);
         });
     }
 

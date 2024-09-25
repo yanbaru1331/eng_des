@@ -144,7 +144,7 @@ const PulldownForm: React.FC = () => {
 
     console.log("charts = "+charts);
     const postData = {
-      userId: 8,
+      userId: 1,
       charts: charts,
       relations: createClosureTable(),
       leaves: leaves(leafNum, chartNum),
@@ -156,7 +156,7 @@ const PulldownForm: React.FC = () => {
 
   // データを取得するためのAPIコール
   useEffect( () => {
-     axios.get("http://localhost:3000/api/portfolio/page?user_id=8")
+     axios.get("http://localhost:3000/api/portfolio/page?user_id=1")
       .then((res) => {
         setMaxDepth(res.data.max_depth);
         setMaxItem(res.data.max_item);

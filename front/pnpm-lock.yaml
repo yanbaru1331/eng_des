@@ -14,6 +14,9 @@ importers:
       chart.js:
         specifier: ^4.4.3
         version: 4.4.3
+      chartjs:
+        specifier: ^0.3.24
+        version: 0.3.24
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
@@ -552,6 +555,9 @@ packages:
   chart.js@4.4.3:
     resolution: {integrity: sha512-qK1gkGSRYcJzqrrzdR6a+I0vQ4/R+SoODXyAjscQ/4mzuNzySaMCd+hyVxitSY1+L2fjPD1Gbn+ibNqRmwQeLw==}
     engines: {pnpm: '>=8'}
+
+  chartjs@0.3.24:
+    resolution: {integrity: sha512-h6G9qcDqmFYnSWqjWCzQMeOLiypS+pM6Fq2Rj7LPty8Kjx5yHonwwJ7oEHImZpQ2u9Pu36XGYfardvvBiQVrhg==}
 
   classnames@2.5.1:
     resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
@@ -1457,6 +1463,8 @@ snapshots:
   chart.js@4.4.3:
     dependencies:
       '@kurkle/color': 0.3.2
+
+  chartjs@0.3.24: {}
 
   classnames@2.5.1: {}
 
