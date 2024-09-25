@@ -252,10 +252,7 @@ const PulldownForm: React.FC = () => {
       leaves: leaves,
     };
 
-    console.log('Sending Data:', charts);
-    console.log('Sending Data:', leaves);
-    console.log('Sending Data:', relations);
-
+    console.log("postData=",postData);
     await axios.put("http://localhost:3000/api/portfolio/chart", postData, {
       headers: {
         'Content-Type': 'application/json'
