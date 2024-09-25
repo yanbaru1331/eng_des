@@ -31,6 +31,12 @@ Content-Type: application/json
     "user_id": 1
 }
 ###
+# チャート全取得
+GET http://localhost:3000/api/portfolio/chart/all/test?user_id=1
+###
+# チャート全取得
+GET http://localhost:3000/api/portfolio/chart/all?user_id=1
+###
 # チャート初期作成
 POST http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
@@ -71,34 +77,34 @@ Content-Type: application/json
 
 {
   "user_id": 1,
- "charts": [
+    "charts": [
       {
         "id": 70,
         "name": "0",
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 71,
         "name": "1",
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 72,
         "name": "2",
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 73,
         "name": "3",
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       }
     ],
     "relations": [
@@ -109,7 +115,7 @@ Content-Type: application/json
         "child_id": 70,
         "depth": 0,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 172,
@@ -118,7 +124,7 @@ Content-Type: application/json
         "child_id": 71,
         "depth": 1,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 173,
@@ -127,7 +133,7 @@ Content-Type: application/json
         "child_id": 72,
         "depth": 1,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 174,
@@ -136,7 +142,7 @@ Content-Type: application/json
         "child_id": 73,
         "depth": 1,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 175,
@@ -145,7 +151,7 @@ Content-Type: application/json
         "child_id": 71,
         "depth": 1,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 176,
@@ -154,7 +160,7 @@ Content-Type: application/json
         "child_id": 72,
         "depth": 1,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
         "id": 177,
@@ -163,7 +169,7 @@ Content-Type: application/json
         "child_id": 73,
         "depth": 1,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       }
     ],
     "leaves": [
@@ -174,7 +180,8 @@ Content-Type: application/json
         "chart_id": 71,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 0
       },
       {
         "id": 116,
@@ -183,7 +190,8 @@ Content-Type: application/json
         "chart_id": 71,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 1
       },
       {
         "id": 117,
@@ -192,7 +200,8 @@ Content-Type: application/json
         "chart_id": 71,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 2
       },
       {
         "id": 118,
@@ -201,7 +210,8 @@ Content-Type: application/json
         "chart_id": 72,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 0
       },
       {
         "id": 119,
@@ -210,7 +220,8 @@ Content-Type: application/json
         "chart_id": 72,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 1
       },
       {
         "id": 120,
@@ -219,7 +230,8 @@ Content-Type: application/json
         "chart_id": 72,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 2
       },
       {
         "id": 121,
@@ -228,7 +240,8 @@ Content-Type: application/json
         "chart_id": 73,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 0
       },
       {
         "id": 122,
@@ -237,7 +250,8 @@ Content-Type: application/json
         "chart_id": 73,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 1
       },
       {
         "id": 123,
@@ -246,7 +260,8 @@ Content-Type: application/json
         "chart_id": 73,
         "page_id": 29,
         "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:36:19.514Z"
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 2
       }
     ]
 }
