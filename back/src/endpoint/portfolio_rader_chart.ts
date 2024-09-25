@@ -23,6 +23,18 @@ PortfolioChartApp.use('/*', cors({
 }));
 
 
+type LeaveWithItemNum = {
+    id: number;
+    name: string;
+    score: number;
+    chart_id: number;
+    page_id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    itemNum: number;
+};
+
+
 const createPortfolioRaderChartsSchema = z.object({
     user_id: z.number(),
     charts: z.array(
@@ -126,7 +138,8 @@ const updatePortfolioRaderChartsSchema = z.object({
             chart_id: z.number(),
             page_id: z.number(),
             createdAt: z.string().optional(),
-            updatedAt: z.string().optional()
+            updatedAt: z.string().optional(),
+            itemNum: z.number().optional()
         })
     )
 });
@@ -201,16 +214,7 @@ PortfolioChartApp.get(
             const portfolioRaderChartsRelations = await getAllPortfolioRaderChartRelations(portfolioPageData.id);
             const portfolioRaderChartsLeaves = await getAllPortfolioRaderChartLeaves(portfolioPageData.id);
 
-            type LeaveWithItemNum = {
-                id: number;
-                name: string;
-                score: number;
-                chart_id: number;
-                page_id: number;
-                createdAt: Date;
-                updatedAt: Date;
-                itemNum: number;
-            };
+
 
             let updatedLeaves: LeaveWithItemNum[] = [];
             portfolioRaderCharts.forEach(chart => {
@@ -218,11 +222,11 @@ PortfolioChartApp.get(
                     leave.chart_id == chart.id
                 );
 
-                let j = 0;
+                let i = 0;
                 sameTargetChartLeave.forEach(leave => {
-                    const updatedLeave: LeaveWithItemNum = { ...leave, itemNum: j };
+                    const updatedLeave: LeaveWithItemNum = { ...leave, itemNum: i };
                     updatedLeaves.push(updatedLeave)
-                    j++;
+                    i++;
                 });
             });
             console.log(portfolioRaderChartsLeaves);
