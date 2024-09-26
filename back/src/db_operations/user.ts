@@ -53,10 +53,10 @@ export async function getUserById(id: number) {
     };
 };
 
-export async function deleteUser(email: string) {
+export async function deleteUser(id: number) {
     try {
         const deletedUser = await prisma.users.delete({
-            where: { email }
+            where: { id }
         });
         return deletedUser;
     } catch (error) {
