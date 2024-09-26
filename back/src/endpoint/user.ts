@@ -138,7 +138,7 @@ userApp.post(
 
 // delete用の型チェック
 const deleteSchema = z.object({
-    email: z.string().email()
+    user_id: z.number()
 });
 
 // DELETE /api/user
@@ -146,10 +146,10 @@ userApp.delete(
     '/',
     zValidator('json', deleteSchema),
     async (c) => {
-        const { email } = await c.req.valid("json");  // リクエストからIDを取得
+        const { user_id } = await c.req.valid("json");  // リクエストからIDを取得
 
         try {
-            const deletedUser = await deleteUser(email);  // deleteUser関数を呼び出してユーザーを削除
+            const deletedUser = await deleteUser(user_id);  // deleteUser関数を呼び出してユーザーを削除
             return c.json({ message: 'User deleted successfully', userId: deletedUser.id }, 200);  // 削除成功時のレスポンス
         } catch (error) {
             console.error('Error deleting user:', error);
