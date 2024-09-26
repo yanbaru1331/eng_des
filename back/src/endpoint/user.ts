@@ -7,7 +7,7 @@ import { zValidator } from '@hono/zod-validator';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 
-import { createUser, deleteUser, getUserByEmail, getUserByUsername, updateUser } from '../db_operations/user';
+import { createUser, deleteUser, getUserByEmail, getUserByUsername, getUserById, updateUser } from '../db_operations/user';
 
 export const userApp = new Hono();
 
@@ -154,6 +154,28 @@ userApp.delete(
         } catch (error) {
             console.error('Error deleting user:', error);
             return c.json({ error: 'Failed to delete user' }, 500);  // エラー発生時のレスポンス
+        }
+    }
+);
+
+const getSchema = z.object({
+    user_id: z.string().regex(/^\d+$/)
+});
+
+userApp.get(
+    '/',
+    zValidator('query', getSchema),  // クエリパラメータをバリデート
+    async (c) => {
+        try {
+            const { user_id } = c.req.valid('query');
+
+            let userId: number = Number(user_id);
+            const userData = await getUserById(userId);
+            const { password, ...returnUserData } = userData;
+            return c.json({ message: 'Get userData successfull', data: returnUserData }, 200);
+        } catch (error) {
+            console.error('Error get portfoliopage:', error);
+            return c.json({ error: 'Failed to get userId' }, 500);
         }
     }
 );
