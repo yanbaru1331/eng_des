@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "../Button";
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import { useMemo } from 'react';
 
 //url =  http://localhost:3000/api/user
 const Modal = (props) => {
@@ -19,7 +20,11 @@ const Modal = (props) => {
   const [password, setPassword] = useState("");
   const [checkpass, setCheckpass] = useState("");
   const [birth, setBirth] = useState("");
-  const [disabled, setDisabled] = useState(true);
+  //const [disabled, setDisabled] = useState(true);
+  const registerDisabled = useMemo(() => { 
+    return !(user !== "" && email !== "" && password !== "" && checkpass !== "" && birth !== "" && password === checkpass)} ,
+    [user, email, password, checkpass, birth],
+  );
 
   //登録関数
   const submit = () => {
@@ -40,14 +45,20 @@ const Modal = (props) => {
     });
   }
 
-  const accountCheck = () => {
-    if (user !== "" && email !== "" && password !== "" && checkpass !== "" && birth !== "" && password === checkpass) {
-      setDisabled(true);
-    }
-    else {
-      setDisabled(false);
-    }
-  }
+  // const accountCheck = () => {
+  //   console.log(user
+  //     , email
+  //     , password
+  //     , checkpass
+  //     , birth);
+
+  //   if (user !== "" && email !== "" && password !== "" && checkpass !== "" && birth !== "" && password === checkpass) {
+  //     setDisabled(false);
+  //   }
+  //   else {
+  //     setDisabled(true);
+  //   }
+  // }
   return (
     <>
       {props.showFlag ? (
@@ -59,7 +70,7 @@ const Modal = (props) => {
           <input type="text" value={user}
             onChange={(e) => {
               setUser(e.target.value);
-              accountCheck();
+              // accountCheck();
             }
             } />
 
@@ -67,7 +78,7 @@ const Modal = (props) => {
           <input type="email" value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              accountCheck();
+              // accountCheck();
             }
             } />
 
@@ -75,25 +86,25 @@ const Modal = (props) => {
           <input type="date" value={birth}
             onChange={(e) => {
               setBirth(e.target.value);
-              accountCheck();
+              // accountCheck();
             }
             } />
           <p>パスワード</p>
           <input type="password" value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              accountCheck();
+              // accountCheck();
             }
             } />
           <p>パスワード確認用</p>
           <input type="password" value={checkpass}
             onChange={(e) => {
               setCheckpass(e.target.value);
-              accountCheck();
+              // accountCheck();
             }
             } />
           <p></p>
-          <Button type="submit" onClick={submit} disabled={disabled}>登録</Button>
+          <Button type="submit" onClick={submit} disabled={registerDisabled}>登録</Button>
 
           <Button onClick={closeModal}>閉じる</Button>
         </div>

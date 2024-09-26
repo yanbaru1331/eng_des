@@ -21,23 +21,22 @@ class Leaf {
   depth:number;
 }
 
-class tmpLeaf {
-  name: string;
-  chartId: number;
-  score: number;
-}
 class Relations {
   id:number;
   page_id:number;
   parent_id:number;
   child_id:number;
   depth:number;
+  createdAt:Date;
+  updatedAt:Date;
 }
 
 class chart  {
   id:number;
   name:string;
   page_id:number;
+  createdAt:Date;
+  updatedAt:Date;
 }
 
 class leaf {
@@ -47,6 +46,8 @@ class leaf {
   chart_id:number;
   page_id:number;
   itemNum:number;
+  createdAt:Date;
+  updatedAt:Date;
 
 }
 
@@ -70,10 +71,9 @@ const PulldownForm: React.FC = () => {
   // データを取得するためのAPIコール
 
   //ここでほしいのはフロント描画用のデータとダミーデータの取得
-  useEffect( () => {
-
+  useEffect( () => {  
     const fetchUserData  = async () => {
-     await axios.get("http://localhost:3000/api/portfolio/chart/all?user_id=1")
+     await axios.get("http://localhost:3000/api/portfolio/chart/all?user_id="+sessionStorage.getItem('userId'))
       .then((res) => {
         const maxDepth = res.data.data.pages.max_depth;
         const maxItem  = res.data.data.pages.max_item;
@@ -176,10 +176,6 @@ const PulldownForm: React.FC = () => {
 
   // フォームの追加または更新を行う関数
   const addOrUpdateEntry = () => {
-    //これを参考にしてデータが登録されたらフォームに追加する処理をする
-//     const result3 = array3.findIndex((val, key) => val.a === 1 );
-// array3[result3] = {a:100, b:200};
-    //ここがフォームステートがからじゃないときに配列に追記してる部分だからこのあたりをいじくり回して修正してみる
     
     if (formState.name.trim() !== '' && formState.parentId !== -1 && formState.chartId !== -1) {
       const newEntry: ChartData = { ...formState};
@@ -245,7 +241,7 @@ const PulldownForm: React.FC = () => {
 
     // const allEntries = [rootChart, ...entries];
     const postData = {
-      userId: 1,
+      user_id: sessionStorage.getItem('userId'),
       charts: charts,
       //ここ自動生成
       relations: relations,
@@ -269,19 +265,6 @@ const PulldownForm: React.FC = () => {
   // JSXのレンダリング
   return (
     <form>
-      {/* <div>
-        <label>
-          グラフの深さを選択してください:
-          <select value={formState.depth} onChange={handleParentChartChange}>
-            <option value="">選択してください</option>
-            {choiceParent.map(choice => (
-              <option key={choice} value={choice}>
-                {choice}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div> */}
       <div>
         <label>
           グラフ番号を選択してください:
