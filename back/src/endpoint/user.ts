@@ -171,8 +171,8 @@ userApp.get(
 
             let userId: number = Number(user_id);
             const userData = await getUserById(userId);
-
-            return c.json({ message: 'Get userData successfull', data: userData }, 200);
+            const { password, ...returnUserData } = userData;
+            return c.json({ message: 'Get userData successfull', data: returnUserData }, 200);
         } catch (error) {
             console.error('Error get portfoliopage:', error);
             return c.json({ error: 'Failed to get userId' }, 500);
