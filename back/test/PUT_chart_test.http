@@ -1,3 +1,77 @@
+# ユーザ作成
+POST http://localhost:3000/api/user
+Content-Type: application/json
+
+{
+    "username": "exampleUser",
+    "email": "example@example.com",
+    "password": "y",
+    "date_of_birth": "2024-08-09"
+}
+
+###
+# ページ作成
+POST http://localhost:3000/api/portfolio/page
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "contact_address": "test",
+    "published": true,
+    "max_item": 3,
+    "max_depth": 2,
+    "max_score": 3
+}
+###
+# ページ削除
+DELETE http://localhost:3000/api/portfolio/page
+Content-Type: application/json
+
+{
+    "user_id": 1
+}
+###
+# チャート全取得
+GET http://localhost:3000/api/portfolio/chart/all/test?user_id=1
+###
+# チャート全取得
+GET http://localhost:3000/api/portfolio/chart/all?user_id=1
+###
+# チャート初期作成
+POST http://localhost:3000/api/portfolio/chart
+Content-Type: application/json
+
+{
+    "user_id":1,
+    "charts":
+    [
+        {"name":"0"},
+        {"name":"1"},
+        {"name":"2"},
+        {"name":"3"}
+    ],
+    "relations":[
+        {"parent_index":0,"child_index":0,"depth":0},
+        {"parent_index":0,"child_index":1,"depth":1},
+        {"parent_index":0,"child_index":2,"depth":1},
+        {"parent_index":0,"child_index":3,"depth":1},
+        {"parent_index":1,"child_index":1,"depth":1},
+        {"parent_index":2,"child_index":2,"depth":1},
+        {"parent_index":3,"child_index":3,"depth":1}],
+    "leaves":[
+        {"name":"1-0","score":5,"chart_index":1},
+        {"name":"1-1","score":3,"chart_index":1},
+        {"name":"1-2","score":4,"chart_index":1},
+        {"name":"2-1","score":3,"chart_index":2},
+        {"name":"2-2","score":1,"chart_index":2},
+        {"name":"2-3","score":2,"chart_index":2},
+        {"name":"3-1","score":2,"chart_index":3},
+        {"name":"3-2","score":2,"chart_index":3},
+        {"name":"3-3","score":2,"chart_index":3}
+    ]
+}
+###
+# チャート更新
 PUT http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
 
@@ -5,128 +79,189 @@ Content-Type: application/json
   "user_id": 1,
     "charts": [
       {
-        "id": 67,
-        "name": "IT",
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "id": 70,
+        "name": "0",
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
-        "id": 68,
-        "name": "プログラミング",
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "id": 71,
+        "name": "1",
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
-        "id": 69,
-        "name": "ネットワーク",
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "id": 72,
+        "name": "2",
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
+      },
+      {
+        "id": 73,
+        "name": "3",
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       }
     ],
     "relations": [
       {
-        "id": 166,
-        "page_id": 27,
-        "parent_id": 67,
-        "child_id": 67,
+        "id": 171,
+        "page_id": 29,
+        "parent_id": 70,
+        "child_id": 70,
         "depth": 0,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
-        "id": 167,
-        "page_id": 27,
-        "parent_id": 67,
-        "child_id": 68,
+        "id": 172,
+        "page_id": 29,
+        "parent_id": 70,
+        "child_id": 71,
         "depth": 1,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
-        "id": 168,
-        "page_id": 27,
-        "parent_id": 67,
-        "child_id": 69,
+        "id": 173,
+        "page_id": 29,
+        "parent_id": 70,
+        "child_id": 72,
         "depth": 1,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
-        "id": 169,
-        "page_id": 27,
-        "parent_id": 68,
-        "child_id": 68,
+        "id": 174,
+        "page_id": 29,
+        "parent_id": 70,
+        "child_id": 73,
         "depth": 1,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       },
       {
-        "id": 170,
-        "page_id": 27,
-        "parent_id": 69,
-        "child_id": 69,
+        "id": 175,
+        "page_id": 29,
+        "parent_id": 71,
+        "child_id": 71,
         "depth": 1,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
+      },
+      {
+        "id": 176,
+        "page_id": 29,
+        "parent_id": 72,
+        "child_id": 72,
+        "depth": 1,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
+      },
+      {
+        "id": 177,
+        "page_id": 29,
+        "parent_id": 73,
+        "child_id": 73,
+        "depth": 1,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z"
       }
     ],
     "leaves": [
       {
-        "id": 109,
-        "name": "アルゴリズム",
+        "id": 115,
+        "name": "1-0",
         "score": 5,
-        "chart_id": 68,
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "chart_id": 71,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 0
       },
       {
-        "id": 110,
-        "name": "基礎文法",
+        "id": 116,
+        "name": "1-1",
         "score": 3,
-        "chart_id": 68,
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "chart_id": 71,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 1
       },
       {
-        "id": 111,
-        "name": "データ構造",
+        "id": 117,
+        "name": "1-2",
         "score": 4,
-        "chart_id": 68,
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "chart_id": 71,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 2
       },
       {
-        "id": 112,
-        "name": "設計",
+        "id": 118,
+        "name": "2-1",
         "score": 3,
-        "chart_id": 69,
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "chart_id": 72,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 0
       },
       {
-        "id": 113,
-        "name": "DNS",
+        "id": 119,
+        "name": "2-2",
         "score": 1,
-        "chart_id": 69,
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "chart_id": 72,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 1
       },
       {
-        "id": 114,
-        "name": "DHP",
+        "id": 120,
+        "name": "2-3",
         "score": 2,
-        "chart_id": 69,
-        "page_id": 27,
-        "createdAt": "2024-09-24T10:54:57.330Z",
-        "updatedAt": "2024-09-24T10:54:57.330Z"
+        "chart_id": 72,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 2
+      },
+      {
+        "id": 121,
+        "name": "3-1",
+        "score": 2,
+        "chart_id": 73,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 0
+      },
+      {
+        "id": 122,
+        "name": "3-2",
+        "score": 2,
+        "chart_id": 73,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 1
+      },
+      {
+        "id": 123,
+        "name": "3-3",
+        "score": 2,
+        "chart_id": 73,
+        "page_id": 29,
+        "createdAt": "2024-09-24T11:36:19.514Z",
+        "updatedAt": "2024-09-24T11:37:46.917Z",
+        "itemNum": 2
       }
     ]
 }
