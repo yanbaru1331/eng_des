@@ -47,6 +47,7 @@ const chart = {
 const ViewChart: React.FC = ()=> {
     const [checkPublic, setCheckPublic] = useState<boolean>(false);
     const [charts, setCharts] = useState<chartRecived[]>([]);
+    const [maxScore, setMaxScore] = useState<number>(0);
     useEffect(() => {
     //     const checkUser = async () => {
     //     const res = await axios.get("http://localhost:3000/api/portfolio/page?user_id=1")
@@ -56,9 +57,12 @@ const ViewChart: React.FC = ()=> {
     //         }
             
     // }
+      //ここまだuser_idが固定値になっているので、後で変更する
         const getChart = async () => { 
             const res = await axios.get("http://localhost:3000/api/portfolio/chart/all/test?user_id=1")
             .then((res) => {
+                console.log("res=",res.data.data.pages.max_score);
+                setMaxScore(res.data.data.pages.max_score);
                 console.log("res=",res.data.data.charts);
                 const charts = res.data.data.charts;    
                 setCharts(charts);
@@ -81,13 +85,20 @@ const ViewChart: React.FC = ()=> {
           borderColor: "rgba(255, 99, 132, 1)",
           borderWidth: 2,
         },
+        {
+          label: c.title,
+          data: c.childrenScores,
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 2,
+        }
       ],
   }))
       const options = {
         scales: {
           r: {
             min: 0,
-            max: 5,
+            max: maxScore,
             stepSize: 1,
           },
         },

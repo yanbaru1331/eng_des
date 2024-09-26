@@ -145,7 +145,7 @@ const Modal= (props) => {
     const depth = Number(form.get("depth") as string) || "";
     const itemNum = Number(form.get("itemNum") as string) || "";
     const maxScore = Number(form.get("score") as string) || "";
-    const notPublished = Boolean(form.get("notPublished") as string) || "";
+    const notPublished = Boolean(form.get("notPublished") as string) || false;
     const title = form.get("title") as string || "";
     const queryParams = new URLSearchParams({
       title: title
@@ -156,20 +156,20 @@ const Modal= (props) => {
     if (props.type === "edit"){ 
       //ここに登録
   
-      // await axios.post("http://localhost:3000/api/portfolio/page", {
-      //   user_id: Number(userid),
-      //   contact_address: email,
-      //   published: notPublished,
-      //   max_item: itemNum,
-      //   max_depth: depth,
-      //   max_score: maxScore
-      // },  {
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   }
-      // }).then((res) => {
-      //   console.log(res);
-      // })
+      await axios.post("http://localhost:3000/api/portfolio/page", {
+        user_id: Number(userid),
+        contact_address: email,
+        published: notPublished,
+        max_item: itemNum,
+        max_depth: depth,
+        max_score: maxScore
+      },  {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((res) => {
+        console.log(res);
+      })
 
       console.log("dummyData");
       const postData = await dummyData(d,i, Number(userid));
