@@ -70,6 +70,10 @@ const ViewChart: React.FC = () => {
           console.log("res=", res.data.data.charts);
           const charts = res.data.data.charts;
           setCharts(charts);
+        }).catch((error) => {
+          if (error.response.message === "Portfolio page is not existed") {
+            console.log("error=", error.response.message);
+          }
         });
 
     }

@@ -2,9 +2,22 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
-// ChartData クラス: 点数以外の情報を格納
-class ChartData {
+import Button from '../components/Button';
+import { useParams } from "react-router-dom";
+import Account from "../components/Account";
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Radar } from "react-chartjs-2";
+import { ChartData } from "chart.js";
+// MyChartData クラス: 点数以外の情報を格納
+class MyChartData {
   name: string;
   parentId: number;
   chartId: number;
@@ -52,6 +65,31 @@ class leaf {
 
 }
 
+class chartRecived {
+  id: number;
+  title: string;
+  label: string[];
+  childrenId: number[];
+  depth: number;
+  childrenScores: number[];
+  childrenScoreAverage: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
+
+const viewChartSize = {
+  width: "400px",  // 固定幅
+  height: "400px", // 固定高さ
+  display: "flex",
+};
 const PulldownForm: React.FC = () => {
 
 
@@ -68,6 +106,8 @@ const PulldownForm: React.FC = () => {
   const searchTitle = searchParams.get('title');
   const navigate = useNavigate();
 
+  //描画周りの設定
+  const [viewCharts, setViewCharts] = useState<chartRecived[]>([]);
   //depth返すだけなら別に範囲計算でいいからここcaseで条件分岐すればいいのでは？
   // データを取得するためのAPIコール
 
@@ -99,8 +139,20 @@ const PulldownForm: React.FC = () => {
           navigate(`/userpage/${sessionStorage.getItem('userId')}`);
         });
     }
-    fetchUserData();
+    const getChart = async () => {
+      const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all/test?user_id=${sessionStorage.getItem('userId')}`)
+        .then((res) => {
+          const charts = res.data.data.charts;
+          setViewCharts(viewCharts);
+        }).catch((error) => {
+          if (error.response.message === "Portfolio page is not existed") {
+            console.log("error=", error.response.message);
+          }
+        });
 
+    }
+    fetchUserData();
+    getChart();
   }, []);
 
 
@@ -134,7 +186,7 @@ const PulldownForm: React.FC = () => {
     depth: 0,
   });
 
-  const [entries, setEntries] = useState<ChartData[]>([]);
+  const [entries, setEntries] = useState<MyChartData[]>([]);
   const [leafEntries, setLeafEntries] = useState<Leaf[]>([]);
 
   // フォームの入力を監視するハンドラ関数
@@ -182,7 +234,7 @@ const PulldownForm: React.FC = () => {
   const addOrUpdateEntry = () => {
 
     if (formState.name.trim() !== '' && formState.parentId !== -1 && formState.chartId !== -1) {
-      const newEntry: ChartData = { ...formState };
+      const newEntry: MyChartData = { ...formState };
 
       //子要素の編集
       if (leafFormState.depth === maxDepth) {
@@ -236,7 +288,7 @@ const PulldownForm: React.FC = () => {
 
   // 送信処理
   const onSubmit = async () => {
-    // const rootChart: ChartData = {
+    // const rootChart: MyChartData = {
     //   name: searchTitle as string,
     //   parentId: 0,
     //   childId: 0,
@@ -266,6 +318,35 @@ const PulldownForm: React.FC = () => {
       });
   };
 
+  // チャートの描画
+  const data = viewCharts.map((c) => ({
+    labels: c.label,
+    datasets: [
+      {
+        label: c.title,
+        data: c.childrenScores,
+        backgroundColor: '#33ccff',
+        borderColor: "00bfff",
+        borderWidth: 1,
+      },
+      {
+        label: "平均点",
+        data: Array.from({ length: c.childrenScores.length }, () => c.childrenScoreAverage),
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 2,
+      }
+    ],
+  }))
+  const options = {
+    scales: {
+      r: {
+        min: 0,
+        max: maxScore,
+        stepSize: 1,
+      },
+    },
+  };
   // JSXのレンダリング
   return (
     <form>
@@ -335,9 +416,9 @@ const PulldownForm: React.FC = () => {
       )}
 
       <div>
-        <button type="button" onClick={addOrUpdateEntry}>
-          追加/更新
-        </button>
+        <Button type="button" onClick={addOrUpdateEntry}>
+          登録
+        </Button>
       </div>
 
       <div>
@@ -364,9 +445,17 @@ const PulldownForm: React.FC = () => {
       </div>
 
       <div>
-        <button type="button" onClick={onSubmit}>
-          送信
-        </button>
+        <Button type="button" onClick={onSubmit}>
+          更新
+        </Button>
+        <Button>戻る</Button>
+      </div>
+      <div>
+        {data.map((c, i) => (
+          <div key={i} style={viewChartSize} className="chart">
+            <Radar data={c} options={options} />
+          </div>
+        ))}
       </div>
     </form>
   );
