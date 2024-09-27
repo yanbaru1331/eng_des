@@ -1,12 +1,32 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../prisma_client';
 
-export async function createPortfolioPage(data: Prisma.portfolio_pagesCreateInput) {
+export async function createPortfolioPage(pageData: Prisma.portfolio_pagesCreateInput, scoreStandardsData: string[]) {
     try {
-        const portfolioPage = await prisma.portfolio_pages.create({
-            data: data,
-        });
-        return portfolioPage;
+        return await prisma.$transaction(async (prisma) => {
+            const createdPage = await prisma.portfolio_pages.create({
+                data: pageData,
+            });
+            await prisma.score_standards.createMany({
+                data: scoreStandardsData.map((standard: string, index: number) => ({
+                    page_id: createdPage.id,
+                    standard: standard,
+                    score_num: index
+                })),
+            });
+            const createdScoreStandards = await prisma.score_standards.findMany({
+                where: {
+                    page_id: createdPage.id,  // 作成したページのIDに関連するレコードを取得
+                },
+            });
+            const createdData = {
+                createdPage: createdPage,
+                createdScoreStandards: createdScoreStandards
+            }
+            console.log(createdPage);
+            console.log(createdScoreStandards)
+            return createdData;
+        })
     } catch (error) {
         console.error('Error creating portfolio page:', error);
         throw error;
@@ -21,6 +41,18 @@ export async function getPortfolioPage(userId: number) {
         return portfolioPage;
     } catch (error) {
         console.error('Error fetching portfolio page:', error);
+        throw error;
+    }
+}
+
+export async function getScoreStandards(pageId: number) {
+    try {
+        const scoreStandards = await prisma.score_standards.findMany({
+            where: { page_id: pageId },
+        });
+        return scoreStandards;
+    } catch (error) {
+        console.error('Error fetching score standard:', error);
         throw error;
     }
 }

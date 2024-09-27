@@ -1,0 +1,39 @@
+# ユーザ作成
+POST http://localhost:3000/api/user
+Content-Type: application/json
+
+{
+    "username": "exampleUser",
+    "email": "example@example.com",
+    "password": "y",
+    "date_of_birth": "2024-08-09"
+}
+
+###
+# ページ作成
+POST http://localhost:3000/api/portfolio/page
+Content-Type: application/json
+
+{
+    "user_id": 1,
+    "contact_address": "test",
+    "published": true,
+    "max_item": 3,
+    "max_depth": 2,
+    "max_score": 3,
+    "score_standards": ["何もできない","概念がわかる","調べながら資料が読める","調べながら作ることができる"]
+}
+###
+# ページ取得
+GET http://localhost:3000/api/portfolio/page?user_id=1
+###
+# ページ削除
+DELETE http://localhost:3000/api/portfolio/page
+Content-Type: application/json
+
+{
+    "user_id": 1
+}
+###
+# スコア基準取得
+GET http://localhost:3000/api/portfolio/page/score_standard?user_id=1
