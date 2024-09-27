@@ -175,7 +175,8 @@ const Modal = (props) => {
         published: notPublished,
         max_item: itemNum,
         max_depth: depth,
-        max_score: maxScore
+        max_score: maxScore,
+        score_standards: scoreStandards
       }, {
         headers: {
           'Content-Type': 'application/json'

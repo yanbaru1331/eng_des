@@ -49,6 +49,7 @@ const ViewChart: React.FC = () => {
   const [notPublic, setNotPublic] = useState<boolean>(false);
   const [charts, setCharts] = useState<chartRecived[]>([]);
   const [maxScore, setMaxScore] = useState<number>(0);
+  const [scoreStandards, setScoreStandards] = useState<string[]>([]);
   const navigate = useNavigate();
   useEffect(() => {
     const viewChartUserId = location.pathname.split("/")[2];
@@ -80,8 +81,16 @@ const ViewChart: React.FC = () => {
     if (viewChartUserId !== sessionStorage.getItem('userId')) {
       checkUser();
     }
+    const getScoreStandards = async () => {
+      const res = await axios.get(`http://localhost:3000/api/portfolio/page/score_standard?user_id=${viewChartUserId}`)
+        .then((res) => {
+          console.log("res=", res.data.data);
+          const scoreStandards = res.data.data;
+          setScoreStandards(scoreStandards);
+        })
+    }
     getChart();
-
+    getScoreStandards();
   }, []);
   console.log("charts = " + (charts));
 
@@ -128,6 +137,11 @@ const ViewChart: React.FC = () => {
   }
   return (
     <>
+      <div>点数区分</div>
+      {scoreStandards.map((s, i) => (
+        <div key={i}>点数{i}点   {s}</div>
+      ))}
+
       {data.map((c, i) => (
         <div key={i} style={chart} className="chart">
           <Radar data={c} options={options} />
