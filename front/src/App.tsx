@@ -8,7 +8,6 @@ import Weight from './Chart';
 import ViewChart from './viewChart';
 
 function App() {
-  const message = 'こんにちは React!!';
   useEffect(() => {
     fetch(`http://localhost:3000/test-cors`)
       .then(response => response.json())
