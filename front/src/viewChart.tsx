@@ -70,6 +70,10 @@ const ViewChart: React.FC = () => {
           console.log("res=", res.data.data.charts);
           const charts = res.data.data.charts;
           setCharts(charts);
+        }).catch((error) => {
+          if (error.response.message === "Portfolio page is not existed") {
+            console.log("error=", error.response.message);
+          }
         });
 
     }
@@ -88,13 +92,13 @@ const ViewChart: React.FC = () => {
       {
         label: c.title,
         data: c.childrenScores,
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 2,
+        backgroundColor: '#33ccff',
+        borderColor: "00bfff",
+        borderWidth: 1,
       },
       {
-        label: c.title,
-        data: c.childrenScores,
+        label: "平均点",
+        data: Array.from({ length: c.childrenScores.length }, () => c.childrenScoreAverage),
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 2,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Button from '../components/Button';
@@ -16,6 +16,12 @@ const UserPage: React.FC = () => {
         navigate(`/`);
     };
 
+    useEffect(() => {
+        if (sessionStorage.getItem('userId') === null) {
+            alert("ログインしてください");
+            navigate(`/`);
+        }
+    }, );
     const ShowModal = () => {
         axios.get("http://localhost:3000/api/portfolio/page?user_id=" + sessionStorage.getItem('userId'))
             .then(() => {
