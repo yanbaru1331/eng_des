@@ -40,10 +40,22 @@ model portfolio_pages {
   rader_chart_leafs               portfolio_rader_chart_leaves[]
   portfolio_rader_chart_relations portfolio_rader_chart_relations[] @relation("Page")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @default(now()) @updatedAt
+  score_standartds score_standards[]
 
   @@map(name: "portfolio_pages")
+}
+
+model score_standards {
+  id        Int    @id @default(autoincrement())
+  page_id   Int
+  score_num Int
+  standard  String
+
+  page portfolio_pages @relation(fields: [page_id], references: [id], onDelete: Cascade)
+
+  @@map(name: "portfolio_score_standards")
 }
 
 model portfolio_rader_chart_leaves {

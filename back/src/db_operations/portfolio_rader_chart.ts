@@ -29,7 +29,13 @@ export async function createPortfolioRaderChartsData(
         console.log(portfolioLeavesData);
         const result = await prisma.$transaction(async (prisma) => {
             // 1. チャートの更新または作成
-            const createdCharts = [];
+            const createdCharts: {
+                id: number;
+                name: string;
+                page_id: number;
+                createdAt: Date;
+                updatedAt: Date;
+            }[] = [];
             for (const chartData of portfolioChartsData) {
 
                 const createdChart = await prisma.portfolio_rader_charts.create({
