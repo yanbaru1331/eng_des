@@ -15,13 +15,20 @@ const UserPage: React.FC = () => {
         sessionStorage.removeItem('userId');
         navigate(`/`);
     };
+    const [userName, setUserNmae] = useState("");
 
     useEffect(() => {
         if (sessionStorage.getItem('userId') === null) {
             alert("ログインしてください");
             navigate(`/`);
         }
-    }, );
+        const getUsername = async () => {
+            const res = await axios.get("http://localhost:3000/api/user?user_id=" + sessionStorage.getItem('userId'));
+            console.log(res.data.data.username);
+            setUserNmae(res.data.data.username);
+        }
+        getUsername();
+    },);
     const ShowModal = () => {
         axios.get("http://localhost:3000/api/portfolio/page?user_id=" + sessionStorage.getItem('userId'))
             .then(() => {
@@ -53,7 +60,7 @@ const UserPage: React.FC = () => {
 
     return (
         <div>
-            <h1>Hello {userid}!</h1>
+            <h1>Hello {userName}!</h1>
             <Button onClick={viewChart}>チャートを標示</Button>
             {
                 //ここでログインしているユーザーが自分自身のページの時だけ管理モードを表示
