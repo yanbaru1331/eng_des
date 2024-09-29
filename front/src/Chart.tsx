@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from 'react';
+import React, { useState, ChangeEvent, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -101,6 +101,7 @@ const PulldownForm: React.FC = () => {
   const [charts, setCharts] = useState<chart[]>([]);
   const [leaves, setLeaves] = useState<leaf[]>([]);
   const [relations, setLeations] = useState<Relations[]>([]);
+  const [scoreStandards, setScoreStandards] = useState<string[]>([]);
   // タイトルを取得する
   const searchParams = new URLSearchParams(location.search);
   const searchTitle = searchParams.get('title');
@@ -142,7 +143,8 @@ const PulldownForm: React.FC = () => {
       const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all/test?user_id=${sessionStorage.getItem('userId')}`)
         .then((res) => {
           const charts = res.data.data.charts;
-          setViewCharts(viewCharts);
+          console.log("charts=", charts);
+          setViewCharts(charts);
         }).catch((error) => {
           if (error.response.message === "Portfolio page is not existed") {
             console.log("error=", error.response.message);
@@ -150,8 +152,19 @@ const PulldownForm: React.FC = () => {
         });
 
     }
+    const getScoreStandards = async () => {
+      const res = await axios.get(`http://localhost:3000/api/portfolio/page/score_standard?user_id=${sessionStorage.getItem('userId')}`)
+        .then((res) => {
+          console.log("res=", res.data.data);
+          const scoreStandards = res.data.data;
+          setScoreStandards(scoreStandards);
+        })
+    }
+
+
     fetchUserData();
     getChart();
+    getScoreStandards();
   }, []);
 
 
@@ -232,14 +245,15 @@ const PulldownForm: React.FC = () => {
   const backPage = () => {
     navigate(`/userpage/${sessionStorage.getItem('userId')}`);
   }
+
   // フォームの追加または更新を行う関数
   const addOrUpdateEntry = () => {
 
     if (formState.name.trim() !== '' && formState.parentId !== -1 && formState.chartId !== -1) {
       const newEntry: MyChartData = { ...formState };
-
+      console.log("newEntry=", newEntry);
       //子要素の編集
-      if (leafFormState.depth === maxDepth) {
+      if (leafFormState.depth === maxDepth && formState.itemNum !== 100) {
         const newLeafEntry: Leaf = { ...leafFormState };
         console.log("newLeafEntry=", newLeafEntry);
         let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.itemNum === newLeafEntry.itemNum - 1);
@@ -258,6 +272,7 @@ const PulldownForm: React.FC = () => {
       }
       else if (formState.itemNum === 100) {
         //既存のデータの選択されたチャートIDの名前を変更する処理
+        console.log("nameChange", formState.name);
         charts[charts.findIndex((val) => val.id === formState.chartId)].name = formState.name;
         setEntries(prev => [...prev, newEntry]);
       }
@@ -292,7 +307,7 @@ const PulldownForm: React.FC = () => {
   const onSubmit = async () => {
 
     const postData = {
-      user_id: sessionStorage.getItem('userId'),
+      user_id: Number(sessionStorage.getItem('userId')),
       charts: charts,
       //ここ自動生成
       relations: relations,
@@ -311,10 +326,25 @@ const PulldownForm: React.FC = () => {
       .catch((error) => {
         console.log(error);
       });
+    const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all/test?user_id=${sessionStorage.getItem('userId')}`)
+      .then((res) => {
+        console.log("res=", res.data.data.pages.max_score);
+        setMaxScore(res.data.data.pages.max_score);
+        console.log("res=", res.data.data.charts);
+        const charts = res.data.data.charts;
+        setCharts(charts);
+      }).catch((error) => {
+        if (error.response.message === "Portfolio page is not existed") {
+          console.log("error=", error.response.message);
+        }
+      });
+    // navigate(`/userpage/${sessionStorage.getItem('userId')}/chart`);
+    window.location.reload();
   };
 
+  //useMemo で第位置引数はdaya=の部分 第に引数にviewChartsを入れる
   // チャートの描画
-  const data = viewCharts.map((c) => ({
+  const data = useMemo(() => viewCharts.map((c) => ({
     labels: c.label,
     datasets: [
       {
@@ -332,7 +362,7 @@ const PulldownForm: React.FC = () => {
         borderWidth: 2,
       }
     ],
-  }))
+  })), [viewCharts]);
   const options = {
     scales: {
       r: {
@@ -344,107 +374,116 @@ const PulldownForm: React.FC = () => {
   };
   // JSXのレンダリング
   return (
-    <form>
-      <div>
-        <label>
-          グラフ番号を選択してください:
-          <select value={formState.chartId} onChange={handleChartChartIdChange}>
-            <option value="">選択してください</option>
-            {charts.map(c => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          タイトルを入力:
-          <input
-            type="text"
-            value={formState.name}
-            onChange={handleTitleChange}
-            placeholder="テキストを入力"
-          // disabled={formState.parentId === 0 || formState.chartId === 0}
-          />
-        </label>
-      </div>
-
-      {formState.depth === maxDepth && (
-
+    <>
+      <form>
         <div>
           <label>
-            頂点の位置を決定してください:
-            <select value={
-              formState.itemNum === 100
-                ? "自身を修正"
-                :
-                formState.itemNum
-            } onChange={handleChartItemChange}>
+            グラフ番号を選択してください:
+            <select value={formState.chartId} onChange={handleChartChartIdChange}>
               <option value="">選択してください</option>
-              {choiceItem.map(choice2 => (
-                <option key={choice2} value={choice2}>
-                  {choice2}
+              {charts.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
                 </option>
               ))}
             </select>
           </label>
         </div>
-      )}
-
-      {formState.depth === maxDepth && (
-
         <div>
           <label>
-            点数を決定してください:
-            <select value={leafFormState.score} onChange={handleScoreChange}>
-              <option value="">選択してください</option>
-              {choiseScore.map(score => (
-                <option key={score} value={score}>
-                  {score}
-                </option>
-              ))}
-            </select>
+            タイトルを入力:
+            <input
+              type="text"
+              value={formState.name}
+              onChange={handleTitleChange}
+              placeholder="テキストを入力"
+            // disabled={formState.parentId === 0 || formState.chartId === 0}
+            />
           </label>
         </div>
-      )}
 
-      <div>
-        <Button type="button" onClick={addOrUpdateEntry}>
-          登録
-        </Button>
-      </div>
+        {formState.depth === maxDepth && (
 
-      <div>
-        <h3>追加された項目:</h3>
-        <ul>
-          {entries.map((entry, index) => (
-            <li key={index}>
-              親 Chart: {entry.parentId}, グラフ番号:{entry.chartId}, 頂点位置: {entry.itemNum}, タイトル: {entry.name}
-            </li>
-          ))}
-        </ul>
-        {leafEntries.length > 0 && (
-          <>
-            <h4>Leafs:</h4>
-            <ul>
-              {leafEntries.map((leaf, index) => (
-                <li key={index}>
-                  タイトル: {leaf.title}, 点数: {leaf.score}
-                </li>
-              ))}
-            </ul>
-          </>
+          <div>
+            <label>
+              頂点の位置を決定してください:
+              <select value={
+                formState.itemNum === 100
+                  ? "自身を修正"
+                  :
+                  formState.itemNum
+              } onChange={handleChartItemChange}>
+                <option value="">選択してください</option>
+                {choiceItem.map(choice2 => (
+                  <option key={choice2} value={choice2}>
+                    {choice2}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
         )}
-      </div>
 
-      <div>
-        <Button type="button" onClick={onSubmit}>
-          更新
-        </Button>
-        <Button onClick={backPage}>戻る</Button>
-      </div>
+        {formState.depth === maxDepth && (
+
+          <div>
+            <label>
+              点数を決定してください:
+              <select value={leafFormState.score} onChange={handleScoreChange}>
+                <option value="">選択してください</option>
+                {choiseScore.map(score => (
+                  <option key={score} value={score}>
+                    {score}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
+
+        <div>
+          <Button type="button" onClick={addOrUpdateEntry}>
+            登録
+          </Button>
+        </div>
+
+        <div>
+          <h3>追加された項目:</h3>
+          <ul>
+            {entries.map((entry, index) => (
+              <li key={index}>
+                親 Chart: {entry.parentId}, グラフ番号:{entry.chartId}, 頂点位置: {entry.itemNum}, タイトル: {entry.name}
+              </li>
+            ))}
+          </ul>
+          {leafEntries.length > 0 && (
+            <>
+              <h4>Leafs:</h4>
+              <ul>
+                {leafEntries.map((leaf, index) => (
+                  <li key={index}>
+                    タイトル: {leaf.title}, 点数: {leaf.score}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+
+        <div>
+          <Button type="button" onClick={onSubmit}>
+            送信
+          </Button>
+          <Button onClick={backPage}>戻る</Button>
+          <Button onClick={() => navigate(`/userpage/${sessionStorage.getItem('userId')}/chart/view`)}>実際のページで確認</Button>
+        </div>
+
+      </form>
+      <div>点数区分</div>
+      {scoreStandards.map((s, i) => (
+        <div key={i}>点数{i}点   {s}</div>
+      ))}
+
       <div>
         {data.map((c, i) => (
           <div key={i} style={viewChartSize} className="chart">
@@ -452,7 +491,7 @@ const PulldownForm: React.FC = () => {
           </div>
         ))}
       </div>
-    </form>
+    </>
   );
 };
 
