@@ -85,6 +85,10 @@ ChartJS.register(
   Legend
 );
 
+class choiceChartClass {
+  name: string;
+  id: number;
+}
 const viewChartSize = {
   width: "400px",  // 固定幅
   height: "400px", // 固定高さ
@@ -173,8 +177,8 @@ const PulldownForm: React.FC = () => {
   const choiceParent: number[] = Array.from({ length: maxDepth }, (_, i) => i + 1);
 
   //グラフの頂点番号
-  const choiceItem: string[] = Array.from({ length: maxItem }, (_, i) => (i + 1).toString()).concat("自身を修正");
-
+  // const choiceItem: string[] = Array.from({ length: maxItem }, (_, i) => (i + 1).toString()).concat("自身を修正");
+  const [choiceItem, setChoiceItem] = useState<choiceChartClass[]>([]);
 
   const [choiceChart, setChoiceChart] = useState<string[]>(charts.map((chart) => chart.name));
   //スコア
@@ -232,6 +236,16 @@ const PulldownForm: React.FC = () => {
       setFormState(prev => ({ ...prev, depth: checkDepth }));
       setLeafFormState(prev => ({ ...prev, depth: checkDepth }));
     }
+
+    //choiceItemを書き換える処理
+    //チャートのIdを要求->チャートのidにそうleavesを取得
+    let tmpleaf = [{ name: "自身を修正", id: 100 }];
+    leaves.map((leaf) => {
+      if (leaf.chart_id === Number(e.target.value)) {
+        tmpleaf.push({ name: leaf.name, id: leaf.itemNum });
+      }
+      setChoiceItem(tmpleaf);
+    })
   }
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormState(prev => ({ ...prev, name: e.target.value }));
@@ -414,9 +428,9 @@ const PulldownForm: React.FC = () => {
                   formState.itemNum
               } onChange={handleChartItemChange}>
                 <option value="">選択してください</option>
-                {choiceItem.map(choice2 => (
-                  <option key={choice2} value={choice2}>
-                    {choice2}
+                {choiceItem.map(c => (
+                  <option key={c.name} value={c.id}>
+                    {c.name}
                   </option>
                 ))}
               </select>
