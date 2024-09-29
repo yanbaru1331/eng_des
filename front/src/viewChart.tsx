@@ -57,7 +57,8 @@ const ViewChart: React.FC = () => {
     //ここでチャートを取得するかどうかの判断
     const checkUser = async () => {
       const res = await axios.get(`http://localhost:3000/api/portfolio/page?user_id=${viewChartUserId}`);
-      if (res.data.published !== true) {
+      console.log("checkres=", res.data.data);
+      if (res.data.data.published !== true) {
         setNotPublic(true);
       }
 

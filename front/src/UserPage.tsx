@@ -23,7 +23,7 @@ const UserPage: React.FC = () => {
             navigate(`/`);
         }
         const getUsername = async () => {
-            const res = await axios.get("http://localhost:3000/api/user?user_id=" + sessionStorage.getItem('userId'));
+            const res = await axios.get("http://localhost:3000/api/user?user_id=" + location.pathname.split("/")[2]);
             console.log(res.data.data.username);
             setUserNmae(res.data.data.username);
         }
