@@ -25,7 +25,7 @@ const UserPage: React.FC = () => {
         axios.get("http://localhost:3000/api/portfolio/page?user_name=" + search)
             .then((res) => {
                 console.log(res);
-                navigate(`/userpage/${res.data.user_id}/chart/view`);
+                navigate(`/userpage/${res.data.data.user_id}/chart/view`);
             })
             .catch((error) => {
                 setErrorMessage(true);
