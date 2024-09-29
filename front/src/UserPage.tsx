@@ -65,7 +65,7 @@ const UserPage: React.FC = () => {
             {
                 //ここでログインしているユーザーが自分自身のページの時だけ管理モードを表示
                 //バックとネゴシエーションできたら個々の処理を書き直しておく
-                sessionStorage.getItem('AUTHORITY') !== "" &&
+                sessionStorage.getItem('userId') === location.pathname.split("/")[2] &&
                 <div>
                     <Button type="submit" onClick={ShowModal}>チャート登録・編集</Button>
                     <Button type="submit" onClick={delChart}>チャート削除</Button>

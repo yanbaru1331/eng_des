@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
@@ -13,6 +13,12 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (sessionStorage.getItem('userId') !== null) {
+      navigate(`/userpage/${sessionStorage.getItem('userId')}`);
+    }
+  }
+  );
 
   const handleLogin = () => {
     axios.post("http://localhost:3000/api/user/login", {
@@ -27,7 +33,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       if (res.data.userId) {
         sessionStorage.setItem('userId', res.data.userId);
         navigate(`/userpage/${res.data.userId}`);
-        }else{
+      } else {
         navigate(`/login`);
       }
     }).catch((error) => {
@@ -36,8 +42,8 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
 
 
     // navigate(`/userpage/${user}`);
-      ///userpage/$(user)に遷移するページを作成
-      // Navigate({to: "/userpage/$(user)"});
+    ///userpage/$(user)に遷移するページを作成
+    // Navigate({to: "/userpage/$(user)"});
 
 
   };
