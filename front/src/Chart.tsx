@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Button from '../components/Button';
-import { useParams } from "react-router-dom";
-import Account from "../components/Account";
+
+
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -15,7 +15,7 @@ import {
   Legend,
 } from "chart.js";
 import { Radar } from "react-chartjs-2";
-import { ChartData } from "chart.js";
+
 // MyChartData クラス: 点数以外の情報を格納
 class MyChartData {
   name: string;
@@ -135,7 +135,6 @@ const PulldownForm: React.FC = () => {
         .catch((error) => {
           console.log(error);
           alert("データの取得に失敗しました \n初回作成データを作成してください\n何回も表示される場合は管理者へ問い合わせを行ってください");
-          // console.log("error=");
           navigate(`/userpage/${sessionStorage.getItem('userId')}`);
         });
     }
@@ -230,6 +229,9 @@ const PulldownForm: React.FC = () => {
     setLeafFormState(prev => ({ ...prev, score: Number(e.target.value) }));
   };
 
+  const backPage = () => {
+    navigate(`/userpage/${sessionStorage.getItem('userId')}`);
+  }
   // フォームの追加または更新を行う関数
   const addOrUpdateEntry = () => {
 
@@ -288,14 +290,7 @@ const PulldownForm: React.FC = () => {
 
   // 送信処理
   const onSubmit = async () => {
-    // const rootChart: MyChartData = {
-    //   name: searchTitle as string,
-    //   parentId: 0,
-    //   childId: 0,
-    //   depth: 0,
-    // };
 
-    // const allEntries = [rootChart, ...entries];
     const postData = {
       user_id: sessionStorage.getItem('userId'),
       charts: charts,
@@ -448,7 +443,7 @@ const PulldownForm: React.FC = () => {
         <Button type="button" onClick={onSubmit}>
           更新
         </Button>
-        <Button>戻る</Button>
+        <Button onClick={backPage}>戻る</Button>
       </div>
       <div>
         {data.map((c, i) => (
