@@ -82,7 +82,7 @@ PortfolioPageApp.delete(
 
         try {
             const deletedPortfolioPage = await deletePortfolioPage(user_id);  // deleteUser関数を呼び出してユーザーを削除
-            return c.json({ message: 'PortfolioPage deleted successfully', user_id: user_id, portfolio_page_id: deletedPortfolioPage.id }, 200);  // 削除成功時のレスポンス
+            return c.json({ user_id: user_id, portfolio_page_id: deletedPortfolioPage.id }, 200);  // 削除成功時のレスポンス
         } catch (error) {
             console.error('Error deleting PortfolioPage:', error);
             return c.json({ error: 'Failed to delete PortfolioPage' }, 500);  // エラー発生時のレスポンス
