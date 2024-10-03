@@ -12,6 +12,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loginFaild, setLoginFaild] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem('userId') !== null) {
@@ -38,6 +39,8 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       }
     }).catch((error) => {
       console.log(error);
+      console.log(error.response.status);
+      setLoginFaild(true);
     });
 
 
@@ -68,6 +71,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
         />
       </label>
       <Button type="button" size="large" onClick={handleLogin}>ログイン</Button>
+      {loginFaild && <p>ログインに失敗しました</p>}
     </form>
   );
 };
