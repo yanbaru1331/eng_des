@@ -59,7 +59,7 @@ PortfolioPageApp.post(
             const newPortfolioPage = await createPortfolioPage(pageData, scoreStandards);
 
             // 成功レスポンスを返す
-            return c.json({ message: 'Portfolio page created successfully', portfolioPage: newPortfolioPage }, 201);
+            return c.json({ portfolio_page: newPortfolioPage }, 201);
         } catch (error) {
             console.error('Error creating portfolio page:', error);
             // エラーレスポンスを返す
@@ -82,7 +82,7 @@ PortfolioPageApp.delete(
 
         try {
             const deletedPortfolioPage = await deletePortfolioPage(user_id);  // deleteUser関数を呼び出してユーザーを削除
-            return c.json({ message: 'PortfolioPage deleted successfully', UserId: user_id, PortfolioPageId: deletedPortfolioPage.id }, 200);  // 削除成功時のレスポンス
+            return c.json({ message: 'PortfolioPage deleted successfully', user_id: user_id, portfolio_page_id: deletedPortfolioPage.id }, 200);  // 削除成功時のレスポンス
         } catch (error) {
             console.error('Error deleting PortfolioPage:', error);
             return c.json({ error: 'Failed to delete PortfolioPage' }, 500);  // エラー発生時のレスポンス
@@ -107,12 +107,12 @@ PortfolioPageApp.get(
                 const scoreStandards = await getScoreStandards(page.id);
                 if (!scoreStandards) {
                     console.error('scoreStandards is not existing', page);
-                    return c.json({ error: 'scorstandards is not existing ', getPortfolioPage: page }, 400);
+                    return c.json({ error: 'scorstandards is not existing ', get_portfolio_page: page }, 400);
                 }
 
                 const scoreStandardsArray: String[] = scoreStandards.map((item) => item.standard);
 
-                return c.json({ message: 'get score standards are successfully', data: scoreStandardsArray }, 200);
+                return c.json({ data: scoreStandardsArray }, 200);
             } else {
                 console.error('portfoliopage is not existing');
                 return c.json({ error: 'portfoliopage is not existing ' }, 400);

@@ -40,8 +40,8 @@ model portfolio_pages {
   rader_chart_leafs               portfolio_rader_chart_leaves[]
   portfolio_rader_chart_relations portfolio_rader_chart_relations[] @relation("Page")
 
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
+  created_at       DateTime          @default(now())
+  updated_at       DateTime          @default(now()) @updatedAt
   score_standartds score_standards[]
 
   @@map(name: "portfolio_pages")
@@ -67,8 +67,8 @@ model portfolio_rader_chart_leaves {
   chart    portfolio_rader_charts @relation(fields: [chart_id], references: [id], onDelete: Cascade)
   page     portfolio_pages        @relation(fields: [page_id], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   @@map(name: "portfolio_rader_chart_leaves")
 }
@@ -82,8 +82,8 @@ model portfolio_rader_charts {
   parents  portfolio_rader_chart_relations[] @relation("Parent")
   children portfolio_rader_chart_relations[] @relation("Child")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   @@map(name: "portfolio_rader_chart")
 }
@@ -99,8 +99,8 @@ model portfolio_rader_chart_relations {
   parent portfolio_rader_charts? @relation("Parent", fields: [parent_id], references: [id], onDelete: Cascade)
   child  portfolio_rader_charts? @relation("Child", fields: [child_id], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 
   @@map(name: "portfolio_radar_chart_relation")
 }

@@ -8,14 +8,30 @@ Content-Type: application/json
     "password": "y",
     "date_of_birth": "2024-08-09"
 }
+###
+DELETE http://localhost:3000/api/user
+Content-Type: application/json
 
+{
+  "user_id": 14
+}
+###
+GET http://localhost:3000/api/user?user_id=15
+###
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "email": "example@example.com",
+    "password": "y"
+}
 ###
 # ページ作成
 POST http://localhost:3000/api/portfolio/page
 Content-Type: application/json
 
 {
-    "user_id": 1,
+    "user_id": 15,
     "contact_address": "test",
     "published": true,
     "max_item": 3,
@@ -25,31 +41,31 @@ Content-Type: application/json
 }
 ###
 # ページ取得
-GET http://localhost:3000/api/portfolio/page?user_id=1
+GET http://localhost:3000/api/portfolio/page?user_id=15
 ###
 # ページ削除
 DELETE http://localhost:3000/api/portfolio/page
 Content-Type: application/json
 
 {
-    "user_id": 1
+    "user_id": 10
 }
 ###
 # スコア基準取得
-GET http://localhost:3000/api/portfolio/page/score_standard?user_id=1
+GET http://localhost:3000/api/portfolio/page/score_standard?user_id=12
 ###
 # チャート全取得
-GET http://localhost:3000/api/portfolio/chart/all/test?user_id=1
+GET http://localhost:3000/api/portfolio/chart/all_view_format?user_id=12
 ###
 # チャート全取得
-GET http://localhost:3000/api/portfolio/chart/all?user_id=1
-### 
+GET http://localhost:3000/api/portfolio/chart/all_update_format?user_id=12
+###
 # チャート初期作成
 POST http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
 
 {
-    "user_id":1,
+    "user_id":15,
     "charts":
     [
         {"name":"0"},
@@ -83,192 +99,183 @@ PUT http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
 
 {
-  "user_id": 1,
+  "user_id": 10,
     "charts": [
       {
-        "id": 70,
+        "id": 111,
         "name": "0",
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 71,
+        "id": 112,
         "name": "1",
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 72,
+        "id": 113,
         "name": "2",
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 73,
+        "id": 114,
         "name": "3",
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       }
     ],
     "relations": [
       {
-        "id": 171,
-        "page_id": 29,
-        "parent_id": 70,
-        "child_id": 70,
+        "id": 245,
+        "page_id": 77,
+        "parent_id": 111,
+        "child_id": 111,
         "depth": 0,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 172,
-        "page_id": 29,
-        "parent_id": 70,
-        "child_id": 71,
+        "id": 246,
+        "page_id": 77,
+        "parent_id": 111,
+        "child_id": 112,
         "depth": 1,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 173,
-        "page_id": 29,
-        "parent_id": 70,
-        "child_id": 72,
+        "id": 247,
+        "page_id": 77,
+        "parent_id": 111,
+        "child_id": 113,
         "depth": 1,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 174,
-        "page_id": 29,
-        "parent_id": 70,
-        "child_id": 73,
+        "id": 248,
+        "page_id": 77,
+        "parent_id": 111,
+        "child_id": 114,
         "depth": 1,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 175,
-        "page_id": 29,
-        "parent_id": 71,
-        "child_id": 71,
+        "id": 249,
+        "page_id": 77,
+        "parent_id": 112,
+        "child_id": 112,
         "depth": 1,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 176,
-        "page_id": 29,
-        "parent_id": 72,
-        "child_id": 72,
+        "id": 250,
+        "page_id": 77,
+        "parent_id": 113,
+        "child_id": 113,
         "depth": 1,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 177,
-        "page_id": 29,
-        "parent_id": 73,
-        "child_id": 73,
+        "id": 251,
+        "page_id": 77,
+        "parent_id": 114,
+        "child_id": 114,
         "depth": 1,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z"
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       }
     ],
     "leaves": [
       {
-        "id": 115,
+        "id": 205,
         "name": "1-0",
         "score": 5,
-        "chart_id": 71,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 0
+        "chart_id": 112,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 116,
+        "id": 206,
         "name": "1-1",
         "score": 3,
-        "chart_id": 71,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 1
+        "chart_id": 112,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 117,
+        "id": 207,
         "name": "1-2",
         "score": 4,
-        "chart_id": 71,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 2
+        "chart_id": 112,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 118,
+        "id": 208,
         "name": "2-1",
         "score": 3,
-        "chart_id": 72,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 0
+        "chart_id": 113,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 119,
+        "id": 209,
         "name": "2-2",
         "score": 1,
-        "chart_id": 72,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 1
+        "chart_id": 113,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 120,
+        "id": 210,
         "name": "2-3",
         "score": 2,
-        "chart_id": 72,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 2
+        "chart_id": 113,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 121,
+        "id": 211,
         "name": "3-1",
         "score": 2,
-        "chart_id": 73,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 0
+        "chart_id": 114,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 122,
+        "id": 212,
         "name": "3-2",
         "score": 2,
-        "chart_id": 73,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 1
+        "chart_id": 114,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       },
       {
-        "id": 123,
+        "id": 213,
         "name": "3-3",
         "score": 2,
-        "chart_id": 73,
-        "page_id": 29,
-        "createdAt": "2024-09-24T11:36:19.514Z",
-        "updatedAt": "2024-09-24T11:37:46.917Z",
-        "itemNum": 2
+        "chart_id": 114,
+        "page_id": 77,
+        "created_at": "2024-10-03T02:55:16.483Z",
+        "updated_at": "2024-10-03T02:55:16.483Z"
       }
     ]
 }

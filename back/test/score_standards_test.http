@@ -36,4 +36,4 @@ Content-Type: application/json
 }
 ###
 # スコア基準取得
-GET http://localhost:3000/api/portfolio/page/score_standard?user_id=1
+GET http://localhost:3000/api/portfolio/page/score_standard?user_id=7

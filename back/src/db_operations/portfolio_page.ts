@@ -19,13 +19,13 @@ export async function createPortfolioPage(pageData: Prisma.portfolio_pagesCreate
                     page_id: createdPage.id,  // 作成したページのIDに関連するレコードを取得
                 },
             });
-            const createdData = {
-                createdPage: createdPage,
-                createdScoreStandards: createdScoreStandards
+            const created_data = {
+                created_page: createdPage,
+                created_score_standards: createdScoreStandards
             }
             console.log(createdPage);
             console.log(createdScoreStandards)
-            return createdData;
+            return created_data;
         })
     } catch (error) {
         console.error('Error creating portfolio page:', error);
@@ -35,10 +35,10 @@ export async function createPortfolioPage(pageData: Prisma.portfolio_pagesCreate
 
 export async function getPortfolioPage(userId: number) {
     try {
-        const portfolioPage = await prisma.portfolio_pages.findUnique({
+        const portfolio_page = await prisma.portfolio_pages.findUnique({
             where: { user_id: userId },
         });
-        return portfolioPage;
+        return portfolio_page;
     } catch (error) {
         console.error('Error fetching portfolio page:', error);
         throw error;
@@ -47,10 +47,10 @@ export async function getPortfolioPage(userId: number) {
 
 export async function getScoreStandards(pageId: number) {
     try {
-        const scoreStandards = await prisma.score_standards.findMany({
+        const score_standards = await prisma.score_standards.findMany({
             where: { page_id: pageId },
         });
-        return scoreStandards;
+        return score_standards;
     } catch (error) {
         console.error('Error fetching score standard:', error);
         throw error;
