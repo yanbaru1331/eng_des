@@ -100,7 +100,7 @@ PortfolioChartApp.post(
             // 4. トランザクション内でデータを更新
             const result = await createPortfolioRaderChartsData(portfolioChartsData, portfolioRelationsData, portfolioLeavesData);
 
-            return c.json({ message: 'Portfolio data updated successfully', data: result }, 200);
+            return c.json({ data: result }, 200);
 
         } catch (error) {
             console.error('Error processing request:', error);

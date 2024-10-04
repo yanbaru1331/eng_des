@@ -41,7 +41,7 @@ Content-Type: application/json
 }
 ###
 # ページ取得
-GET http://localhost:3000/api/portfolio/page?user_id=15
+GET http://localhost:3000/api/portfolio/page?user_id=17
 ###
 # ページ削除
 DELETE http://localhost:3000/api/portfolio/page
@@ -52,20 +52,20 @@ Content-Type: application/json
 }
 ###
 # スコア基準取得
-GET http://localhost:3000/api/portfolio/page/score_standard?user_id=12
+GET http://localhost:3000/api/portfolio/page/score_standard?user_id=17
 ###
 # チャート全取得
-GET http://localhost:3000/api/portfolio/chart/all_view_format?user_id=12
+GET http://localhost:3000/api/portfolio/chart/all_view_format?user_id=17
 ###
 # チャート全取得
-GET http://localhost:3000/api/portfolio/chart/all_update_format?user_id=12
+GET http://localhost:3000/api/portfolio/chart/all_update_format?user_id=17
 ###
 # チャート初期作成
 POST http://localhost:3000/api/portfolio/chart
 Content-Type: application/json
 
 {
-    "user_id":15,
+    "user_id":17,
     "charts":
     [
         {"name":"0"},
