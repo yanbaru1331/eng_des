@@ -29,12 +29,12 @@ export async function createPortfolioRaderChartsData(
         console.log(portfolioLeavesData);
         const result = await prisma.$transaction(async (prisma) => {
             // 1. チャートの更新または作成
-            const createdCharts: {
+            const created_charts: {
                 id: number;
                 name: string;
                 page_id: number;
-                createdAt: Date;
-                updatedAt: Date;
+                created_at: Date;
+                updated_at: Date;
             }[] = [];
             for (const chartData of portfolioChartsData) {
 
@@ -44,15 +44,15 @@ export async function createPortfolioRaderChartsData(
                         page_id: chartData.pageId
                     }
                 });
-                createdCharts.push(createdChart);
+                created_charts.push(createdChart);
             }
 
             // 2. リレーションの更新または作成
-            const createdRelations = [];
+            const created_relations: { id: number; page_id: number; parent_id: number; child_id: number; depth: number; created_at: Date; updated_at: Date; }[] = [];
             for (const relation of portfolioRelationsData) {
 
-                const parentChartId = createdCharts[relation.parentId].id;
-                const childChartId = createdCharts[relation.childId].id;
+                const parentChartId = created_charts[relation.parentId].id;
+                const childChartId = created_charts[relation.childId].id;
 
 
                 const createdRelation = await prisma.portfolio_rader_chart_relations.create({
@@ -63,14 +63,14 @@ export async function createPortfolioRaderChartsData(
                         depth: relation.depth,
                     },
                 });
-                createdRelations.push(createdRelation);
+                created_relations.push(createdRelation);
 
             }
 
             // 3. リーフの更新または作成
-            const createdLeaves = [];
+            const created_leaves = [];
             for (const leave of portfolioLeavesData) {
-                const chartId = createdCharts[leave.chartIndex].id;
+                const chartId = created_charts[leave.chartIndex].id;
 
                 const createdLeave = await prisma.portfolio_rader_chart_leaves.create({
                     data: {
@@ -80,12 +80,12 @@ export async function createPortfolioRaderChartsData(
                         chart_id: chartId,
                     },
                 });
-                createdLeaves.push(createdLeave);
+                created_leaves.push(createdLeave);
 
             }
 
 
-            return { createdCharts, createdRelations, createdLeaves };
+            return { created_charts, created_relations, created_leaves };
         });
 
         return result;
@@ -104,7 +104,7 @@ export async function updatePortfolioRaderChartsData(
     try {
         const result = await prisma.$transaction(async (prisma) => {
             // 1. チャートの更新または作成
-            const updatedCharts: { id: number; }[] = [];
+            const updated_charts: { id: number; }[] = [];
             for (const chartData of portfolioChartsData) {
                 console.log(chartData.id);
                 const updatedChart = await prisma.portfolio_rader_charts.update({
@@ -114,16 +114,16 @@ export async function updatePortfolioRaderChartsData(
                         name: chartData.name
                     }
                 });
-                updatedCharts.push(updatedChart);
+                updated_charts.push(updatedChart);
             }
 
             // 2. リレーションの更新または作成
-            const updatedRelations = [];
+            const updated_relations = [];
             console.log(portfolioRelationsData);
             for (const relation of portfolioRelationsData) {
 
-                const parentChart = updatedCharts.find(chart => chart.id === relation.parentId);
-                const childChart = updatedCharts.find(chart => chart.id === relation.childId);
+                const parentChart = updated_charts.find(chart => chart.id === relation.parentId);
+                const childChart = updated_charts.find(chart => chart.id === relation.childId);
                 if (parentChart && childChart) {
                     if (relation.id) {
                         const updatedRelation = await prisma.portfolio_rader_chart_relations.update({
@@ -134,7 +134,7 @@ export async function updatePortfolioRaderChartsData(
                                 depth: relation.depth,
                             },
                         });
-                        updatedRelations.push(updatedRelation);
+                        updated_relations.push(updatedRelation);
                     } else {
                         const createdRelation = await prisma.portfolio_rader_chart_relations.create({
                             data: {
@@ -144,15 +144,15 @@ export async function updatePortfolioRaderChartsData(
                                 depth: relation.depth,
                             },
                         });
-                        updatedRelations.push(createdRelation);
+                        updated_relations.push(createdRelation);
                     }
                 }
             }
 
-            console.log(updatedRelations);
+            console.log(updated_relations);
 
             // 3. リーフの更新または作成
-            const updatedLeaves = [];
+            const updated_leaves = [];
             for (const leave of portfolioLeavesData) {
                 const updatedLeave = await prisma.portfolio_rader_chart_leaves.update({
                     where: { id: leave.id },
@@ -162,12 +162,12 @@ export async function updatePortfolioRaderChartsData(
                         chart_id: leave.chartId
                     },
                 });
-                updatedLeaves.push(updatedLeave);
+                updated_leaves.push(updatedLeave);
             }
 
-            console.log(updatedLeaves);
+            console.log(updated_leaves);
 
-            return { updatedCharts, updatedRelations, updatedLeaves };
+            return { updated_charts, updated_relations, updated_leaves };
         });
 
         return result;
