@@ -29,9 +29,9 @@ type LeaveWithItemNum = {
     score: number;
     chart_id: number;
     page_id: number;
-    createdAt: Date;
-    updatedAt: Date;
-    itemNum: number;
+    created_at: Date;
+    updated_at: Date;
+    item_num: number;
 };
 
 
@@ -91,7 +91,7 @@ PortfolioChartApp.post(
 
             // 3. リーフのデータを整形
             const portfolioLeavesData = leaves.map(leave => ({
-                pageId: portfolioPageData.id,
+                page_id: portfolioPageData.id,
                 name: leave.name,
                 score: leave.score,
                 chartIndex: leave.chart_index
@@ -100,7 +100,7 @@ PortfolioChartApp.post(
             // 4. トランザクション内でデータを更新
             const result = await createPortfolioRaderChartsData(portfolioChartsData, portfolioRelationsData, portfolioLeavesData);
 
-            return c.json({ message: 'Portfolio data updated successfully', data: result }, 200);
+            return c.json({ data: result }, 200);
 
         } catch (error) {
             console.error('Error processing request:', error);
@@ -115,8 +115,8 @@ const updatePortfolioRaderChartsSchema = z.object({
             id: z.number(),
             name: z.string(),
             page_id: z.number(),
-            createdAt: z.string().optional(),
-            updatedAt: z.string().optional()
+            created_at: z.string().optional(),
+            updated_at: z.string().optional()
         })
     ),
     relations: z.array(
@@ -126,8 +126,8 @@ const updatePortfolioRaderChartsSchema = z.object({
             parent_id: z.number(),
             child_id: z.number(),
             depth: z.number(),
-            createdAt: z.string().optional(),
-            updatedAt: z.string().optional()
+            created_at: z.string().optional(),
+            updated_at: z.string().optional()
         })
     ),
     leaves: z.array(
@@ -137,9 +137,9 @@ const updatePortfolioRaderChartsSchema = z.object({
             score: z.number(),
             chart_id: z.number(),
             page_id: z.number(),
-            createdAt: z.string().optional(),
-            updatedAt: z.string().optional(),
-            itemNum: z.number().optional()
+            created_at: z.string().optional(),
+            updated_at: z.string().optional(),
+            item_num: z.number().optional()
         })
     )
 });
@@ -184,7 +184,7 @@ PortfolioChartApp.put(
             // 4. トランザクション内でデータを更新
             const result = await updatePortfolioRaderChartsData(portfolioChartsData, portfolioRelationsData, portfolioLeavesData);
 
-            return c.json({ message: 'Portfolio data updated successfully', data: result }, 200);
+            return c.json({ data: result }, 200);
 
         } catch (error) {
             console.error('Error processing request:', error);
@@ -198,7 +198,7 @@ const getAllPortfolioRaderChartsSchema = z.object({
 });
 
 PortfolioChartApp.get(
-    '/all',
+    '/all_update_format',
     zValidator('query', getAllPortfolioRaderChartsSchema),
     async (c) => {
         try {
@@ -224,7 +224,7 @@ PortfolioChartApp.get(
 
                 let i = 0;
                 sameTargetChartLeave.forEach(leave => {
-                    const updatedLeave: LeaveWithItemNum = { ...leave, itemNum: i };
+                    const updatedLeave: LeaveWithItemNum = { ...leave, item_num: i };
                     updatedLeaves.push(updatedLeave)
                     i++;
                 });
@@ -273,12 +273,12 @@ PortfolioChartApp.get(
             const targetChartRelation = await getPortfolioRaderChartRelationsByChartId(chartId);
 
             const data = {
-                chartId: chart_id,
+                chart_id: chart_id,
                 charts: charts,
                 leaves: leaves,
                 relations: targetChartRelation
             }
-            return c.json({ message: 'Portfolio children charts is finded', data: data }, 201);
+            return c.json({ data: data }, 200);
         } catch (error) {
             console.error('Error processing request', error);
             return c.json({ message: 'Internal server error' });
@@ -294,7 +294,7 @@ var sum = function (arr: number[]) {
 };
 
 PortfolioChartApp.get(
-    '/all/test',
+    '/all_view_format',
     zValidator('query', getAllPortfolioRaderChartsSchema),
     async (c) => {
         try {
@@ -312,7 +312,7 @@ PortfolioChartApp.get(
             const portfolioRaderChartsLeaves = await getAllPortfolioRaderChartLeaves(portfolioPageData.id);
 
 
-            const returnChartsData: { id: number; title: string; label: string[]; childrenId: number[]; depth: number; createdAt: Date; updateAt: Date; childrenScores: (number | undefined)[]; childrenScoreAverage: number | undefined; }[] = [];
+            const returnChartsData: { id: number; title: string; label: string[]; children_id: number[]; depth: number; created_at: Date; update_at: Date; children_scores: (number | undefined)[]; children_score_average: number | undefined; }[] = [];
 
             const bottomChartId: number[] = [];
             portfolioRaderChartsLeaves.forEach(leaves => {
@@ -365,12 +365,12 @@ PortfolioChartApp.get(
                     id: portfolioRaderChart.id,
                     title: portfolioRaderChart.name,
                     label: childrenLabels,
-                    childrenId: childrenId,
+                    children_id: childrenId,
                     depth: targetDepth - 1,
-                    childrenScores: childrenScores,
-                    childrenScoreAverage: childrenScoreAverage,
-                    createdAt: portfolioRaderChart.createdAt,
-                    updateAt: portfolioRaderChart.updatedAt
+                    children_scores: childrenScores,
+                    children_score_average: childrenScoreAverage,
+                    created_at: portfolioRaderChart.created_at,
+                    update_at: portfolioRaderChart.updated_at
                 };
                 returnChartsData.push(returnChartData);
             });
@@ -384,21 +384,21 @@ PortfolioChartApp.get(
                 }) // 降順にソート
                 .forEach(returnchart => {
                     if (!bottomChartId.includes(returnchart.id)) {
-                        returnchart.childrenId.forEach(childId => {
+                        returnchart.children_id.forEach(childId => {
                             const childChart = returnChartsData.filter((chart) =>
                                 chart.id == childId
                             );
-                            const childchildrenScoreAverages = childChart.map(chart => chart.childrenScoreAverage)
+                            const childchildrenScoreAverages = childChart.map(chart => chart.children_score_average)
                             childchildrenScoreAverages.forEach(average => {
-                                returnchart.childrenScores.push(average);
+                                returnchart.children_scores.push(average);
                             })
                         });
-                        if (returnchart.childrenScores !== undefined && returnchart.childrenScores.length > 0) {
-                            const validScores = returnchart.childrenScores.filter((score): score is number => score !== undefined);
+                        if (returnchart.children_scores !== undefined && returnchart.children_scores.length > 0) {
+                            const validScores = returnchart.children_scores.filter((score): score is number => score !== undefined);
                             const total = sum(validScores);
-                            returnchart.childrenScoreAverage = total / validScores.length;
+                            returnchart.children_score_average = total / validScores.length;
                         } else {
-                            returnchart.childrenScoreAverage = 0;
+                            returnchart.children_score_average = 0;
                         }
                     }
                 });

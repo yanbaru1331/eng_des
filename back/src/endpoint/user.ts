@@ -1,13 +1,13 @@
 // /api/user/ 以下のapiだよ
 // 型チェックの object を参照して json を渡してね
 
-import { Hono } from "hono";
-import { cors } from 'hono/cors';
 import { zValidator } from '@hono/zod-validator';
 import bcrypt from 'bcrypt';
+import { Hono } from "hono";
+import { cors } from 'hono/cors';
 import { z } from 'zod';
 
-import { createUser, deleteUser, getUserByEmail, getUserByUsername, getUserById, updateUser } from '../db_operations/user';
+import { createUser, deleteUser, getUserByEmail, getUserById, getUserByUsername, updateUser } from '../db_operations/user';
 
 export const userApp = new Hono();
 
@@ -82,7 +82,7 @@ userApp.post(
             // ユーザーデータをデータベースに登録
             const newUser = await createUser(userData);
             // 登録成功時のレスポンス
-            return c.json({ message: 'User created successfully', userId: newUser.id }, 201);
+            return c.json({ user_id: newUser.id }, 201);
         } catch (error) {
             console.error('Error creating user:', error);
             // エラーレスポンス
@@ -91,9 +91,6 @@ userApp.post(
     }
 );
 
-async function checkUserExisting(email: string, username: string) {
-
-}
 
 // login用の型チェック
 const loginSchema = z.object({
@@ -123,7 +120,7 @@ userApp.post(
             if (isValid) {
                 // パスワードが一致した場合
                 await updateUser(user.id, user.email, user.username);
-                return c.json({ message: 'Login successful', userId: user.id, email: user.email, userName: user.username }, 200);
+                return c.json({ user_id: user.id, email: user.email, user_name: user.username }, 200);
             } else {
                 // パスワードが一致しない場合
                 return c.json({ error: 'Invalid password' }, 401);
@@ -150,7 +147,7 @@ userApp.delete(
 
         try {
             const deletedUser = await deleteUser(user_id);  // deleteUser関数を呼び出してユーザーを削除
-            return c.json({ message: 'User deleted successfully', userId: deletedUser.id }, 200);  // 削除成功時のレスポンス
+            return c.json({ user_id: deletedUser.id }, 200);  // 削除成功時のレスポンス
         } catch (error) {
             console.error('Error deleting user:', error);
             return c.json({ error: 'Failed to delete user' }, 500);  // エラー発生時のレスポンス
@@ -172,7 +169,7 @@ userApp.get(
             let userId: number = Number(user_id);
             const userData = await getUserById(userId);
             const { password, ...returnUserData } = userData;
-            return c.json({ message: 'Get userData successfull', data: returnUserData }, 200);
+            return c.json({ data: returnUserData }, 200);
         } catch (error) {
             console.error('Error get portfoliopage:', error);
             return c.json({ error: 'Failed to get userId' }, 500);
