@@ -14,11 +14,11 @@ const UserPage: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const Login = () => {
-        sessionStorage.getItem('AUTHORITY') ? navigate(`/userpage/${sessionStorage.getItem('AUTHORITY')}`) : navigate(`/login`);
+        sessionStorage.getItem('userId') ? navigate(`/userpage/${sessionStorage.getItem('userId')}`) : navigate(`/login`);
     };
 
     const account = () => {
-        sessionStorage.getItem('AUTHORITY') ? navigate(`/userpage/${sessionStorage.getItem('AUTHORITY')}`) : (setShowModal(true));
+        sessionStorage.getItem('userId') ? navigate(`/userpage/${sessionStorage.getItem('userId')}`) : (setShowModal(true));
     };
 
     const Search = () => {
