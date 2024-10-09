@@ -62,24 +62,29 @@ const UserPage: React.FC = () => {
 
     return (
         <div>
-            <h1>Hello {userName}!</h1>
-            <Button onClick={viewChart}>チャートを標示</Button>
-            {
-                //ここでログインしているユーザーが自分自身のページの時だけ管理モードを表示
-                //バックとネゴシエーションできたら個々の処理を書き直しておく
-                sessionStorage.getItem('userId') === location.pathname.split("/")[2] &&
-                <div>
-                    <Button type="submit" onClick={ShowModal}>チャート登録・編集</Button>
-                    <Button type="submit" onClick={delChart}>チャート削除</Button>
-                    {deleteFlag && <p>チャートデータを削除しました</p>}
+            <div className="bg-opacity-50 flex items-center justify-center p-4">
+                <div className="bg-gray-50 rounded-lg shadow-xl max-w-md w-full">
+                    <div className="p-6">
+                        <h2 className="text-2xl font-bold mb-4">Hello {userName}!</h2>
+                        <Button onClick={viewChart}>チャートを標示</Button>
+                        {
+                            //ここでログインしているユーザーが自分自身のページの時だけ管理モードを表示
+                            //バックとネゴシエーションできたら個々の処理を書き直しておく
+                            sessionStorage.getItem('userId') === location.pathname.split("/")[2] &&
+                            <div>
+                                <Button type="submit" onClick={ShowModal}>チャート登録・編集</Button>
+                                <Button type="submit" onClick={delChart}>チャート削除</Button>
+                                {deleteFlag && <p>チャートデータを削除しました</p>}
 
-                    <Button onClick={Logout}>ログアウト</Button>
-                    <Modal showFlag={showModal} setShowFlag={setShowModal} type="edit" />
+                                <Button onClick={Logout}>ログアウト</Button>
+                                <Modal showFlag={showModal} setShowFlag={setShowModal} type="edit" />
+                            </div>
+                        }
+                    </div>
                 </div>
-            }
+            </div>
         </div>
-
-    );
+                    );
 }
 
-export default UserPage;
+                    export default UserPage;
