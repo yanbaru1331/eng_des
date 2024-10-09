@@ -31,9 +31,9 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
       }
     }).then((res) => {
       console.log(res);
-      if (res.data.userId) {
-        sessionStorage.setItem('userId', res.data.userId);
-        navigate(`/userpage/${res.data.userId}`);
+      if (res.data.user_id) {
+        sessionStorage.setItem('userId', res.data.user_id);
+        navigate(`/userpage/${res.data.user_id}`);
       } else {
         navigate(`/login`);
       }
