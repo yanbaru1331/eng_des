@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../Button";
 
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import { useMemo } from 'react';
 import { FormEventHandler } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -18,7 +19,7 @@ class tmpLeaf {
 
 
 const Modal = (props) => {
-  const [scoreStandards, setScoreStandards] = useState<string[]>(["", "", "", "", "", "", ""]);
+
   const closeModal = () => {
     props.setShowFlag(false);
   };
@@ -27,7 +28,17 @@ const Modal = (props) => {
   //そうしないとshowModalがわからなくて動かない
   const navigate = useNavigate();
   const { userid } = useParams();
-  const [maxScore, setMaxScore] = useState(0);
+  const [maxScore, setMaxScore] = useState(1);
+  const [scoreStandards, setScoreStandards] = useState(Array.from({ length: maxScore + 1 }, () => ""))
+
+  const [mainTitle, setMainTitle] = useState("");
+  const [contactAddress, setContactAddress] = useState("");
+
+  const createDisabled = useMemo(() => {
+    return !(mainTitle !== "" && contactAddress !== "" && !scoreStandards.includes(""));
+  },
+    [mainTitle, contactAddress, scoreStandards],
+  );
 
   const reverseChartId = (chartId: number, maxItem: number) => {
     if (chartId === 0) return 0;
@@ -203,8 +214,6 @@ const Modal = (props) => {
           console.log(error.response.data.error);
         });
     }
-
-
     else {
       //ここに更新処理　一旦書かない
       console.log("register");
@@ -222,16 +231,20 @@ const Modal = (props) => {
 
             <h2 className="text-xl font-semibold text-gray-800">メインタイトル</h2>
             {/* email型に変換=>コンタクトアドレス */}
-            <input type="text" defaultValue="" name="title" />
+            <input type="text" defaultValue="" name="title" onChange={(e) => {
+              setMainTitle(e.target.value);
+            }} />
 
             {/* ここに公開非公開を書く */}
 
             <h2 className="text-xl font-semibold text-gray-800">公開</h2>
             <input type="checkbox" defaultValue="false" name="notPublished" />
 
-            <h2 className="text-xl font-semibold text-gray-800">連絡先</h2>
+            <h2 className="text-xl font-semibold text-gray-800" >連絡先</h2>
             {/* email型に変換=>コンタクトアドレス */}
-            <input type="text" defaultValue="" name="email" />
+            <input type="text" defaultValue="" name="email" onChange={(e) => {
+              setContactAddress(e.target.value);
+            }} />
 
             <h2 className="text-xl font-semibold text-gray-800">段数</h2>
             {/* select型の数値に変更 */}
@@ -242,7 +255,7 @@ const Modal = (props) => {
             <input type="number" defaultValue="3" min="3" max="8" name="itemNum" />
             <h2 className="text-xl font-semibold text-gray-800">スコアの最大</h2>
             {/* select型の数値に変更 */}
-            <input type="number" defaultValue="1" min="1" max="6"name="score" onChange={updateMaxScore} />
+            <input type="number" defaultValue="1" min="1" max="6" name="score" onChange={updateMaxScore} />
 
             <h2 className="text-xl font-semibold text-gray-800">評価基準</h2>
             {Array.from({ length: maxScore + 1 }, (_, i) => (
@@ -251,12 +264,11 @@ const Modal = (props) => {
                 <input
                   type="text"
                   value={scoreStandards[i] || ""}
-                  onChange={(e) => handleStandardChange(i, e.target.value)}
+                  onChange={(e) => {handleStandardChange(i, e.target.value);}}
                 />
               </div>
             ))}
-            { }
-            <Button type="submit" size="large">登録</Button>
+            <Button type="submit" disabled={createDisabled}>登録</Button>
 
             <Button onClick={closeModal}>閉じる</Button>
           </form>

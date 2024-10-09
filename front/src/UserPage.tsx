@@ -110,7 +110,7 @@ const UserPage: React.FC = () => {
                                         </tbody>
                                     </table>
 
-                                    <Button onClick={viewChart}>チャート確認</Button>
+                                    <Button onClick={viewChart}>チャート表示</Button>
                                 </div>
                             </>
                         }
@@ -118,7 +118,7 @@ const UserPage: React.FC = () => {
                         {deleteFlag && <p className="pb-9 text-red-500">チャートデータを削除しました</p>}
 
                         {
-                            !isChartFlag &&
+                            !isChartFlag && !showModal &&
                             <h2 className="text-2xl font-semibold text-gray-800 mb-6">まだチャートが作られていないようです</h2>
                         }
                         {
@@ -127,7 +127,10 @@ const UserPage: React.FC = () => {
                             sessionStorage.getItem('userId') === location.pathname.split("/")[2] &&
                             <>
                                 <div className="flex justify-center items-center gap-4 pb-4">
-                                    <Button type="submit" onClick={ShowModal}>チャート作成・編集</Button>
+                                    {!showModal &&
+                                        <Button type="submit" onClick={ShowModal}>チャート作成・編集</Button>
+                                    }
+
                                     {
                                         isChartFlag &&
                                         <Button type="submit" onClick={delChart}>チャート削除</Button>
