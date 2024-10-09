@@ -10,6 +10,7 @@ const UserPage: React.FC = () => {
     const { userid } = useParams();
     //modalの表示非表示を管理するstate
     const [showModal, setShowModal] = useState(false);
+    const [deleteFlag, setDeleteFlag] = useState(false);
     const navigate = useNavigate();
     const Logout = () => {
         sessionStorage.removeItem('userId');
@@ -54,6 +55,7 @@ const UserPage: React.FC = () => {
             })
             .then((res) => {
                 console.log(res);
+                setDeleteFlag(true);
             })
     }
 
@@ -69,6 +71,7 @@ const UserPage: React.FC = () => {
                 <div>
                     <Button type="submit" onClick={ShowModal}>チャート登録・編集</Button>
                     <Button type="submit" onClick={delChart}>チャート削除</Button>
+                    {deleteFlag && <p>チャートデータを削除しました</p>}
 
                     <Button onClick={Logout}>ログアウト</Button>
                     <Modal showFlag={showModal} setShowFlag={setShowModal} type="edit" />

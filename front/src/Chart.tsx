@@ -49,8 +49,8 @@ class chart {
   id: number;
   name: string;
   page_id: number;
-  createdAt: Date;
-  updatedAt: Date;
+  created_at: Date;
+  updated_at: Date;
 }
 
 class leaf {
@@ -59,9 +59,9 @@ class leaf {
   score: number;
   chart_id: number;
   page_id: number;
-  itemNum: number;
-  createdAt: Date;
-  updatedAt: Date;
+  item_num: number;
+  created_at: Date;
+  updated_at: Date;
 
 }
 
@@ -69,12 +69,12 @@ class chartRecived {
   id: number;
   title: string;
   label: string[];
-  childrenId: number[];
+  children_id: number[];
   depth: number;
-  childrenScores: number[];
-  childrenScoreAverage: number;
-  createdAt: Date;
-  updatedAt: Date;
+  children_scores: number[];
+  children_score_average: number;
+  created_at: Date;
+  updated_at: Date;
 }
 ChartJS.register(
   RadialLinearScale,
@@ -119,7 +119,7 @@ const PulldownForm: React.FC = () => {
   //ここでほしいのはフロント描画用のデータとダミーデータの取得
   useEffect(() => {
     const fetchUserData = async () => {
-      await axios.get("http://localhost:3000/api/portfolio/chart/all?user_id=" + sessionStorage.getItem('userId'))
+      await axios.get("http://localhost:3000/api/portfolio/chart/all_update_format?user_id=" + sessionStorage.getItem('userId'))
         .then((res) => {
           const maxDepth = res.data.data.pages.max_depth;
           const maxItem = res.data.data.pages.max_item;
@@ -130,6 +130,7 @@ const PulldownForm: React.FC = () => {
           console.log("res=", res);
           console.log("charts=", charts);
           console.log("leaves=", leaves);
+          console.log("name=", charts.map((chart) => chart.name));
           setCharts(charts);
           setMaxDepth(maxDepth - 1);
           setMaxItem(maxItem);
@@ -144,13 +145,14 @@ const PulldownForm: React.FC = () => {
         });
     }
     const getChart = async () => {
-      const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all/test?user_id=${sessionStorage.getItem('userId')}`)
+      const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all_view_format?user_id=${sessionStorage.getItem('userId')}`)
         .then((res) => {
           const charts = res.data.data.charts;
           console.log("charts=", charts);
           setViewCharts(charts);
         }).catch((error) => {
-          if (error.response.message === "Portfolio page is not existed") {
+          //ここ修正
+          if (error.response.status === 400) {
             console.log("error=", error.response.message);
           }
         });
@@ -242,7 +244,7 @@ const PulldownForm: React.FC = () => {
     let tmpleaf = [{ name: "自身を修正", id: 100 }];
     leaves.map((leaf) => {
       if (leaf.chart_id === Number(e.target.value)) {
-        tmpleaf.push({ name: leaf.name, id: leaf.itemNum });
+        tmpleaf.push({ name: leaf.name, id: leaf.item_num });
       }
       setChoiceItem(tmpleaf);
     })
@@ -270,7 +272,7 @@ const PulldownForm: React.FC = () => {
       if (leafFormState.depth === maxDepth && formState.itemNum !== 100) {
         const newLeafEntry: Leaf = { ...leafFormState };
         console.log("newLeafEntry=", newLeafEntry);
-        let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.itemNum === newLeafEntry.itemNum - 1);
+        let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.item_num === newLeafEntry.itemNum - 1);
         console.log("checkLeaf=", checkLeaf);
         if (checkLeaf !== -1) {
           const updateLeaf = {
@@ -340,7 +342,7 @@ const PulldownForm: React.FC = () => {
       .catch((error) => {
         console.log(error);
       });
-    const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all/test?user_id=${sessionStorage.getItem('userId')}`)
+    const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all_view_format?user_id=${sessionStorage.getItem('userId')}`)
       .then((res) => {
         console.log("res=", res.data.data.pages.max_score);
         setMaxScore(res.data.data.pages.max_score);
@@ -348,7 +350,8 @@ const PulldownForm: React.FC = () => {
         const charts = res.data.data.charts;
         setCharts(charts);
       }).catch((error) => {
-        if (error.response.message === "Portfolio page is not existed") {
+        //ここ修正 400エラーが出る
+        if (error.response.status === 400) {
           console.log("error=", error.response.message);
         }
       });
@@ -363,14 +366,14 @@ const PulldownForm: React.FC = () => {
     datasets: [
       {
         label: c.title,
-        data: c.childrenScores,
+        data: c.children_scores,
         backgroundColor: '#33ccff',
         borderColor: "00bfff",
         borderWidth: 1,
       },
       {
         label: "平均点",
-        data: Array.from({ length: c.childrenScores.length }, () => c.childrenScoreAverage),
+        data: Array.from({ length: c.children_scores.length }, () => c.children_score_average),
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 2,

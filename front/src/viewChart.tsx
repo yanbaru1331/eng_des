@@ -21,12 +21,12 @@ class chartRecived {
   id: number;
   title: string;
   label: string[];
-  childrenId: number[];
+  children_id: number[];
   depth: number;
-  childrenScores: number[];
-  childrenScoreAverage: number;
-  createdAt: Date;
-  updatedAt: Date;
+  children_scores: number[];
+  children_score_average: number;
+  created_at: Date;
+  updated_at: Date;
 }
 ChartJS.register(
   RadialLinearScale,
@@ -65,7 +65,7 @@ const ViewChart: React.FC = () => {
     }
     //ここまだuser_idが固定値になっているので、後で変更する
     const getChart = async () => {
-      const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all/test?user_id=${viewChartUserId}`)
+      const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all_view_format?user_id=${viewChartUserId}`)
         .then((res) => {
           console.log("res=", res.data.data.pages.max_score);
           setMaxScore(res.data.data.pages.max_score);
@@ -73,6 +73,8 @@ const ViewChart: React.FC = () => {
           const charts = res.data.data.charts;
           setCharts(charts);
         }).catch((error) => {
+          //
+
           if (error.response.message === "Portfolio page is not existed") {
             console.log("error=", error.response.message);
           }
@@ -101,14 +103,14 @@ const ViewChart: React.FC = () => {
     datasets: [
       {
         label: c.title,
-        data: c.childrenScores,
+        data: c.children_scores,
         backgroundColor: '#33ccff',
         borderColor: "00bfff",
         borderWidth: 1,
       },
       {
         label: "平均点",
-        data: Array.from({ length: c.childrenScores.length }, () => c.childrenScoreAverage),
+        data: Array.from({ length: c.children_scores.length }, () => c.children_score_average),
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 2,
