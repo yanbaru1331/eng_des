@@ -186,9 +186,9 @@ const Modal = (props) => {
       })
 
       console.log("dummyData");
-      const postData = await dummyData(d, i, Number(userid));
+      let postData = await dummyData(d, i, Number(userid));
       console.log('Sending Data:', postData);
-
+      postData.charts[0].name = title;
       await axios.post("http://localhost:3000/api/portfolio/chart", postData, {
 
         headers: {
@@ -217,35 +217,37 @@ const Modal = (props) => {
       <>
         {props.showFlag ? (
           <form onSubmit={submit}>
-            <h1>チャート作成画面</h1>
+            <h1 className=" text-2xl font-bold text-gray-900 py-4">チャート初期情報入力</h1>
 
-            <p>メインタイトル</p>
+
+            <h2 className="text-xl font-semibold text-gray-800">メインタイトル</h2>
             {/* email型に変換=>コンタクトアドレス */}
             <input type="text" defaultValue="" name="title" />
 
             {/* ここに公開非公開を書く */}
-            <p>公開</p>
+
+            <h2 className="text-xl font-semibold text-gray-800">公開</h2>
             <input type="checkbox" defaultValue="false" name="notPublished" />
 
-            <p>連絡先</p>
+            <h2 className="text-xl font-semibold text-gray-800">連絡先</h2>
             {/* email型に変換=>コンタクトアドレス */}
             <input type="text" defaultValue="" name="email" />
 
-            <p>段数</p>
+            <h2 className="text-xl font-semibold text-gray-800">段数</h2>
             {/* select型の数値に変更 */}
-            <input type="number" defaultValue="0" name="depth" />
+            <input type="number" defaultValue="1" min="1" max="3" name="depth" />
 
-            <p>個数</p>
+            <h2 className="text-xl font-semibold text-gray-800">１つのチャートの要素数</h2>
             {/* select型の数値に変更 */}
-            <input type="number" defaultValue="0" name="itemNum" />
-            <p>最大点数</p>
+            <input type="number" defaultValue="3" min="3" max="8" name="itemNum" />
+            <h2 className="text-xl font-semibold text-gray-800">スコアの最大</h2>
             {/* select型の数値に変更 */}
-            <input type="number" defaultValue="0" name="score" onChange={updateMaxScore} />
+            <input type="number" defaultValue="1" min="1" max="6"name="score" onChange={updateMaxScore} />
 
-            <p>評価基準</p>
+            <h2 className="text-xl font-semibold text-gray-800">評価基準</h2>
             {Array.from({ length: maxScore + 1 }, (_, i) => (
               <div key={i}>
-                <label>点数 {i}: </label>
+                <label>スコア {i}: </label>
                 <input
                   type="text"
                   value={scoreStandards[i] || ""}
