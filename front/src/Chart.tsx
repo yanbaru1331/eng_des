@@ -191,7 +191,7 @@ const PulldownForm: React.FC = () => {
     name: "",
     parentId: 0,
     chartId: 0,
-    itemNum: 0,
+    itemNum: 100,
     depth: -1,
   });
 
@@ -272,7 +272,7 @@ const PulldownForm: React.FC = () => {
       if (leafFormState.depth === maxDepth && formState.itemNum !== 100) {
         const newLeafEntry: Leaf = { ...leafFormState };
         console.log("newLeafEntry=", newLeafEntry);
-        let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.item_num === newLeafEntry.itemNum - 1);
+        let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.item_num === newLeafEntry.itemNum);
         console.log("checkLeaf=", checkLeaf);
         if (checkLeaf !== -1) {
           const updateLeaf = {
@@ -304,7 +304,7 @@ const PulldownForm: React.FC = () => {
         name: "",
         parentId: 0,
         chartId: 0,
-        itemNum: 0,
+        itemNum: 100,
         depth: -1,
       });
       setLeafFormState({
@@ -406,6 +406,28 @@ const PulldownForm: React.FC = () => {
             </select>
           </label>
         </div>
+
+        {formState.depth === maxDepth && (
+
+          <div>
+            <label>
+              頂点の位置を決定してください:
+              <select value={
+                formState.itemNum === 100
+                  ? "自身を修正"
+                  :
+                  formState.itemNum
+              } onChange={handleChartItemChange}>
+                {choiceItem.map(c => (
+                  <option key={c.name} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
+
         <div>
           <label>
             タイトルを入力:
@@ -419,29 +441,7 @@ const PulldownForm: React.FC = () => {
           </label>
         </div>
 
-        {formState.depth === maxDepth && (
-
-          <div>
-            <label>
-              頂点の位置を決定してください:
-              <select value={
-                formState.itemNum === 100
-                  ? "自身を修正"
-                  :
-                  formState.itemNum
-              } onChange={handleChartItemChange}>
-                <option value="">選択してください</option>
-                {choiceItem.map(c => (
-                  <option key={c.name} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        )}
-
-        {formState.depth === maxDepth && (
+        {(formState.depth === maxDepth && formState.itemNum !== 100)&& (
 
           <div>
             <label>
