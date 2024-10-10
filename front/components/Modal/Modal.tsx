@@ -50,9 +50,9 @@ const Modal = (props) => {
   const leaves = (leafNum: number, chartNum: number, maxItem: number) => {
     const leafItems: tmpLeaf[] = [];
     for (let index = leafNum; index < chartNum; index++) {
-      for (let i = 0; i < maxItem; i++) {
+      for (let i = 1; i < maxItem + 1; i++) {
         leafItems.push({
-          name: `leaf${index}-${i}`,
+          name: `左から：${index}番のチャート-右回り：${i}番目`,
           score: 1,
           chart_index: index,
         });
@@ -135,7 +135,18 @@ const Modal = (props) => {
   const dummyData = (maxDepth: number, maxItem: number, userId: number) => {
 
     const [chartNum, leafNum] = leafAndChart(maxItem, maxDepth);
-    const charts = Array.from({ length: chartNum }, (_, index) => ({ name: "test" + index }))
+
+    const charts: {name:string}[] = [];
+    let sameLevelChartsNum:number = 1;
+    for (let index = 1; index < maxDepth + 1; index++) {
+      for (let i = 1; i < sameLevelChartsNum + 1; i++) {
+        charts.push({
+          name: `上から：${index}番-左から：${i}番目のチャート`
+        });
+      }
+      sameLevelChartsNum = index ^ maxDepth;
+    }
+    // const charts = Array.from({ length: chartNum }, (_, index) => ({ name: "test" + index }))
 
     console.log("charts = " + charts);
     const postData = {
@@ -257,7 +268,7 @@ const Modal = (props) => {
             {/* select型の数値に変更 */}
             <input type="number" defaultValue="1" min="1" max="6" name="score" onChange={updateMaxScore} />
 
-            <h2 className="text-xl font-semibold text-gray-800">評価基準</h2>
+            <h2 className="text-xl font-semibold text-gray-800">スコア基準</h2>
             {Array.from({ length: maxScore + 1 }, (_, i) => (
               <div key={i}>
                 <label>スコア {i}: </label>
