@@ -47,7 +47,10 @@ const chart = {
 
 const ViewChart: React.FC = () => {
   const [notPublic, setNotPublic] = useState<boolean>(false);
+  const [userName, setUserNmae] = useState("");
+  const [contactAddress, setContactAddress] = useState("");
   const [charts, setCharts] = useState<chartRecived[]>([]);
+  const [mainTitle, setMainTitle] = useState("");
   const [maxScore, setMaxScore] = useState<number>(0);
   const [scoreStandards, setScoreStandards] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -63,6 +66,11 @@ const ViewChart: React.FC = () => {
       }
 
     }
+    const getUsername = async () => {
+      const res = await axios.get("http://localhost:3000/api/user?user_id=" + location.pathname.split("/")[2]);
+      console.log(res.data.data.username);
+      setUserNmae(res.data.data.username);
+  }
     //ここまだuser_idが固定値になっているので、後で変更する
     const getChart = async () => {
       const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all_view_format?user_id=${viewChartUserId}`)
@@ -72,6 +80,8 @@ const ViewChart: React.FC = () => {
           console.log("res=", res.data.data.charts);
           const charts = res.data.data.charts;
           setCharts(charts);
+          setMainTitle(charts[0].title);
+          setContactAddress(res.data.data.pages.contact_address);
         }).catch((error) => {
           //
 
@@ -79,8 +89,10 @@ const ViewChart: React.FC = () => {
             console.log("error=", error.response.message);
           }
         });
-
     }
+
+
+
     if (viewChartUserId !== sessionStorage.getItem('userId')) {
       checkUser();
     }
@@ -92,6 +104,7 @@ const ViewChart: React.FC = () => {
           setScoreStandards(scoreStandards);
         })
     }
+    getUsername();
     getChart();
     getScoreStandards();
   }, []);
@@ -140,17 +153,49 @@ const ViewChart: React.FC = () => {
   }
   return (
     <>
-      <div>点数区分</div>
-      {scoreStandards.map((s, i) => (
-        <div key={i}>点数{i}点   {s}</div>
-      ))}
+    <div className="bg-gray-50">
+        <header className="flex bg-white shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 className="text-3xl font-bold text-gray-900">{userName}さんのポートフォリオ</h1>
+          </div>
+          <div className='py-4'>
+            <Button onClick={backPage}>戻る</Button>
+          </div>
+        </header>
+        <div className="py-4 max-w-full mx-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <h1 className="text-3xl font-bold text-gray-900">メインタイトル：{mainTitle}</h1>
+            <div className='font-semibold text-lg py-4'>連絡先：{contactAddress}</div>
+          </div>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <div className='font-semibold text-lg pb-4'>スコア基準</div>
+            <table className="table-fixed mx-auto" >
+              <thead >
+                <tr>
+                  <th className='pr-6'>スコア</th>
+                  <th>基準</th>
+                </tr>
+              </thead>
+              {scoreStandards.map((s, i) => (
 
-      {data.map((c, i) => (
+                <tbody key={i}>
+                  <tr>
+                    <th className='pr-6 font-normal'>{i}  </th>
+                    <th className='text-left font-normal'>{s}</th>
+                  </tr>
+                </tbody>
+
+              ))}
+            </table>
+          </div>
+        </div>
+</div>
+
+{data.map((c, i) => (
         <div key={i} style={chart} className="chart">
           <Radar data={c} options={options} />
         </div>
       ))}
-
     </>
   );
 }
