@@ -191,7 +191,7 @@ const PulldownForm: React.FC = () => {
     name: "",
     parentId: 0,
     chartId: 0,
-    itemNum: 100,
+    itemNum: 0,
     depth: -1,
   });
 
@@ -272,7 +272,7 @@ const PulldownForm: React.FC = () => {
       if (leafFormState.depth === maxDepth && formState.itemNum !== 100) {
         const newLeafEntry: Leaf = { ...leafFormState };
         console.log("newLeafEntry=", newLeafEntry);
-        let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.item_num === newLeafEntry.itemNum);
+        let checkLeaf = leaves.findIndex((val) => val.chart_id === newLeafEntry.chartId && val.item_num === newLeafEntry.itemNum - 1);
         console.log("checkLeaf=", checkLeaf);
         if (checkLeaf !== -1) {
           const updateLeaf = {
@@ -289,6 +289,7 @@ const PulldownForm: React.FC = () => {
       else if (formState.itemNum === 100) {
         //既存のデータの選択されたチャートIDの名前を変更する処理
         console.log("nameChange", formState.name);
+        console.log(charts[charts.findIndex((val) => val.id === formState.chartId)].name);
         charts[charts.findIndex((val) => val.id === formState.chartId)].name = formState.name;
         setEntries(prev => [...prev, newEntry]);
       }
@@ -304,7 +305,7 @@ const PulldownForm: React.FC = () => {
         name: "",
         parentId: 0,
         chartId: 0,
-        itemNum: 100,
+        itemNum: 0,
         depth: -1,
       });
       setLeafFormState({
@@ -392,7 +393,6 @@ const PulldownForm: React.FC = () => {
   // JSXのレンダリング
   return (
     <>
-    <form>
       <div className="bg-gray-50">
         <header className="flex bg-white shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -416,86 +416,84 @@ const PulldownForm: React.FC = () => {
                           </label>
                         </td>
                         <td>
-            <select value={formState.chartId} onChange={handleChartChartIdChange}>
-              <option value="">選択してください</option>
-              {charts.map(c => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </td>
-        </tr>
+                          <select value={formState.chartId} onChange={handleChartChartIdChange} className='w-80'>
+                            <option value="">選択してください</option>
+                            {charts.map(c => (
+                              <option key={c.id} value={c.id}>
+                                {c.name}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      </tr>
 
-        {formState.depth === maxDepth && (
-          <>
-          <tr>
-            <td className='text-right pr-4 whitespace-nowrap'>
-              <label>編集するスキル名:</label>
-            </td>
-            <td>
-              <select value={
-                formState.itemNum === 100
-                  ? "選択したチャートの編集"
-                  :
-                  formState.itemNum
-              } onChange={handleChartItemChange}
-              className='w-80'
-              >
-                {choiceItem.map(c => (
-                  <option key={c.name} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-              </td>
-            </tr>
+                      <tr>
+                        <td className='text-right pr-4 whitespace-nowrap'>
+                          <label>タイトルを変更:</label>
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            value={formState.name}
+                            onChange={handleTitleChange}
+                            placeholder="チャート名orスキル名を入力"
+                            className='w-80'
+                          />
+                        </td>
+                      </tr>
 
-            <tr>
-            <td className='text-right pr-4'>
-            タイトルを入力:
-            <input
-              type="text"
-              value={formState.name}
-              onChange={handleTitleChange}
-              placeholder="テキストを入力"
-            // disabled={formState.parentId === 0 || formState.chartId === 0}
-            />
-           </td>
-        <td>
-
-        {(formState.depth === maxDepth && formState.itemNum !== 100)&& (
-
-          <td>
-            <td>
-            <label>スキルのスコア:</label>
-              <select value={leafFormState.score} onChange={handleScoreChange}  className='w-80'>
-                <option value="">選択してください</option>
-                {choiseScore.map(score => (
-                  <option key={score} value={score}>
-                    {score}
-                  </option>
-                ))}
-                </select>
+                      {formState.depth === maxDepth && (
+                        <>
+                          <tr>
+                            <td className='text-right pr-4 whitespace-nowrap'>
+                              <label>編集するスキル名:</label>
                             </td>
-                          </td>
-        )}
-                    </td>
-                  </tr>
-                  </>
+                            <td>
+                              <select value={formState.itemNum === 100 ? "選択したチャートの編集" : formState.itemNum}
+                                onChange={handleChartItemChange}
+                                className='w-80'
+                              >
+                                <option value="">選択してください</option>
+                                {choiceItem.map(c => (
+                                  <option key={c.name} value={c.id}>
+                                    {c.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td className='text-right pr-4'>
+                              <label>スキルのスコア:</label>
+                            </td>
+                            <td>
+                              <select value={leafFormState.score} onChange={handleScoreChange}
+                                className='w-80'
+                              >
+                                <option value="">選択してください</option>
+                                {choiseScore.map(score => (
+                                  <option key={score} value={score}>
+                                    {score}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          </tr>
+                        </>
                       )}
                     </tbody>
                   </table>
                 </div>
                 <div className='flex justify-end pt-4 gap-4'>
-        <div>
-          <Button type="button" onClick={addOrUpdateEntry}>
-            登録
-          </Button>
-        </div>
+                  <div>
+                    <Button type="button" onClick={addOrUpdateEntry}>
+                      登録
+                    </Button>
+                  </div>
 
-        <div>
-        <Button type="button" onClick={onSubmit}>
+                  <div>
+                    <Button type="button" onClick={onSubmit}>
                       確定
                     </Button>
                   </div>
@@ -543,8 +541,8 @@ const PulldownForm: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-            {entries.map((entry, index) => (
-              <tr key={index}>
+                {entries.map((entry, index) => (
+                  <tr key={index}>
                     <td>
                       {entry.parentId}
                     </td>
@@ -558,13 +556,13 @@ const PulldownForm: React.FC = () => {
                       {entry.name}
                     </td>
                   </tr>
-            ))}
-          </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
 
-          <div className='font-semibold text-lg pt-8 pb-4'>変更したスキル</div>
+            <div className='font-semibold text-lg pt-8 pb-4'>変更したスキル</div>
 
-          {leafEntries.length > 0 && (
+            {leafEntries.length > 0 && (
               <>
                 <table className='table-fixed mx-auto'>
                   <thead>
@@ -588,22 +586,15 @@ const PulldownForm: React.FC = () => {
                 </table>
 
               </>
-          )}
+            )}
 
-        </div>
+          </div>
 
-        <div className='flex justify-end py-4 px-2'>
-          <Button onClick={() => navigate(`/userpage/${sessionStorage.getItem('userId')}/chart/view`)}>実際のページで確認</Button>
+          <div className='flex justify-end py-4 px-2'>
+            <Button onClick={() => navigate(`/userpage/${sessionStorage.getItem('userId')}/chart/view`)}>実際のページで確認</Button>
+          </div>
         </div>
-        </div>
-        </div>
-        </form>
-
-      // <div>点数区分</div>
-      // {scoreStandards.map((s, i) => (
-        <div key={i}>点数{i}点   {s}</div>
-      ))}
-
+      </div>
       <div>
         {data.map((c, i) => (
           <div key={i} style={viewChartSize} className="chart">
@@ -611,7 +602,9 @@ const PulldownForm: React.FC = () => {
           </div>
         ))}
       </div>
-      </>
+
+
+    </>
   );
 };
 
