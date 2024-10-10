@@ -179,12 +179,12 @@ const PulldownForm: React.FC = () => {
   const choiceParent: number[] = Array.from({ length: maxDepth }, (_, i) => i + 1);
 
   //グラフの頂点番号
-  // const choiceItem: string[] = Array.from({ length: maxItem }, (_, i) => (i + 1).toString()).concat("選択したチャートの編集");
+  // const choiceItem: string[] = Array.from({ length: maxItem }, (_, i) => (i + 1).toString()).concat("自身を修正");
   const [choiceItem, setChoiceItem] = useState<choiceChartClass[]>([]);
 
   const [choiceChart, setChoiceChart] = useState<string[]>(charts.map((chart) => chart.name));
   //スコア
-  const choiseScore: number[] = Array.from({ length: maxScore + 1 }, (_, i) => i);
+  const choiseScore: number[] = Array.from({ length: maxScore }, (_, i) => i + 1);
 
   // データ保持用のstate
   const [formState, setFormState] = useState({
@@ -215,7 +215,7 @@ const PulldownForm: React.FC = () => {
   };
 
   const handleChartItemChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    if (e.target.value === "選択したチャートの編集") {
+    if (e.target.value === "自身を修正") {
       setFormState(prev => ({ ...prev, itemNum: 100 }));
       setLeafFormState(prev => ({ ...prev, itemNum: 100 }));
       return;
@@ -241,7 +241,7 @@ const PulldownForm: React.FC = () => {
 
     //choiceItemを書き換える処理
     //チャートのIdを要求->チャートのidにそうleavesを取得
-    let tmpleaf = [{ name: "選択したチャートの編集", id: 100 }];
+    let tmpleaf = [{ name: "自身を修正", id: 100 }];
     leaves.map((leaf) => {
       if (leaf.chart_id === Number(e.target.value)) {
         tmpleaf.push({ name: leaf.name, id: leaf.item_num });
@@ -289,7 +289,6 @@ const PulldownForm: React.FC = () => {
       else if (formState.itemNum === 100) {
         //既存のデータの選択されたチャートIDの名前を変更する処理
         console.log("nameChange", formState.name);
-        console.log(charts[charts.findIndex((val) => val.id === formState.chartId)].name);
         charts[charts.findIndex((val) => val.id === formState.chartId)].name = formState.name;
         setEntries(prev => [...prev, newEntry]);
       }
@@ -393,39 +392,20 @@ const PulldownForm: React.FC = () => {
   // JSXのレンダリング
   return (
     <>
-      <div className="bg-gray-50">
-        <header className="flex bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <h1 className="text-3xl font-bold text-gray-900">ポートフォリオ編集</h1>
-          </div>
-          <div className='py-4'>
-            <Button onClick={backPage}>戻る</Button>
-          </div>
-        </header>
-        <div className='flex justify-center items-center gap-4'>
-          <form>
-            <div className="py-4 max-w-full mx-auto ">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <div>
-                  <table className='table-fixed mx-auto'>
-                    <tbody>
-                      <tr>
-                        <td className='text-right pr-4 whitespace-nowrap'>
-                          <label>
-                            編集するチャート:
-                          </label>
-                        </td>
-                        <td>
-                          <select value={formState.chartId} onChange={handleChartChartIdChange} className='w-80'>
-                            <option value="">選択してください</option>
-                            {charts.map(c => (
-                              <option key={c.id} value={c.id}>
-                                {c.name}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                      </tr>
+      <form>
+        <div>
+          <label>
+            グラフ番号を選択してください:
+            <select value={formState.chartId} onChange={handleChartChartIdChange}>
+              <option value="">選択してください</option>
+              {charts.map(c => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
         {formState.depth === maxDepth && (
 
@@ -438,7 +418,6 @@ const PulldownForm: React.FC = () => {
                   :
                   formState.itemNum
               } onChange={handleChartItemChange}>
-                <option value="">選択してください</option>
                 {choiceItem.map(c => (
                   <option key={c.name} value={c.id}>
                     {c.name}
@@ -448,28 +427,25 @@ const PulldownForm: React.FC = () => {
             </label>
           </div>
         )}
-        <tr>
-          <td className='text-right pr-4 whitespace-nowrap'>
-            <label>タイトルを変更:</label>
-          </td>
-          <td>
+
+        <div>
+          <label>
+            タイトルを入力:
             <input
               type="text"
               value={formState.name}
               onChange={handleTitleChange}
-              placeholder="チャート名orスキル名を入力"
-              className='w-80'
+              placeholder="テキストを入力"
+            // disabled={formState.parentId === 0 || formState.chartId === 0}
             />
-          </td>
-        </tr>
-        {(formState.depth === maxDepth && formState.itemNum !== 100)&& (
-        <>
-        <tr>
-          <td className='text-right pr-4 whitespace-nowrap'>
-            <label>編集するスキル名:</label>
-          </td>
-          <td>
+          </label>
+        </div>
 
+        {(formState.depth === maxDepth && formState.itemNum !== 100)&& (
+
+          <div>
+            <label>
+              点数を決定してください:
               <select value={leafFormState.score} onChange={handleScoreChange}>
                 <option value="">選択してください</option>
                 {choiseScore.map(score => (
@@ -478,120 +454,53 @@ const PulldownForm: React.FC = () => {
                   </option>
                 ))}
               </select>
-              </td>
-        </tr>
-        </>
+            </label>
+          </div>
         )}
 
-      <div className='flex justify-end pt-4 gap-4'>
+        <div>
           <Button type="button" onClick={addOrUpdateEntry}>
             登録
           </Button>
         </div>
 
-                  <div>
-                    <Button type="button" onClick={onSubmit}>
-                      確定
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-
-          <div className="py-4 max-w-full mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className='font-semibold text-lg pb-4'>スコア基準</div>
-              <table className="table-fixed mx-auto" >
-                <thead >
-                  <tr>
-                    <th className='pr-6'>スコア</th>
-                    <th>基準</th>
-                  </tr>
-                </thead>
-                {scoreStandards.map((s, i) => (
-
-                  <tbody key={i}>
-                    <tr>
-                      <th className='pr-6 font-normal'>{i}  </th>
-                      <th className='text-left font-normal'>{s}</th>
-                    </tr>
-                  </tbody>
-
+        <div>
+          <h3>追加された項目:</h3>
+          <ul>
+            {entries.map((entry, index) => (
+              <li key={index}>
+                親 Chart: {entry.parentId}, グラフ番号:{entry.chartId}, 頂点位置: {entry.itemNum}, タイトル: {entry.name}
+              </li>
+            ))}
+          </ul>
+          {leafEntries.length > 0 && (
+            <>
+              <h4>Leafs:</h4>
+              <ul>
+                {leafEntries.map((leaf, index) => (
+                  <li key={index}>
+                    タイトル: {leaf.title}, 点数: {leaf.score}
+                  </li>
                 ))}
-              </table>
-            </div>
-          </div>
+              </ul>
+            </>
+          )}
         </div>
 
-        <div className="py-4 max-w-full mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className='font-semibold text-xl pb-4'>変更した項目</div>
-            <div className='font-semibold text-lg pb-4'>変更したチャート</div>
-            <table className='table-fixed mx-auto'>
-              <thead>
-                <tr>
-                  <th className='pr-4'>親チャート</th>
-                  <th className='pr-4'>チャートId</th>
-                  <th className='pr-4'>頂点位置（右回り順）</th>
-                  <th className='pr-4'>タイトル</th>
-                </tr>
-              </thead>
-              <tbody>
-                {entries.map((entry, index) => (
-                  <tr key={index}>
-                    <td>
-                      {entry.parentId}
-                    </td>
-                    <td>
-                      {entry.chartId}
-                    </td>
-                    <td>
-                      {entry.itemNum}
-                    </td>
-                    <td>
-                      {entry.name}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className='font-semibold text-lg pt-8 pb-4'>変更したスキル</div>
-
-            {leafEntries.length > 0 && (
-              <>
-                <table className='table-fixed mx-auto'>
-                  <thead>
-                    <tr>
-                      <th className='pr-4'>スキルタイトル</th>
-                      <th className='pr-4'>スコア</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {leafEntries.map((leaf, index) => (
-                      <tr key={index}>
-                        <td>
-                          {leaf.title}
-                        </td>
-                        <td>
-                          {leaf.score}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-              </>
-            )}
-
-          </div>
-
-          <div className='flex justify-end py-4 px-2'>
-            <Button onClick={() => navigate(`/userpage/${sessionStorage.getItem('userId')}/chart/view`)}>実際のページで確認</Button>
-          </div>
+        <div>
+          <Button type="button" onClick={onSubmit}>
+            送信
+          </Button>
+          <Button onClick={backPage}>戻る</Button>
+          <Button onClick={() => navigate(`/userpage/${sessionStorage.getItem('userId')}/chart/view`)}>実際のページで確認</Button>
         </div>
-      </div>
+
+      </form>
+      <div>点数区分</div>
+      {scoreStandards.map((s, i) => (
+        <div key={i}>点数{i}点   {s}</div>
+      ))}
+
       <div>
         {data.map((c, i) => (
           <div key={i} style={viewChartSize} className="chart">
@@ -599,86 +508,8 @@ const PulldownForm: React.FC = () => {
           </div>
         ))}
       </div>
-
-
     </>
   );
 };
 
 export default PulldownForm;
-
-{/* <div>
-<table className='table-fixed mx-auto'>
-  <tbody>
-    <tr>
-      <td className='text-right pr-4'>
-        <label>
-          編集するチャート:
-        </label>
-      </td>
-      <td>
-        <select value={formState.chartId} onChange={handleChartChartIdChange} className='w-40'>
-          <option value="">選択してください</option>
-          {charts.map(c => (
-            <option key={c.id} value={c.id}>
-              {c.name}
-            </option>
-          ))}
-        </select>
-      </td>
-    </tr>
-
-    <tr>
-      <td className='text-right pr-4'>
-        <label>タイトルを変更:</label>
-      </td>
-      <td>
-        <input
-          type="text"
-          value={formState.name}
-          onChange={handleTitleChange}
-          placeholder="テキストを入力"
-          className='w-40'
-        />
-      </td>
-    </tr>
-
-    {formState.depth === maxDepth && (
-      <>
-        <tr>
-          <td className='text-right pr-4'>
-            <label>頂点の位置を決定してください:</label>
-          </td>
-          <td>
-            <select value={formState.itemNum === 100 ? "選択したチャートの編集" : formState.itemNum}
-              onChange={handleChartItemChange}>
-              <option value="">選択してください</option>
-              {choiceItem.map(c => (
-                <option key={c.name} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </td>
-        </tr>
-
-        <tr>
-          <td className='text-right pr-4'>
-            <label>点数を決定してください:</label>
-          </td>
-          <td>
-            <select value={leafFormState.score} onChange={handleScoreChange}>
-              <option value="">選択してください</option>
-              {choiseScore.map(score => (
-                <option key={score} value={score}>
-                  {score}
-                </option>
-              ))}
-            </select>
-          </td>
-        </tr>
-      </>
-    )}
-  </tbody>
-</table>
-</div> */}
