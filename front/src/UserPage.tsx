@@ -59,16 +59,34 @@ const UserPage: React.FC = () => {
 
 
     return (
-        <div>
+        /* 変更前のコード。一応コメントで残しておく */
+        // <div>
+        //     <h1>Hello {userName}!</h1>
+        //     <Button onClick={viewChart}>チャートを標示</Button>
+        //     {
+        //         //ここでログインしているユーザーが自分自身のページの時だけ管理モードを表示
+        //         //バックとネゴシエーションできたら個々の処理を書き直しておく
+        //         sessionStorage.getItem('userId') === location.pathname.split("/")[2] &&
+        //         <div>
+        //             <Button type="submit" onClick={ShowModal}>チャート登録・編集</Button>
+        //             <Button type="submit" onClick={delChart}>チャート削除</Button>
+
+        //             <Button onClick={Logout}>ログアウト</Button>
+        //             <Modal showFlag={showModal} setShowFlag={setShowModal} type="edit" />
+        //         </div>
+        //     }
+        // </div>
+
+        <div className="container mx-auto py-8">
             <h1>Hello {userName}!</h1>
-            <Button onClick={viewChart}>チャートを標示</Button>
+            <Button onClick={viewChart}>チャートを表示</Button>
             {
                 //ここでログインしているユーザーが自分自身のページの時だけ管理モードを表示
                 //バックとネゴシエーションできたら個々の処理を書き直しておく
                 sessionStorage.getItem('userId') === location.pathname.split("/")[2] &&
-                <div>
-                    <Button type="submit" onClick={ShowModal}>チャート登録・編集</Button>
-                    <Button type="submit" onClick={delChart}>チャート削除</Button>
+                <div className="flex justify-end">
+                    <Button type="submit" onClick={ShowModal} className="mr-2">チャート登録・編集</Button>
+                    <Button type="submit" onClick={delChart} className="mr-2">チャート削除</Button>
 
                     <Button onClick={Logout}>ログアウト</Button>
                     <Modal showFlag={showModal} setShowFlag={setShowModal} type="edit" />

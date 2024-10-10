@@ -35,18 +35,49 @@ const UserPage: React.FC = () => {
     }
 
     return (
+        /* 変更前のコード。一応コメントで残しておく */
+        // <div>
+        //     <h1>トップページ</h1>
+
+        //     <p>ユーザ登録</p>
+        //     <Button type="submit" onClick={account}>ユーザ登録</Button>
+        //     <Account showFlag={showModal} setShowFlag={setShowModal} />
+        //     <Button onClick={Login}>ログイン</Button>
+
+        //     <p>検索</p>
+        //     <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} />
+        //     <Button onClick={Search}>検索</Button>
+        //     {errorMessage && <p>ユーザーが見つかりません</p>}
+        // </div>
+
         <div>
             <h1>トップページ</h1>
 
-            <p>ユーザ登録</p>
-            <Button type="submit" onClick={account}>ユーザ登録</Button>
-            <Account showFlag={showModal} setShowFlag={setShowModal} />
-            <Button onClick={Login}>ログイン</Button>
-
-            <p>検索</p>
-            <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} />
-            <Button onClick={Search}>検索</Button>
-            {errorMessage && <p>ユーザーが見つかりません</p>}
+            <div className="flex flex-col space-y-4">
+                <p className="text-lg">ユーザ登録</p>
+                <Button type="submit" onClick={account} className="w-full">
+                    ユーザ登録
+                </Button>
+                <Account showFlag={showModal} setShowFlag="setShowModal" />
+                <Button onClick={Login} className="w-full">
+                    ログイン
+                </Button>
+            </div>
+            
+            <div>
+                <p className="text-lg">検索</p>
+                <div className="flex items-center">
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                    <Button onClick={Search} className="w-auto">
+                        検索
+                    </Button>
+                    {errorMessage && <p>ユーザが見つかりません</p>}
+                </div>
+            </div>
         </div>
 
     );
