@@ -230,7 +230,6 @@ const Modal = (props) => {
 
 
             <h2 className="text-xl font-semibold text-gray-800">メインタイトル</h2>
-            {/* email型に変換=>コンタクトアドレス */}
             <input type="text" defaultValue="" name="title" onChange={(e) => {
               setMainTitle(e.target.value);
             }} />

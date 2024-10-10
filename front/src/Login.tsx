@@ -64,7 +64,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">email</h2>
             <div className="space-y-1">
               <input
-                type="text"
+                type="email"
                 value={email}
                 placeholder="example@mail.com"
                 className="w-full text-lg py-2"
@@ -80,7 +80,7 @@ const Login: React.FC<LoginProps> = ({ onSubmit }) => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">パスワード</h2>
             <div className="space-y-4">
               <input
-                type="text"
+                type="password"
                 value={password}
                 placeholder="ここパスワードを入力"
                 className="w-full text-lg py-2"
