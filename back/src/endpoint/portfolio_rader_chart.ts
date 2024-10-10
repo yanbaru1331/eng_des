@@ -303,7 +303,7 @@ PortfolioChartApp.get(
             const portfolioPageData = await getPortfolioPage(parseInt(user_id, 10));
 
             if (portfolioPageData == null) {
-                return c.json({ message: 'Portfolio page is not existed' }, 400);
+                return c.json({ message: 'Portfolio page is not existed' }, 404);
             }
 
 

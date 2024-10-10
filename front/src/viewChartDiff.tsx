@@ -71,7 +71,7 @@ const ViewChart: React.FC = () => {
       console.log(res.data.data.username);
       setUserNmae(res.data.data.username);
   }
-      //ここまだuser_idが固定値になっているので、後で変更する
+    //ここまだuser_idが固定値になっているので、後で変更する
     const getChart = async () => {
       const res = await axios.get(`http://localhost:3000/api/portfolio/chart/all_view_format?user_id=${viewChartUserId}`)
         .then((res) => {
@@ -89,8 +89,9 @@ const ViewChart: React.FC = () => {
             console.log("error=", error.response.message);
           }
         });
-
     }
+
+
 
     if (viewChartUserId !== sessionStorage.getItem('userId')) {
       checkUser();
