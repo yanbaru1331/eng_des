@@ -138,13 +138,13 @@ const Modal = (props) => {
 
     const charts: {name:string}[] = [];
     let sameLevelChartsNum:number = 1;
-    for (let index = 1; index < maxDepth + 1; index++) {
-      for (let i = 1; i < sameLevelChartsNum + 1; i++) {
+    for (let index = 1; index <= maxDepth; index++) {
+      for (let i = 1; i <= sameLevelChartsNum ; i++) {
         charts.push({
           name: `上から：${index}番-左から：${i}番目のチャート`
         });
       }
-      sameLevelChartsNum = index ^ maxDepth;
+      sameLevelChartsNum *= maxItem;
     }
     // const charts = Array.from({ length: chartNum }, (_, index) => ({ name: "test" + index }))
 
