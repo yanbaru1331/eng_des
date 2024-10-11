@@ -427,7 +427,19 @@ const PulldownForm: React.FC = () => {
                             </select>
                           </td>
                         </tr>
-
+                        <tr>
+                          <td className='text-right pr-4 whitespace-nowrap'>
+                            <label>タイトルを変更:</label>
+                            <input
+                              type="text"
+                              value={formState.name}
+                              onChange={handleTitleChange}
+                              placeholder="テキストを入力"
+                              className='w-80'
+                            // disabled={formState.parentId === 0 || formState.chartId === 0}
+                            />
+                          </td>
+                        </tr>
                         {formState.depth === maxDepth && (
                           <>
                             <tr>
@@ -451,38 +463,23 @@ const PulldownForm: React.FC = () => {
                                 </select>
                               </td>
                             </tr>
-
-                            <tr>
-                              <td className='text-right pr-4 whitespace-nowrap'>
-                                <label>タイトルを変更:</label>
-                                <input
-                                  type="text"
-                                  value={formState.name}
-                                  onChange={handleTitleChange}
-                                  placeholder="テキストを入力"
-                                  className='w-80'
-                                // disabled={formState.parentId === 0 || formState.chartId === 0}
-                                />
-                              </td>
-                            </tr>
-
-
-                            {(formState.depth === maxDepth && formState.itemNum !== 100) && (
-
-                              <td className='text-right pr-4'>
-                                <label>スキルのスコア:</label>
-                                <select value={leafFormState.score} onChange={handleScoreChange} className='w-80'>
-                                  <option value="">選択してください</option>
-                                  {choiseScore.map(score => (
-                                    <option key={score} value={score}>
-                                      {score}
-                                    </option>
-                                  ))}
-                                </select>
-                              </td>
-                            )}
                           </>
                         )}
+                        {(formState.depth === maxDepth && formState.itemNum !== 100) && (
+
+                          <td className='text-right pr-4'>
+                            <label>スキルのスコア:</label>
+                            <select value={leafFormState.score} onChange={handleScoreChange} className='w-80'>
+                              <option value="">選択してください</option>
+                              {choiseScore.map(score => (
+                                <option key={score} value={score}>
+                                  {score}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                        )}
+
                       </tbody>
                     </table>
                   </div>
